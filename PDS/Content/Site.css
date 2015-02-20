@@ -12,8 +12,18 @@ body {
 	color: black;	
 }
 
+.bg-success, bg-danger {
+    padding: 15px; 
+    margin: 0;
+    margin-top: 15px;
+    text-align: center;
+}
 .img-logo {
 	width: 70%;
+}
+
+.img-loading {
+    padding-left: 2%;
 }
 
 .input-group-addon {
@@ -115,10 +125,6 @@ body {
 
 .modal-title-custom {
 	color: #000000;
-}
-
-.modal-footer {
-	margin-top: 35px;
 }
 
 /* Custom Modal ------------------------------------- */

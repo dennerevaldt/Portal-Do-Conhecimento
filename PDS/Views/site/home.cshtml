@@ -26,7 +26,7 @@
       <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body>
+<body ng-app="contactApp">
 
     <div class="teachers col-sm-4 col-md-4 col-lg-4">
         <div class="content-teachers text-center">
@@ -107,47 +107,50 @@
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                         <h4 class="modal-title-custom">Entre em contato com o Portal do Conhecimento</h4>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body" ng-controller="ContactController">
                         <!--Start Contact form -->
-                        <form method="post" action="#">
-                            <div class="form-group">
+                        <form name="contactform" method="post" ng-submit="submit(contactform)" role="form">
+                            <div class="form-group" ng-class="{ 'has-error': contactform.name.$invalid && submitted }">
                                 <label class="control-label">Nome</label>
                                 <div>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-                                        <input type="text" class="form-control" id="name" name="name" placeholder="Nome">
+                                        <input ng-model="formData.name" type="text" class="form-control" id="name" name="name" placeholder="Nome" required>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{ 'has-error': contactform.email.$invalid && submitted }">
                                 <label class="control-label">Email</label>
                                 <div>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                                        <input type="text" class="form-control" id="email" name="email" placeholder="Email">
+                                        <input ng-model="formData.email" type="text" class="form-control" id="email" name="email" placeholder="Email" required>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" ng-class="{ 'has-error': contactform.message.$invalid && submitted }">
                                 <label class="control-label">Mensagem</label>
                                 <div>
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="glyphicon glyphicon-pencil"></i></span>
-                                        <textarea class="form-control" id="message" name="message" rows="4" cols="78" placeholder="Mensagem"></textarea>
+                                        <textarea ng-model="formData.message" class="form-control" id="message" name="message" rows="4" cols="78" placeholder="Mensagem" required></textarea>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="submit-control col-sm-12 col-md-12 col-lg-12 text-center">
+                            <div class="text-center">
                                 <input type="reset" value="Limpar" class="btn btn-default" />
-                                <input type="submit" value="Enviar Mensagem" class="btn btn-success" />
-                            </div>
+                                <input type="submit" value="Enviar Mensagem" class="btn btn-success" ng-disabled="submitButtonDisabled" />
+                                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+                             </div>
 
                         </form>
                         <!--End Contact form -->
+                        <div ng-class="result">{{ resultMessage }}</div>
                     </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
                     </div>
@@ -162,5 +165,10 @@
 
     <!-- Plugins -->
     @Scripts.Render("~/bundles/bootstrap")
+
+    <!-- Angular JS-->
+    @Scripts.Render("~/Scripts/angular.js")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/controllers.js")
 </body>
 </html>
