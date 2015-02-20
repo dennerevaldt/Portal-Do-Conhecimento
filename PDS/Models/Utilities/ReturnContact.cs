@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace PDS.Models
+namespace PDS.Models.Utilities
 {
     public class ReturnContact
     {

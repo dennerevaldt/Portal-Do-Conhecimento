@@ -3,9 +3,7 @@
     $scope.formData; //formData is an object holding the name, email and message
     $scope.submitButtonDisabled = false;
     $scope.loading = false;
-    $scope.submitted = false; //used so that form errors are shown only after the form has been submitted
     $scope.submit = function (contactform) {
-        $scope.submitted = true;
         $scope.submitButtonDisabled = true;
         if (contactform.$valid) {
             $scope.loading = true;
@@ -30,7 +28,7 @@
             });
         } else {
             $scope.submitButtonDisabled = false;
-            $scope.resultMessage = 'Ops, estamos com problemas.. Tente novamente mais tarde.';
+            $scope.resultMessage = 'Ops, estamos com problemas.. Tente novamente.';
             $scope.result = 'bg-danger';
             $scope.loading = false;
         }
