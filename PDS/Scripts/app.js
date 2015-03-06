@@ -1,1 +1,1 @@
-﻿var app = angular.module('contactApp', []);
+﻿var homeSite = angular.module('homeSite', []);

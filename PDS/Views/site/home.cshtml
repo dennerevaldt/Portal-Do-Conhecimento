@@ -26,7 +26,7 @@
       <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="contactApp">
+<body ng-app="homeSite">
 
     <div class="teachers col-sm-4 col-md-4 col-lg-4">
         <div class="content-teachers text-center">
@@ -53,29 +53,34 @@
                 <img class="img-logo" src="@Url.Content("~/Content/images/logo-portal.png")" alt="Logo">
             </div>
         </div>
-        <form class="form-signin">
-            <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+        <form class="form-signin" method="post" id="loginform" name="loginform" ng-controller="LoginController" ng-submit="submit(loginform)">
+            <input type="email" id="inputEmail" name="inputEmail" ng-model="formLogin.inputEmail" class="form-control" placeholder="Email address" required>
 
-            <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+            <input type="password" id="inputPassword" name="inputPassword" ng-model="formLogin.inputPassword" class="form-control" placeholder="Password" required>
 
             <div class="checkbox text-center">
                 <label>
-                    <input type="checkbox" value="remember-me"> Lembrar-me
+                    <input type="checkbox" id="inputRememberme" name="inputRememberme" ng-model="formLogin.inputRememberme" value="remember-me"> Lembrar-me
                 </label>
                 <label>
                     <a href="#" align="right"><u>Esqueci a minha senha</u></a>
                 </label>
             </div>
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" ng-disabled="submitButtonLogin">Entrar</button>
 
+            <div class="text-center loading-login">
+                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+            </div>
+
+            <div ng-class="result">{{ resultMessage }}</div>
         </form>
 
         <footer class="footer">
             <ul class="list-inline">
                 <li><a href="#" target="_blank"><i class="fa fa-facebook-official"></i></a></li>
                 <li><a href="#" target="_blank"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
+                <li><a href="#" target="_blank"><i class=" fa fa-instagram"></i></a></li>
                 <li><a href="#" data-toggle="modal" data-target=".about">Sobre</a></li>
                 <li><a href="#" data-toggle="modal" data-target=".contact">Contato</a></li>
             </ul>
@@ -170,5 +175,6 @@
     @Scripts.Render("~/Scripts/angular.js")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
+    @Scripts.Render("~/Scripts/notify.js")
 </body>
 </html>
