@@ -34,6 +34,7 @@ namespace PDS.Controllers
             return View();
         }
 
+        #region Login Facebook
         public string getfacebookloginurl()
         {
             dynamic parameters = new ExpandoObject();
@@ -92,7 +93,7 @@ namespace PDS.Controllers
             return Redirect("/home/index");
         }
 
-        public Dictionary<string,string> detailsofuser()
+        public Dictionary<string, string> detailsofuser()
         {
             //array dados
             var dataArray = new Dictionary<string, string>();
@@ -113,7 +114,7 @@ namespace PDS.Controllers
                 dataArray["last_name"] = data.last_name;
                 dataArray["gender"] = data.gender;
                 dataArray["picture_url"] = data.picture.data.url;
-            
+
                 //foto usuário grande
                 //WebResponse response = null;
                 //string pictureUrl = string.Empty;
@@ -137,6 +138,9 @@ namespace PDS.Controllers
 
             return dataArray;
         }
+        #endregion
+
+
 
         [HttpPost]
         public void login(FormCollection form)
