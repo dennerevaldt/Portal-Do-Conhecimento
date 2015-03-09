@@ -29,16 +29,16 @@ namespace PDS.Controllers
                 TempData["ReturnUrl"] = returnUrl;
             }
 
-            ViewBag.UrlFb = GetFacebookLoginUrl();
+            ViewBag.UrlFb = getfacebookloginurl();
 
             return View();
         }
 
-        public string GetFacebookLoginUrl()
+        public string getfacebookloginurl()
         {
             dynamic parameters = new ExpandoObject();
-            parameters.client_id = "727754677338038";
-            parameters.redirect_uri = "http://localhost:51918/site/retornofb";
+            parameters.client_id = "860133764025276";
+            parameters.redirect_uri = "http://portaldoconhecimento.azurewebsites.net/site/returnfb";
             parameters.response_type = "code";
             parameters.display = "page";
 
@@ -51,7 +51,7 @@ namespace PDS.Controllers
             return url.ToString();
         }
 
-        public ActionResult RetornoFb()
+        public ActionResult returnfb()
         {
             var _fb = new FacebookClient();
             FacebookOAuthResult oauthResult;
@@ -62,9 +62,9 @@ namespace PDS.Controllers
             {
                 //Pega o Access Token "permanente"
                 dynamic parameters = new ExpandoObject();
-                parameters.client_id = "727754677338038";
-                parameters.redirect_uri = "http://portaldoconhecimento.azurewebsites.net/site/retornofb";
-                parameters.client_secret = "b9cd4f0128bae69ef084650b332774f2";
+                parameters.client_id = "860133764025276";
+                parameters.redirect_uri = "http://portaldoconhecimento.azurewebsites.net/site/returnfb";
+                parameters.client_secret = "317c89ff3be71b66261db0d4275b6425";
                 parameters.code = oauthResult.Code;
 
                 dynamic result = _fb.Get("/oauth/access_token", parameters);
@@ -79,7 +79,7 @@ namespace PDS.Controllers
                 // tratar
             }
 
-            Dictionary<string, string> data = DetalhesDoUsuario();
+            Dictionary<string, string> data = detailsofuser();
 
             FormsAuthentication.SetAuthCookie(data["id"], false);
 
@@ -92,7 +92,7 @@ namespace PDS.Controllers
             return Redirect("/home/index");
         }
 
-        public Dictionary<string,string> DetalhesDoUsuario()
+        public Dictionary<string,string> detailsofuser()
         {
             //array dados
             var dataArray = new Dictionary<string, string>();
@@ -112,26 +112,26 @@ namespace PDS.Controllers
                 dataArray["middle_name"] = data.middle_name;
                 dataArray["last_name"] = data.last_name;
                 dataArray["gender"] = data.gender;
-                //dataArray["picture_url"] = data.picture.data.url;
+                dataArray["picture_url"] = data.picture.data.url;
             
-                //foto usuário
-                WebResponse response = null;
-                string pictureUrl = string.Empty;
-                try
-                {
-                    WebRequest req = WebRequest.Create(string.Format("https://graph.facebook.com/" + idUser + "/picture?type=large"));
-                    response = req.GetResponse();
-                    dataArray["picture_url"] = response.ResponseUri.ToString();
+                //foto usuário grande
+                //WebResponse response = null;
+                //string pictureUrl = string.Empty;
+                //try
+                //{
+                //    WebRequest req = WebRequest.Create(string.Format("https://graph.facebook.com/" + idUser + "/picture?type=large"));
+                //    response = req.GetResponse();
+                //    dataArray["picture_url"] = response.ResponseUri.ToString();
 
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
-                finally
-                {
-                    if (response != null) response.Close();
-                }
+                //}
+                //catch (Exception ex)
+                //{
+                //    throw ex;
+                //}
+                //finally
+                //{
+                //    if (response != null) response.Close();
+                //}
 
             }
 
