@@ -43,7 +43,7 @@ namespace PDS.Controllers
             parameters.response_type = "code";
             parameters.display = "page";
 
-            var extendedPermissions = "user_about_me,read_stream,publish_stream";
+            var extendedPermissions = "user_about_me,read_stream,publish_stream,email,user_birthday,user_location";
             parameters.scope = extendedPermissions;
 
             var _fb = new FacebookClient();
@@ -74,23 +74,33 @@ namespace PDS.Controllers
 
                 //TODO: Guardar no banco
                 Session.Add("FbUserToken", accessToken);
+
+                Dictionary<string, string> data = detailsofuser();
+
+                FormsAuthentication.SetAuthCookie(data["id"], false);
+
+                Response.Cookies["userInfo"]["id"] = encrypt(data["id"]);
+                Response.Cookies["userInfo"]["first_name"] = encrypt(data["first_name"]);
+                Response.Cookies["userInfo"]["middle_name"] = encrypt(data["middle_name"]);
+                Response.Cookies["userInfo"]["last_name"] = encrypt(data["last_name"]);
+                Response.Cookies["userInfo"]["email"] = encrypt(data["email"]);
+                Response.Cookies["userInfo"]["birthday"] = encrypt(data["birthday"]);
+                Response.Cookies["userInfo"]["gender"] = encrypt(data["gender"]);
+                Response.Cookies["userInfo"]["location"] = encrypt(data["location"]);
+                Response.Cookies["userInfo"]["locale"] = encrypt(data["locale"]);
+
+                setcookie("userImage", data["picture_url"]);
+
+
+                return Redirect("/home/index");
             }
             else
             {
                 // tratar
+                return View("home");
             }
 
-            Dictionary<string, string> data = detailsofuser();
-
-            FormsAuthentication.SetAuthCookie(data["id"], false);
-
-            Response.Cookies["userInfo"]["first_name"] = data["first_name"];
-            Response.Cookies["userInfo"]["last_name"] = data["last_name"];
-
-            setcookie("userImage", data["picture_url"]);
-
-
-            return Redirect("/home/index");
+            
         }
 
         public Dictionary<string, string> detailsofuser()
@@ -102,25 +112,25 @@ namespace PDS.Controllers
             {
                 var _fb = new FacebookClient(Session["FbuserToken"].ToString());
 
-                //detalhes do usuario completo
-                //var request = _fb.Get("me");
-
-                //get separado dados
-                dynamic data = _fb.Get("me?fields=first_name,middle_name,last_name,id,gender,picture");
-                string idUser = data.id;
+                //get user data
+                dynamic data = _fb.Get("me?fields=id,first_name,middle_name,last_name,email,gender,birthday,picture,location,locale");
                 dataArray["id"] = data.id;
                 dataArray["first_name"] = data.first_name;
                 dataArray["middle_name"] = data.middle_name;
                 dataArray["last_name"] = data.last_name;
                 dataArray["gender"] = data.gender;
                 dataArray["picture_url"] = data.picture.data.url;
+                dataArray["email"] = data.email;
+                dataArray["birthday"] = data.birthday;
+                if(data.location.name != null){ dataArray["location"] = data.location.name; } else{ data.location.name = ""; }
+                dataArray["locale"] = data.locale;
 
                 //foto usuário grande
                 //WebResponse response = null;
                 //string pictureUrl = string.Empty;
                 //try
                 //{
-                //    WebRequest req = WebRequest.Create(string.Format("https://graph.facebook.com/" + idUser + "/picture?type=large"));
+                //    WebRequest req = WebRequest.Create(string.Format("https://graph.facebook.com/" + dataArray["id"].ToString() + "/picture?type=large"));
                 //    response = req.GetResponse();
                 //    dataArray["picture_url"] = response.ResponseUri.ToString();
 
@@ -139,8 +149,6 @@ namespace PDS.Controllers
             return dataArray;
         }
         #endregion
-
-
 
         [HttpPost]
         public void login(FormCollection form)
@@ -204,6 +212,20 @@ namespace PDS.Controllers
             var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
             var c = new HttpCookie(key,encValue) { Expires = DateTime.Now.AddDays(7) };
             Response.Cookies.Add(c);
+        }
+
+        // Encrypt string
+        public string encrypt(string value)
+        {
+            if (value != string.Empty || value != null)
+            {
+                var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
+                return encValue;
+            }
+            else
+            {
+                return "";
+            }
         }
 
         // LogOff

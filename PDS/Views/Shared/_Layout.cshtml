@@ -17,7 +17,12 @@
     @Scripts.Render("~/bundles/modernizr")
 
     @{
-        HttpCookie cookie = Request.Cookies["userInfo"];
+        HttpCookie userInfo = Request.Cookies["userInfo"];
+        var fName = Server.UrlTokenDecode(userInfo["first_name"]);
+        string first_name = System.Text.UTF8Encoding.UTF8.GetString(fName);
+
+        var lName = Server.UrlTokenDecode(userInfo["last_name"]);
+        string last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
         
         HttpCookie cookie_image = Request.Cookies["userImage"];
         var decValue = Server.UrlTokenDecode(cookie_image.Value);
@@ -51,7 +56,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            <img src="@url_image" alt="Image" class="img-navbar" /> @cookie["first_name"] <span class="caret"></span>
+                            <img src="@url_image" alt="Image" class="img-navbar" /> @first_name <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#">Preferências</a></li>
@@ -73,7 +78,7 @@
                 <a href="#">
                     <img src="@url_image" alt="Image" class="img-circle">
                 </a>
-                <h4 class="sidebar-heading">@cookie["first_name"] @cookie["last_name"]</h4>
+                <h4 class="sidebar-heading">@first_name @last_name</h4>
             </div>
             <ul class="sidebar-nav">
                 <p class="sidebar-heading-li">MENU</p>
