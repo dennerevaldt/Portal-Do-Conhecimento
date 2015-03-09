@@ -113,36 +113,28 @@ namespace PDS.Controllers
                 var _fb = new FacebookClient(Session["FbuserToken"].ToString());
 
                 //get user data
-                dynamic data = _fb.Get("me?fields=id,first_name,middle_name,last_name,email,gender,birthday,picture,location,locale");
+                dynamic data = _fb.Get("me?fields=id,first_name,middle_name,last_name,email,gender,birthday,location,locale");
                 dataArray["id"] = data.id;
                 dataArray["first_name"] = data.first_name;
                 dataArray["middle_name"] = data.middle_name;
                 dataArray["last_name"] = data.last_name;
                 dataArray["gender"] = data.gender;
-                dataArray["picture_url"] = data.picture.data.url;
                 dataArray["email"] = data.email;
                 dataArray["birthday"] = data.birthday;
-                if(data.location.name != null){ dataArray["location"] = data.location.name; } else{ data.location.name = ""; }
+
+                try
+                {
+                    dataArray["location"] = data.location.name;
+                }
+                catch (Exception)
+                {
+                    dataArray["location"] = "noInformed";
+                }
                 dataArray["locale"] = data.locale;
 
-                //foto usuário grande
-                //WebResponse response = null;
-                //string pictureUrl = string.Empty;
-                //try
-                //{
-                //    WebRequest req = WebRequest.Create(string.Format("https://graph.facebook.com/" + dataArray["id"].ToString() + "/picture?type=large"));
-                //    response = req.GetResponse();
-                //    dataArray["picture_url"] = response.ResponseUri.ToString();
-
-                //}
-                //catch (Exception ex)
-                //{
-                //    throw ex;
-                //}
-                //finally
-                //{
-                //    if (response != null) response.Close();
-                //}
+                //get user profile picture
+                dynamic urlImage = _fb.Get("me/picture?redirect=0&height=200&width=200&type=normal");
+                dataArray["picture_url"] = urlImage.data.url;
 
             }
 
@@ -150,6 +142,13 @@ namespace PDS.Controllers
         }
         #endregion
 
+        // Confirm data account
+        public ActionResult confirmaccount()
+        {
+            return View();
+        }
+
+        // Login simple
         [HttpPost]
         public void login(FormCollection form)
         {
@@ -217,14 +216,14 @@ namespace PDS.Controllers
         // Encrypt string
         public string encrypt(string value)
         {
-            if (value != string.Empty || value != null)
+            if (value != null)
             {
                 var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
                 return encValue;
             }
             else
             {
-                return "";
+                return "noInformed";
             }
         }
 
