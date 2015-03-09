@@ -9,12 +9,20 @@
     <title>Portal do Conhecimento - @ViewBag.title</title>
 
     <!-- Favicon -->
-    <link href="images/favicon.png" rel="icon">
+    <link href="@Url.Content("~/Content/images/favicon.png")" rel="icon">
 
     <!-- Css -->
     @Styles.Render("~/Content/bootstrap.css")
     @Styles.Render("~/Content/home.css")
     @Scripts.Render("~/bundles/modernizr")
+
+    @{
+        HttpCookie cookie = Request.Cookies["userInfo"];
+        
+        HttpCookie cookie_image = Request.Cookies["userImage"];
+        var decValue = Server.UrlTokenDecode(cookie_image.Value);
+        string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValue);
+    }
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -43,7 +51,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                            <img src="@Url.Content("~/Content/images/profile.jpg")" alt="Image" class="img-navbar" /> Denner <span class="caret"></span>
+                            <img src="@url_image" alt="Image" class="img-navbar" /> @cookie["first_name"] <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="#">Preferências</a></li>
@@ -63,9 +71,9 @@
         <div id="sidebar-wrapper">
             <div class="sidebar-brand">
                 <a href="#">
-                    <img src="@Url.Content("~/Content/images/profile.jpg")" alt="Image" class="img-circle">
+                    <img src="@url_image" alt="Image" class="img-circle">
                 </a>
-                <h4 class="sidebar-heading">Denner E.</h4>
+                <h4 class="sidebar-heading">@cookie["first_name"] @cookie["last_name"]</h4>
             </div>
             <ul class="sidebar-nav">
                 <p class="sidebar-heading-li">MENU</p>

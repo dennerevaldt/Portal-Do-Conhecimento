@@ -73,7 +73,7 @@ homeSite.controller('LoginController', function ($scope, $http) {
             });
         } else {
             $scope.submitButtonLogin = false;
-            $scope.resultMessage = 'Ops! estamos com problemas. Tente novamente.';
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
             $scope.result = 'bg-danger';
             $scope.loading = false;
         }

@@ -1,9 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using Facebook;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PDS.Models.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
@@ -25,7 +28,114 @@ namespace PDS.Controllers
             {
                 TempData["ReturnUrl"] = returnUrl;
             }
+
+            ViewBag.UrlFb = GetFacebookLoginUrl();
+
             return View();
+        }
+
+        public string GetFacebookLoginUrl()
+        {
+            dynamic parameters = new ExpandoObject();
+            parameters.client_id = "727754677338038";
+            parameters.redirect_uri = "http://localhost:51918/site/retornofb";
+            parameters.response_type = "code";
+            parameters.display = "page";
+
+            var extendedPermissions = "user_about_me,read_stream,publish_stream";
+            parameters.scope = extendedPermissions;
+
+            var _fb = new FacebookClient();
+            var url = _fb.GetLoginUrl(parameters);
+
+            return url.ToString();
+        }
+
+        public ActionResult RetornoFb()
+        {
+            var _fb = new FacebookClient();
+            FacebookOAuthResult oauthResult;
+
+            _fb.TryParseOAuthCallbackUrl(Request.Url, out oauthResult);
+
+            if (oauthResult.IsSuccess)
+            {
+                //Pega o Access Token "permanente"
+                dynamic parameters = new ExpandoObject();
+                parameters.client_id = "727754677338038";
+                parameters.redirect_uri = "http://portaldoconhecimento.azurewebsites.net/site/retornofb";
+                parameters.client_secret = "b9cd4f0128bae69ef084650b332774f2";
+                parameters.code = oauthResult.Code;
+
+                dynamic result = _fb.Get("/oauth/access_token", parameters);
+
+                var accessToken = result.access_token;
+
+                //TODO: Guardar no banco
+                Session.Add("FbUserToken", accessToken);
+            }
+            else
+            {
+                // tratar
+            }
+
+            Dictionary<string, string> data = DetalhesDoUsuario();
+
+            FormsAuthentication.SetAuthCookie(data["id"], false);
+
+            Response.Cookies["userInfo"]["first_name"] = data["first_name"];
+            Response.Cookies["userInfo"]["last_name"] = data["last_name"];
+
+            setcookie("userImage", data["picture_url"]);
+
+
+            return Redirect("/home/index");
+        }
+
+        public Dictionary<string,string> DetalhesDoUsuario()
+        {
+            //array dados
+            var dataArray = new Dictionary<string, string>();
+
+            if (Session["FbuserToken"] != null)
+            {
+                var _fb = new FacebookClient(Session["FbuserToken"].ToString());
+
+                //detalhes do usuario completo
+                //var request = _fb.Get("me");
+
+                //get separado dados
+                dynamic data = _fb.Get("me?fields=first_name,middle_name,last_name,id,gender,picture");
+                string idUser = data.id;
+                dataArray["id"] = data.id;
+                dataArray["first_name"] = data.first_name;
+                dataArray["middle_name"] = data.middle_name;
+                dataArray["last_name"] = data.last_name;
+                dataArray["gender"] = data.gender;
+                //dataArray["picture_url"] = data.picture.data.url;
+            
+                //foto usuário
+                WebResponse response = null;
+                string pictureUrl = string.Empty;
+                try
+                {
+                    WebRequest req = WebRequest.Create(string.Format("https://graph.facebook.com/" + idUser + "/picture?type=large"));
+                    response = req.GetResponse();
+                    dataArray["picture_url"] = response.ResponseUri.ToString();
+
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                finally
+                {
+                    if (response != null) response.Close();
+                }
+
+            }
+
+            return dataArray;
         }
 
         [HttpPost]
@@ -42,32 +152,39 @@ namespace PDS.Controllers
                 TempData.TryGetValue("ReturnUrl", out returnUrl);
                 string returnUrlStr = returnUrl as string;
 
-                //userReturn = UsuariosRepositorio.GetUser(user);
-
-                //if (userReturn != null)
-                if(inputEmail=="dd@email")
+                if (inputEmail != null || inputPassword != null)
                 {
-                     if(inputRememberme == "true")
-                     {
+                    //userReturn = UsuariosRepositorio.GetUser(user);
+
+                    //if (userReturn != null)
+                    if (inputEmail == "dd@email")
+                    {
+                        if (inputRememberme == "true")
+                        {
                             //Autenticação do usuário, cookie indestrutível.
                             FormsAuthentication.SetAuthCookie("Denner", true);
-                     }
-                     else
-                     {
+                        }
+                        else
+                        {
                             //Autenticação do usuário, destrói cookie ao fechar o navegador.
                             FormsAuthentication.SetAuthCookie("Denner", false);
-                     }
+                        }
 
-                     objectToSerializeSuc = new ReturnJson { success = true, message = "Login autorizado.", returnUrl = returnUrlStr, location = "/home/index" };
-                     Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
-                  
+                        objectToSerializeSuc = new ReturnJson { success = true, message = "Entrando...", returnUrl = returnUrlStr, location = "/home/index" };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+
+                    }
+                    else
+                    {
+                        objectToSerializeErr = new ReturnJson { success = false, message = "Email ou Senha incorretos. Verifique-os e tente novamente." };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+                    }
                 }
                 else
                 {
-                     objectToSerializeErr = new ReturnJson { success = false, message = "Email ou Senha incorretos. Verifique-os e tente novamente." };
-                     Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+                    objectToSerializeErr = new ReturnJson { success = false, message = "os campos são obrigatórios." };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
                 }
-
             }
             catch (Exception)
             {
@@ -81,7 +198,7 @@ namespace PDS.Controllers
         public void setcookie(string key, string value)
         {
             var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
-            var c = new HttpCookie(key, encValue) { Expires = DateTime.Now.AddDays(7) };
+            var c = new HttpCookie(key,encValue) { Expires = DateTime.Now.AddDays(7) };
             Response.Cookies.Add(c);
         }
 
@@ -90,6 +207,21 @@ namespace PDS.Controllers
         {
             // Rotina para remover autenticação do usuário
             System.Web.Security.FormsAuthentication.SignOut();
+
+            // Rotina para remover cookie de dados do usuário logado
+            if (Request.Cookies["userInfo"] != null)
+            {
+                HttpCookie myCookie = new HttpCookie("userInfo");
+                myCookie.Expires = DateTime.Now.AddDays(-1d);
+                Response.Cookies.Add(myCookie);
+            }
+
+            if (Request.Cookies["userImage"] != null)
+            {
+                HttpCookie myCookie = new HttpCookie("userImage");
+                myCookie.Expires = DateTime.Now.AddDays(-1d);
+                Response.Cookies.Add(myCookie);
+            }
 
             return Redirect("/site/home");
         }
