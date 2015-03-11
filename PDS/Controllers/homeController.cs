@@ -9,7 +9,7 @@ namespace PDS.Controllers
     [Authorize]
     public class homeController : Controller
     {
-        // GET: home
+        // GET: home page
         public ActionResult index()
         {
             return View();

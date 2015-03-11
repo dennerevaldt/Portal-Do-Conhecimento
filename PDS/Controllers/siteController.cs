@@ -18,8 +18,8 @@ namespace PDS.Controllers
 {
     public class siteController : Controller
     {
-        private static ReturnJson objectToSerializeErr;
-        private static ReturnJson objectToSerializeSuc;
+        private string host = "http://portaldoconhecimento.azurewebsites.net";
+        //private string host = "http://localhost:51918";
 
         // Index
         public ActionResult home(string returnUrl)
@@ -39,11 +39,11 @@ namespace PDS.Controllers
         {
             dynamic parameters = new ExpandoObject();
             parameters.client_id = "860133764025276";
-            parameters.redirect_uri = "http://portaldoconhecimento.azurewebsites.net/site/returnfb";
+            parameters.redirect_uri = host +"/site/returnfb";
             parameters.response_type = "code";
             parameters.display = "page";
 
-            var extendedPermissions = "user_about_me,read_stream,publish_stream,email,user_birthday,user_location";
+            var extendedPermissions = "user_about_me,user_activities,email,user_birthday,user_location";
             parameters.scope = extendedPermissions;
 
             var _fb = new FacebookClient();
@@ -64,7 +64,7 @@ namespace PDS.Controllers
                 //Pega o Access Token "permanente"
                 dynamic parameters = new ExpandoObject();
                 parameters.client_id = "860133764025276";
-                parameters.redirect_uri = "http://portaldoconhecimento.azurewebsites.net/site/returnfb";
+                parameters.redirect_uri = host +"/site/returnfb";
                 parameters.client_secret = "317c89ff3be71b66261db0d4275b6425";
                 parameters.code = oauthResult.Code;
 
@@ -92,7 +92,7 @@ namespace PDS.Controllers
                 setcookie("userImage", data["picture_url"]);
 
 
-                return Redirect("/home/index");
+                return Redirect("/account/confirmaccount");
             }
             else
             {
@@ -105,7 +105,7 @@ namespace PDS.Controllers
 
         public Dictionary<string, string> detailsofuser()
         {
-            //array dados
+            //array data
             var dataArray = new Dictionary<string, string>();
 
             if (Session["FbuserToken"] != null)
@@ -113,7 +113,7 @@ namespace PDS.Controllers
                 var _fb = new FacebookClient(Session["FbuserToken"].ToString());
 
                 //get user data
-                dynamic data = _fb.Get("me?fields=id,first_name,middle_name,last_name,email,gender,birthday,location,locale");
+                dynamic data = _fb.Get("me");
                 dataArray["id"] = data.id;
                 dataArray["first_name"] = data.first_name;
                 dataArray["middle_name"] = data.middle_name;
@@ -128,8 +128,9 @@ namespace PDS.Controllers
                 }
                 catch (Exception)
                 {
-                    dataArray["location"] = "noInformed";
+                    dataArray["location"] = "No Informed";
                 }
+
                 dataArray["locale"] = data.locale;
 
                 //get user profile picture
@@ -142,77 +143,6 @@ namespace PDS.Controllers
         }
         #endregion
 
-        // Confirm data account
-        public ActionResult confirmaccount()
-        {
-            return View();
-        }
-
-        // Login simple
-        [HttpPost]
-        public void login(FormCollection form)
-        {
-            try
-            {
-                
-                var inputRememberme = form["inputRememberme"];
-                var inputEmail = form["inputEmail"];
-                var inputPassword = form["inputPassword"];
-
-                object returnUrl = string.Empty;
-                TempData.TryGetValue("ReturnUrl", out returnUrl);
-                string returnUrlStr = returnUrl as string;
-
-                if (inputEmail != null || inputPassword != null)
-                {
-                    //userReturn = UsuariosRepositorio.GetUser(user);
-
-                    //if (userReturn != null)
-                    if (inputEmail == "dd@email")
-                    {
-                        if (inputRememberme == "true")
-                        {
-                            //Autenticação do usuário, cookie indestrutível.
-                            FormsAuthentication.SetAuthCookie("Denner", true);
-                        }
-                        else
-                        {
-                            //Autenticação do usuário, destrói cookie ao fechar o navegador.
-                            FormsAuthentication.SetAuthCookie("Denner", false);
-                        }
-
-                        objectToSerializeSuc = new ReturnJson { success = true, message = "Entrando...", returnUrl = returnUrlStr, location = "/home/index" };
-                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
-
-                    }
-                    else
-                    {
-                        objectToSerializeErr = new ReturnJson { success = false, message = "Email ou Senha incorretos. Verifique-os e tente novamente." };
-                        Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
-                    }
-                }
-                else
-                {
-                    objectToSerializeErr = new ReturnJson { success = false, message = "os campos são obrigatórios." };
-                    Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
-                }
-            }
-            catch (Exception)
-            {
-                objectToSerializeErr = new ReturnJson { success = false, message = "Serviço atualmente indisponível, tente novamente em alguns minutos." };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
-            }
-
-        }
-
-        // Set Cookie
-        public void setcookie(string key, string value)
-        {
-            var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
-            var c = new HttpCookie(key,encValue) { Expires = DateTime.Now.AddDays(7) };
-            Response.Cookies.Add(c);
-        }
-
         // Encrypt string
         public string encrypt(string value)
         {
@@ -223,32 +153,17 @@ namespace PDS.Controllers
             }
             else
             {
-                return "noInformed";
+                var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes("No Informed"));
+                return encValue;
             }
         }
 
-        // LogOff
-        public ActionResult logoff()
+        // Set Cookie
+        public void setcookie(string key, string value)
         {
-            // Rotina para remover autenticação do usuário
-            System.Web.Security.FormsAuthentication.SignOut();
-
-            // Rotina para remover cookie de dados do usuário logado
-            if (Request.Cookies["userInfo"] != null)
-            {
-                HttpCookie myCookie = new HttpCookie("userInfo");
-                myCookie.Expires = DateTime.Now.AddDays(-1d);
-                Response.Cookies.Add(myCookie);
-            }
-
-            if (Request.Cookies["userImage"] != null)
-            {
-                HttpCookie myCookie = new HttpCookie("userImage");
-                myCookie.Expires = DateTime.Now.AddDays(-1d);
-                Response.Cookies.Add(myCookie);
-            }
-
-            return Redirect("/site/home");
+            var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
+            var c = new HttpCookie(key, encValue) { Expires = DateTime.Now.AddDays(7) };
+            Response.Cookies.Add(c);
         }
 
         // Contact

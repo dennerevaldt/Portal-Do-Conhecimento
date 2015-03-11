@@ -1,0 +1,177 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Denner Evaldt Machado.">
+    <title>@ViewBag.Title</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="@Url.Content("~/Content/images/favicon.png")" />
+
+    @{
+        HttpCookie userInfo = Request.Cookies["userInfo"];
+        var fName = Server.UrlTokenDecode(userInfo["first_name"]);
+        string first_name = System.Text.UTF8Encoding.UTF8.GetString(fName);
+
+        var lName = Server.UrlTokenDecode(userInfo["last_name"]);
+        string last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
+        
+        var iGender = Server.UrlTokenDecode(userInfo["gender"]);
+        string gender = System.Text.UTF8Encoding.UTF8.GetString(iGender);
+        string male = "";
+        string female = "";
+        
+        if (gender == "male") { 
+            male = "active";
+        }else{
+            female = "active";
+        }
+
+        var dBirthday = Server.UrlTokenDecode(userInfo["birthday"]);
+        string birthday = System.Text.UTF8Encoding.UTF8.GetString(dBirthday);
+        if (birthday == "No Informed") { 
+            birthday = string.Empty;
+        }
+        else
+        {
+            DateTime dateBirthday = Convert.ToDateTime(birthday);
+            birthday = dateBirthday.ToString("MM/dd/yyyy");
+        }
+
+        var iEmail = Server.UrlTokenDecode(userInfo["email"]);
+        string email = System.Text.UTF8Encoding.UTF8.GetString(iEmail);
+
+        var iLocation = Server.UrlTokenDecode(userInfo["location"]);
+        string location = System.Text.UTF8Encoding.UTF8.GetString(iLocation);
+        if (location == "No Informed") { location = string.Empty; }
+    
+        var iCountry = Server.UrlTokenDecode(userInfo["locale"]);
+        string country = System.Text.UTF8Encoding.UTF8.GetString(iCountry);
+        if (country == "pt_BR") { 
+            country = "Brasil"; 
+        }
+        else
+        {
+            country = string.Empty;
+        }
+
+        HttpCookie cookie_image = Request.Cookies["userImage"];
+        var decValue = Server.UrlTokenDecode(cookie_image.Value);
+        string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValue);
+        
+}
+
+    <!-- Css -->
+    @Styles.Render("~/Content/css")
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/4.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+    <div class="container margin-top-40">
+        <div class="col-md-offset-2 col-md-4" style="border-right: 1px solid #cccccc;">
+            <div class="pull-left">
+                <img class="img-logo" src="@Url.Content("~/Content/images/logo-portal.png")" alt="Logo">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <p style="font-size:25px; font-weight: 200;">Confirmação dos dados cadastrais <img src="@url_image" alt="Image" class="img-confirm" /></p>
+            
+        </div>
+
+        <div class="col-md-12 margin-bottom-40">
+            <div class="col-md-offset-3 col-md-6 margin-top-40">
+                <form class="form" action="#" method="post">
+
+                    <div class="form-group">
+                        <label for="inputFirstName">Primeiro nome</label>
+                        <input type="text" class="form-control" id="inputFirstName" placeholder="Primeiro nome" value="@first_name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputLastName">Segundo nome</label>
+                        <input type="text" class="form-control" id="inputLastName" placeholder="Segundo nome" value="@last_name"/>
+                    </div>
+
+                    
+                    <div class="col-md-6 form-group">
+                        <label for="inputSexo">Sexo</label>
+                        <br />
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary @male">
+                                <input type="radio" id="inputSexo" name="inputSexo" value="H" checked> Homem
+                            </label>
+                            <label class="btn btn-primary @female">
+                                <input type="radio" id="inputSexo" name="inputSexo" value="M"> Mulher
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 form-group">
+                        <label for="inputCategory">Categoria</label>
+                        <br />
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary active">
+                                <input type="radio" id="inputCategory" name="inputCategory" value="T" checked> Professor(a)
+                            </label>
+                            <label class="btn btn-primary">
+                                <input type="radio" id="inputCategory" name="inputCategory" value="S"> Estudante
+                            </label>
+                        </div>
+                    </div>
+                    
+
+                    <div class="form-group">
+                        <label for="inputBirthday">Data Nasc.</label>
+                        <input type="text" class="form-control" id="inputBirthday" placeholder="Data de nascimento" value="@birthday" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputEmail">Email</label>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="@email"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputCity">Cidade</label>
+                        <input type="text" class="form-control" id="inputCity" placeholder="Cidade" value="@location" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputCountry">País</label>
+                        <input type="text" class="form-control" id="inputCountry" placeholder="País" value="@country" />
+                    </div>
+
+                    <button type="submit" class="btn btn-success btn-block">Confirmar</button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    <!-- Plugins -->
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <!-- Angular JS-->
+    @Scripts.Render("~/Scripts/angular.js")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/controllers.js")
+</body>
+</html>

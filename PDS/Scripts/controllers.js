@@ -46,7 +46,7 @@ homeSite.controller('LoginController', function ($scope, $http) {
             $scope.loading = true;
             $http({
                 method: 'POST',
-                url: '/site/login',
+                url: '/account/login',
                 data: $.param($scope.formLogin),  //param method from jQuery
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
             }).success(function (data) {
