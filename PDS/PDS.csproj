@@ -128,10 +128,12 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Accounts.cs" />
+    <Compile Include="Models\Entities\Attachments.cs" />
     <Compile Include="Models\Entities\Classes.cs" />
     <Compile Include="Models\Entities\Disciplines.cs" />
     <Compile Include="Models\Entities\Followers.cs" />
     <Compile Include="Models\Entities\Persons.cs" />
+    <Compile Include="Models\Entities\Publications_Teachers.cs" />
     <Compile Include="Models\Entities\Students.cs" />
     <Compile Include="Models\Entities\Teachers.cs" />
     <Compile Include="Models\Utilities\ReturnJson.cs" />

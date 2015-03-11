@@ -11,6 +11,10 @@ namespace PDS.Models.Entities
 
         public string name { get; set; }
 
-        public List<Students> Students { get; set; } 
+        public List<Students> Students { get; set; }
+
+        public Disciplines Discipline { get; set; }
+
+        public List<Publications_Teachers> Publications { get; set; }
     }
 }
