@@ -7,7 +7,7 @@ namespace PDS.Models.Entities
 {
     public class Teachers :Persons
     {
-        public Int32 idTeacher { get; set; }
+        public Int64 idTeacher { get; set; }
 
     }
 }

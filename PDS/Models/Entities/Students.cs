@@ -7,7 +7,7 @@ namespace PDS.Models.Entities
 {
     public class Students : Persons
     {
-        public Int32 idStudent { get; set; }
+        public Int64 idStudent { get; set; }
 
     }
 }

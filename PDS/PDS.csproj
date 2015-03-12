@@ -42,6 +42,9 @@
     <Reference Include="ADOMySQL">
       <HintPath>..\ADOMySQL\bin\Debug\ADOMySQL.dll</HintPath>
     </Reference>
+    <Reference Include="CryptSharp">
+      <HintPath>..\packages\CryptSharpOfficial.2.1.0.0\lib\CryptSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Facebook">
       <HintPath>..\packages\Facebook.6.8.0\lib\net45\Facebook.dll</HintPath>
     </Reference>
@@ -53,6 +56,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -131,6 +135,8 @@
     <Compile Include="Models\Entities\Persons.cs" />
     <Compile Include="Models\Entities\Students.cs" />
     <Compile Include="Models\Entities\Teachers.cs" />
+    <Compile Include="Models\Repository\AccountsRepository.cs" />
+    <Compile Include="Models\Repository\TeachersRepository.cs" />
     <Compile Include="Models\Utilities\ReturnJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -227,10 +233,11 @@
     <Content Include="Views\site\home.cshtml" />
     <Content Include="Views\home\index.cshtml" />
     <Content Include="Views\account\confirmaccount.cshtml" />
+    <Content Include="Views\account\createaccountteacher.cshtml" />
+    <Content Include="Views\account\createaccountstudent.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\Repository\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

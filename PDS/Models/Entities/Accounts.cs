@@ -7,7 +7,7 @@ namespace PDS.Models.Entities
 {
     public class Accounts
     {
-        public Int32 idAccount { get; set; }
+        public Int64 idAccount { get; set; }
 
         public string email { get; set; }
 

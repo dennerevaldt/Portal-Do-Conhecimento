@@ -1,4 +1,6 @@
 ﻿using Newtonsoft.Json;
+using PDS.Models.Entities;
+using PDS.Models.Repository;
 using PDS.Models.Utilities;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,19 @@ namespace PDS.Controllers
     {
         private static ReturnJson objectToSerializeErr;
         private static ReturnJson objectToSerializeSuc;
+
+        // Create account
+        [HttpPost]
+        public void createaccountteacher(FormCollection form)
+        {
+            Accounts account = new Accounts();
+            account.email = form["email"];
+            account.password = form["password"];
+            account.acessToken = form["acessToken"];
+
+            Int64 idAccount = AccountsRepository.Create(account);
+
+        }
 
         // Confirm data account
         public ActionResult confirmaccount()
