@@ -9,6 +9,5 @@ namespace PDS.Models.Entities
     {
         public Int32 idStudent { get; set; }
 
-        List<Classes> Classes { get; set; }
     }
 }

@@ -9,8 +9,5 @@ namespace PDS.Models.Entities
     {
         public Int32 idTeacher { get; set; }
 
-        public List<Disciplines> Disciplines { get; set; }
-
-        public List<Followers> Followers { get; set; }
     }
 }
