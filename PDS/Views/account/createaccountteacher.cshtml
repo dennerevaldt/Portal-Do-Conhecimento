@@ -1,6 +1,6 @@
 ﻿@model PDS.Models.Entities.Teachers
 
-<form class="form" action="#" method="post">
+<form id="formTeacher" name="formTeacher" class="form" method="post" action="/account/createaccountteacher" enctype="multipart/form-data">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title-custom">Criar conta de Professor</h4>
@@ -9,17 +9,17 @@
 
         <div class="form-group">
             <label for="inputFirstName">Primeiro nome</label>
-            <input type="text" class="form-control" id="inputFirstName" placeholder="Primeiro nome" />
+            <input type="text" class="form-control" name="inputFirstName" placeholder="Primeiro nome" required />
         </div>
 
         <div class="form-group">
             <label for="inputLastName">Segundo nome</label>
-            <input type="text" class="form-control" id="inputLastName" placeholder="Segundo nome" />
+            <input type="text" class="form-control" name="inputLastName" placeholder="Segundo nome" />
         </div>
 
         <div class="form-group">
             <label for="inputImage">Imagem Perfil</label>
-            <input type="file" name="inputImage" value="Image" placeholder="Imagem" />
+            <input type="file" id="inputFile" name="inputFile" />
         </div>
 
         <div class="form-group">
@@ -28,10 +28,10 @@
                 <br />
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-primary active">
-                        <input type="radio" id="inputSexo" name="inputSexo" value="H" checked> Homem
+                        <input type="radio" id="inputGender" name="inputGender" value="H" checked /> Homem
                     </label>
                     <label class="btn btn-primary">
-                        <input type="radio" id="inputSexo" name="inputSexo" value="M"> Mulher
+                        <input type="radio" id="inputGender" name="inputGender" value="M" /> Mulher
                     </label>
                 </div>
             </div>
@@ -39,30 +39,35 @@
             <div class="col-md-8">
                 <div class="form-group">
                     <label for="inputBirthday">Data Nasc.</label>
-                    <input type="date" class="form-control" id="inputBirthday" />
+                    <input type="date" class="form-control" name="inputBirthday" required />
                 </div>
             </div>
         </div>
 
         <div class="form-group">
             <label for="inputEmail">Email</label>
-            <input type="email" class="form-control" id="inputEmail" placeholder="Email" />
+            <input type="email" class="form-control" name="inputEmail" placeholder="Email" required />
         </div>
 
         <div class="form-group">
             <label for="inputPassword">Senha</label>
-            <input type="password" class="form-control" id="inputPassword" placeholder="Senha" />
+            <input type="password" class="form-control" name="inputPassword" placeholder="Senha" required />
         </div>
 
         <div class="form-group">
             <label for="inputCity">Cidade</label>
-            <input type="text" class="form-control" id="inputCity" placeholder="Cidade" />
+            <input type="text" class="form-control" name="inputCity" placeholder="Cidade" required />
         </div>
 
         <div class="form-group">
             <label for="inputCountry">País</label>
-            <input type="text" class="form-control" id="inputCountry" placeholder="País" />
+            <input type="text" class="form-control" name="inputCountry" placeholder="País" required />
         </div>
+
+        <div class="text-center loading-login">
+            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+        </div>
+
 
     </div>
     <div class="modal-footer">
@@ -70,3 +75,4 @@
         <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
     </div>
 </form>
+

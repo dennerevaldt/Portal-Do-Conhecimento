@@ -188,6 +188,25 @@
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
 
+    @*<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('#formTeacher').submit(function () {
+            var dados = jQuery(this).serialize();
+
+            jQuery.ajax({
+                type: "POST",
+                url: "/account/createaccountteacher",
+                data: dados,
+                success: function (data) {
+                    alert(data);
+                }
+            });
+
+            return false;
+        });
+    });
+    </script>*@
+
     <!-- Plugins -->
     @Scripts.Render("~/bundles/bootstrap")
 
@@ -195,5 +214,6 @@
     @Scripts.Render("~/Scripts/angular.js")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
+
 </body>
 </html>

@@ -17,7 +17,8 @@ namespace PDS.Models.Repository
             MySqlCommand cmmPerson = new MySqlCommand();
             StringBuilder sqlPerson = new StringBuilder();
 
-            cmmPerson.Parameters.AddWithValue("@name", teacher.name);
+            cmmPerson.Parameters.AddWithValue("@firstName", teacher.firstName);
+            cmmPerson.Parameters.AddWithValue("@lastName", teacher.lastName);
             cmmPerson.Parameters.AddWithValue("@gender", teacher.gender);
             cmmPerson.Parameters.AddWithValue("@accountType", teacher.accountType);
             cmmPerson.Parameters.AddWithValue("@dateOfBirth", teacher.dateOfBirth);
@@ -26,7 +27,7 @@ namespace PDS.Models.Repository
             cmmPerson.Parameters.AddWithValue("@urlImageProfile", teacher.urlImageProfile);
             cmmPerson.Parameters.AddWithValue("@idAccount", teacher.Account.idAccount);
 
-            sqlPerson.Append("CALL insertPerson(@name, @gender, @accountType, @dateOfBirth, @city, @country, @urlImageProfile, @idAccount)");
+            sqlPerson.Append("CALL insertPerson(@firstName, @lastName, @gender, @accountType, @dateOfBirth, @city, @country, @urlImageProfile, @idAccount)");
 
             cmmPerson.CommandText = sqlPerson.ToString();
 
@@ -43,7 +44,9 @@ namespace PDS.Models.Repository
 
             sqlTeacher.Append("CALL insertTeacher(@idPerson)");
 
-            ADOMySQL.MySQL.ExecuteReader(cmmTeacher);
+            cmmTeacher.CommandText = sqlTeacher.ToString();
+
+            ADOMySQL.MySQL.ExecuteNonQuery(cmmTeacher);
 
             #endregion
         }

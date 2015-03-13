@@ -9,7 +9,9 @@ namespace PDS.Models.Entities
     {
         public Int64 idPerson { get; set; }
 
-        public string name { get; set; }
+        public string firstName { get; set; }
+
+        public string lastName { get; set; }
 
         public char gender { get; set; }
 

@@ -143,6 +143,9 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\images\glyphicons-halflings-white.png" />
+    <Content Include="Content\css\images\glyphicons-halflings.png" />
     <Content Include="Content\images\favicon.png" />
     <Content Include="Content\images\loader.gif" />
     <Content Include="Content\images\logo-portal.png" />
@@ -155,6 +158,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="ng-upload-sample.html" />
     <Content Include="Scripts\angular-animate.js" />
     <Content Include="Scripts\angular-animate.min.js" />
     <Content Include="Scripts\angular-aria.js" />
@@ -214,6 +218,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\ng-upload.js" />
+    <Content Include="Scripts\ng-upload.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
@@ -237,7 +243,8 @@
     <Content Include="Views\account\createaccountstudent.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Uploads\ImagesProfile\" />
+    <Folder Include="Content\UploadFiles\ImagesProfile\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

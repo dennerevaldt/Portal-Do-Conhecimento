@@ -4,6 +4,8 @@ using PDS.Models.Repository;
 using PDS.Models.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
@@ -16,19 +18,61 @@ namespace PDS.Controllers
     {
         private static ReturnJson objectToSerializeErr;
         private static ReturnJson objectToSerializeSuc;
+        private static string path = "";
 
         // Create account
         [HttpPost]
-        public void createaccountteacher(FormCollection form)
+        public void createaccountteacher(HttpPostedFileBase inputFile, FormCollection form)
         {
-            Accounts account = new Accounts();
-            account.email = form["email"];
-            account.password = form["password"];
-            account.acessToken = form["acessToken"];
+            try
+            {
+                // Insert Account
 
-            Int64 idAccount = AccountsRepository.Create(account);
+                Accounts account = new Accounts();
+                account.email = form["inputEmail"];
+                account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                account.acessToken = form["inputAcessToken"];
 
+                Int64 idAccount = AccountsRepository.Create(account);
+
+                // Insert Teacher
+
+                Teachers teacher = new Teachers();
+                teacher.Account = new Accounts();
+                teacher.Account.idAccount = idAccount;
+                teacher.firstName = form["inputFirstName"];
+                teacher.lastName = form["inputLastName"];
+                teacher.gender = Convert.ToChar(form["inputGender"]);
+                teacher.dateOfBirth = Convert.ToDateTime(form["inputDateOfBirth"]);
+                teacher.accountType = Convert.ToChar("T");
+                teacher.city = form["inputCity"];
+                teacher.country = form["inputCountry"];
+
+                if (inputFile.ContentLength > 0)
+                {
+                    string extension = Path.GetExtension(inputFile.FileName);
+                    path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile"), idAccount.ToString()+extension);
+                    inputFile.SaveAs(path);
+                }
+
+                teacher.urlImageProfile = path;
+
+                TeachersRepository.Create(teacher);
+
+                // Return Sucess
+                objectToSerializeSuc = new ReturnJson { success = true, message = "", returnUrl = "", location = "/home/index" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+
+            }
+            catch (Exception)
+            {
+                // Return Error
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            
         }
+
 
         // Confirm data account
         public ActionResult confirmaccount()
