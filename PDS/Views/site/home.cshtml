@@ -168,7 +168,7 @@
         <!-- Modal Create Account Student -->
         <div class="modal fade account-student" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
+                <div class="modal-content" >
                     @Html.Partial("~/Views/account/createaccountstudent.cshtml")
                 </div>
             </div>
@@ -187,25 +187,42 @@
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    @Scripts.Render("~/Scripts/jquery.form.js")
 
-    @*<script type="text/javascript">
-    jQuery(document).ready(function () {
-        jQuery('#formTeacher').submit(function () {
-            var dados = jQuery(this).serialize();
+    <script>
+        
+    </script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $("#loading").hide();
+            $('#formTeacher').on('submit', function (e) {
+                e.preventDefault(); // prevent native submit
+                $("#loading").show();
+                $("#submitButton").prop("disabled", true);
+                $(this).ajaxSubmit({
+                    url: '/account/createaccountteacher',
+                    type: 'post',
+                    success: function (returnData) {
+                        console.log(returnData);
 
-            jQuery.ajax({
-                type: "POST",
-                url: "/account/createaccountteacher",
-                data: dados,
-                success: function (data) {
-                    alert(data);
-                }
+                        var data = JSON.parse(returnData);
+
+                        if (data.success == true) {
+                            $("#loading").hide();
+                            $("#result").toggleClass("bg-success");
+                            $("#result").html(data.message);
+                            $("#submitButton").prop("disabled", true);
+                        }
+                        else {
+                            $("#loading").hide();
+                            $("#result").toggleClass("bg-danger");
+                            $("#result").html(data.message);
+                        }
+                    }
+                })
             });
-
-            return false;
-        });
     });
-    </script>*@
+    </script>
 
     <!-- Plugins -->
     @Scripts.Render("~/bundles/bootstrap")

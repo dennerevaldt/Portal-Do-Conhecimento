@@ -60,7 +60,7 @@ namespace PDS.Controllers
                 TeachersRepository.Create(teacher);
 
                 // Return Sucess
-                objectToSerializeSuc = new ReturnJson { success = true, message = "", returnUrl = "", location = "/home/index" };
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
 
             }
