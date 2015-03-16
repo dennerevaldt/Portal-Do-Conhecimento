@@ -37,6 +37,11 @@ namespace PDS.Models.Repository
             return idAccountReturn;
         }
 
+        /// <summary>
+        /// Método para retornar os dados de usuário.
+        /// </summary>
+        /// <param name="email">String Email.</param>
+        /// <returns>Objeto object.</returns>
         public static object getUserData(string email)
         {
             MySqlCommand cmm = new MySqlCommand();
@@ -48,64 +53,73 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.Conectar();
-
-            dr = ADOMySQL.MySQL.ExecuteReader(cmm);
-
-            while (dr.Read())
+            try
             {
-                if (dr["accountType"].ToString() == "T")
-                {
-                    objeto = new Teachers
-                    {
-                        idTeacher = Convert.ToInt64(dr["idTeacher"]),
-                        idPerson = Convert.ToInt64(dr["idPerson"]),
-                        firstName = Convert.ToString(dr["firstName"]),
-                        lastName = Convert.ToString(dr["lastName"]),
-                        gender = Convert.ToChar(dr["gender"]),
-                        accountType = Convert.ToChar(dr["accountType"]),
-                        dateOfBirth = Convert.ToDateTime(dr["dateOfBirth"]),
-                        city = Convert.ToString(dr["city"]),
-                        country = Convert.ToString(dr["country"]),
-                        urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
-                        Account = new Accounts
-                        {
-                            idAccount = Convert.ToInt64(dr["idAccount"]),
-                            email = Convert.ToString(dr["email"]),
-                            password = Convert.ToString(dr["password"]),
-                            acessToken = Convert.ToString(dr["acessToken"])
-                        }
-                    };
-                }
-                else
-                {
-                    objeto = new Students
-                    {
-                        idStudent = Convert.ToInt64(dr["idStudent"]),
-                        idPerson = Convert.ToInt64(dr["idPerson"]),
-                        firstName = Convert.ToString(dr["firstName"]),
-                        lastName = Convert.ToString(dr["lastName"]),
-                        gender = Convert.ToChar(dr["gender"]),
-                        accountType = Convert.ToChar(dr["accountType"]),
-                        dateOfBirth = Convert.ToDateTime(dr["dateOfBirth"]),
-                        city = Convert.ToString(dr["city"]),
-                        country = Convert.ToString(dr["country"]),
-                        urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
-                        Account = new Accounts
-                        {
-                            idAccount = Convert.ToInt64(dr["idAccount"]),
-                            email = Convert.ToString(dr["email"]),
-                            password = Convert.ToString(dr["password"]),
-                            acessToken = Convert.ToString(dr["acessToken"])
-                        }
+                ADOMySQL.MySQL.Conectar();
 
-                    };
+                dr = ADOMySQL.MySQL.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    if (dr["accountType"].ToString() == "T")
+                    {
+                        objeto = new Teachers
+                        {
+                            idTeacher = Convert.ToInt64(dr["idTeacher"]),
+                            idPerson = Convert.ToInt64(dr["idPerson"]),
+                            firstName = Convert.ToString(dr["firstName"]),
+                            lastName = Convert.ToString(dr["lastName"]),
+                            gender = Convert.ToChar(dr["gender"]),
+                            accountType = Convert.ToChar(dr["accountType"]),
+                            dateOfBirth = Convert.ToDateTime(dr["dateOfBirth"]),
+                            city = Convert.ToString(dr["city"]),
+                            country = Convert.ToString(dr["country"]),
+                            urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
+                            Account = new Accounts
+                            {
+                                idAccount = Convert.ToInt64(dr["idAccount"]),
+                                email = Convert.ToString(dr["email"]),
+                                password = Convert.ToString(dr["password"]),
+                                acessToken = Convert.ToString(dr["acessToken"])
+                            }
+                        };
+                    }
+                    else
+                    {
+                        objeto = new Students
+                        {
+                            idStudent = Convert.ToInt64(dr["idStudent"]),
+                            idPerson = Convert.ToInt64(dr["idPerson"]),
+                            firstName = Convert.ToString(dr["firstName"]),
+                            lastName = Convert.ToString(dr["lastName"]),
+                            gender = Convert.ToChar(dr["gender"]),
+                            accountType = Convert.ToChar(dr["accountType"]),
+                            dateOfBirth = Convert.ToDateTime(dr["dateOfBirth"]),
+                            city = Convert.ToString(dr["city"]),
+                            country = Convert.ToString(dr["country"]),
+                            urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
+                            Account = new Accounts
+                            {
+                                idAccount = Convert.ToInt64(dr["idAccount"]),
+                                email = Convert.ToString(dr["email"]),
+                                password = Convert.ToString(dr["password"]),
+                                acessToken = Convert.ToString(dr["acessToken"])
+                            }
+
+                        };
+                    }
                 }
+
+                dr.Close();
+
+                ADOMySQL.MySQL.Desconectar();
             }
-
-            dr.Close();
-
-            ADOMySQL.MySQL.Desconectar();
+            catch (Exception)
+            {
+                dr.Close();
+                ADOMySQL.MySQL.Desconectar();
+                throw;
+            }
 
             return objeto;
         }
