@@ -200,7 +200,7 @@
             $("#loadingStudent").hide();
 
             $('#formTeacher').on('submit', function (e) {
-                e.preventDefault(); // prevent native submit
+                e.preventDefault(); 
                 $("#loadingTeacher").show();
                 $("#submitButtonTeacher").prop("disabled", true);
                 $(this).ajaxSubmit({
@@ -227,7 +227,7 @@
             });
 
             $('#formStudent').on('submit', function (e) {
-                e.preventDefault(); // prevent native submit
+                e.preventDefault(); 
                 $("#loadingStudent").show();
                 $("#submitButtonStudent").prop("disabled", true);
                 $(this).ajaxSubmit({

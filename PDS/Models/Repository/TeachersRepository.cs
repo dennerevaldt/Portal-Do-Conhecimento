@@ -10,6 +10,10 @@ namespace PDS.Models.Repository
 {
     public class TeachersRepository
     {
+        /// <summary>
+        /// Método para inserir novo Teacher ao DB.
+        /// </summary>
+        /// <param name="teacher">Object teacher.</param>
         public static void Create(Teachers teacher)
         {
             #region Insert Person

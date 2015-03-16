@@ -9,7 +9,10 @@ namespace PDS.Controllers
     [Authorize]
     public class homeController : Controller
     {
-        // GET: home page
+        /// <summary>
+        /// Action da página home do portal.
+        /// </summary>
+        /// <returns>Home portal.</returns>
         public ActionResult index()
         {
             return View();

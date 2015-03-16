@@ -20,7 +20,11 @@ namespace PDS.Controllers
         private static ReturnJson objectToSerializeSuc;
         private static string path = "";
 
-        // Create account teacher
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <param name="form"></param>
         [HttpPost]
         public void createaccountteacher(HttpPostedFileBase inputFile, FormCollection form)
         {
@@ -84,7 +88,11 @@ namespace PDS.Controllers
             
         }
 
-        // Create account student
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="inputFile"></param>
+        /// <param name="form"></param>
         [HttpPost]
         public void createaccountstudent(HttpPostedFileBase inputFile, FormCollection form)
         {
@@ -148,7 +156,10 @@ namespace PDS.Controllers
 
         }
 
-        // Confirm account teacher
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form"></param>
         [HttpPost]
         public void confirmaccountteacher(FormCollection form)
         {
@@ -199,7 +210,10 @@ namespace PDS.Controllers
 
         }
 
-        // Confirm account student
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form"></param>
         [HttpPost]
         public void confirmaccountstudent(FormCollection form)
         {
@@ -250,13 +264,19 @@ namespace PDS.Controllers
         }
 
 
-        // Confirm data account
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult confirmaccount()
         {
             return View("confirmaccount");
         }
 
-        // Login 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form"></param>
         [HttpPost]
         public void login(FormCollection form)
         {

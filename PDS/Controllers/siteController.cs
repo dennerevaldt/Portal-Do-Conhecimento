@@ -22,7 +22,11 @@ namespace PDS.Controllers
         //private string host = "http://portaldoconhecimento.azurewebsites.net";
         private string host = "http://localhost:51918";
 
-        // Index
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="returnUrl"></param>
+        /// <returns></returns>
         public ActionResult home(string returnUrl)
         {
             if (!string.IsNullOrEmpty(returnUrl))
@@ -36,6 +40,10 @@ namespace PDS.Controllers
         }
 
         #region Login Facebook
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string getfacebookloginurl()
         {
             dynamic parameters = new ExpandoObject();
@@ -53,6 +61,10 @@ namespace PDS.Controllers
             return url.ToString();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public ActionResult returnfb()
         {
             var _fb = new FacebookClient();
@@ -106,7 +118,6 @@ namespace PDS.Controllers
                     }
                     else
                     {
-                        //converter int64 to string
                         Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount.ToString("D9");
                         Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
                         Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
@@ -158,6 +169,11 @@ namespace PDS.Controllers
             
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userKey"></param>
+        /// <returns></returns>
         public Dictionary<string, string> detailsofuser(string userKey)
         {
             //array data
@@ -197,6 +213,11 @@ namespace PDS.Controllers
             return dataArray;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userKey"></param>
+        /// <returns></returns>
         public Dictionary<string, string> emailUser(string userKey)
         {
             //array data
@@ -217,7 +238,11 @@ namespace PDS.Controllers
 
         #endregion
 
-        // Encrypt string
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public string encrypt(string value)
         {
             if (value != null)
@@ -232,7 +257,11 @@ namespace PDS.Controllers
             }
         }
 
-        // Set Cookie
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
         public void setcookie(string key, string value)
         {
             var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
@@ -240,7 +269,10 @@ namespace PDS.Controllers
             Response.Cookies.Add(c);
         }
 
-        // Contact
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="form"></param>
         [HttpPost]
         public void contact(FormCollection form)
         {
