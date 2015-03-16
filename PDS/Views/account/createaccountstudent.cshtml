@@ -7,14 +7,14 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputFirstName.$dirty && formStudent.inputFirstName.$error.required }">
             <label for="inputFirstName">Primeiro nome</label>
-            <input type="text" class="form-control" name="inputFirstName" placeholder="Primeiro nome" required />
+            <input type="text" class="form-control" name="inputFirstName" ng-model="inputFirstName" placeholder="Primeiro nome" required />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputLastName.$dirty && formStudent.inputLastName.$error.required }">
             <label for="inputLastName">Segundo nome</label>
-            <input type="text" class="form-control" name="inputLastName" placeholder="Segundo nome" />
+            <input type="text" class="form-control" name="inputLastName" ng-model="inputLastName" placeholder="Segundo nome" required/>
         </div>
 
         <div class="form-group">
@@ -37,31 +37,34 @@
             </div>
 
             <div class="col-md-8">
-                <div class="form-group">
+                <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputBirthday.$dirty && formStudent.inputBirthday.$error.required }">
                     <label for="inputBirthday">Data Nasc.</label>
-                    <input type="date" class="form-control" name="inputBirthday" required />
+                    <input type="date" class="form-control" name="inputBirthday" ng-model="inputBirthday" required />
                 </div>
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputEmail.$dirty && formStudent.inputEmail.$error.email }">
             <label for="inputEmail">Email</label>
-            <input type="email" class="form-control" name="inputEmail" placeholder="Email" required />
+            <input type="email" class="form-control" name="inputEmail" ng-model="inputEmail" placeholder="Email" required />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputPassword.$dirty && formStudent.inputPassword.$error.required }">
             <label for="inputPassword">Senha</label>
-            <input type="password" class="form-control" name="inputPassword" placeholder="Senha" required />
+            <input type="password" class="form-control" name="inputPassword" ng-model="inputPassword" placeholder="Senha" ng-minlength="6" required />
+            <p class="bg-danger" ng-show="formStudent.inputPassword.$error.minlength">
+                A senha deve conter no mínimo 6 caracteres.
+            </p>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputCity.$dirty && formStudent.inputCity.$error.required }">
             <label for="inputCity">Cidade</label>
-            <input type="text" class="form-control" name="inputCity" placeholder="Cidade" required />
+            <input type="text" class="form-control" name="inputCity" ng-model="inputCity" placeholder="Cidade" required />
         </div>
 
-        <div class="form-group">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputCountry.$dirty && formStudent.inputCountry.$error.required }">
             <label for="inputCountry">País</label>
-            <input type="text" class="form-control" name="inputCountry" placeholder="País" required />
+            <input type="text" class="form-control" name="inputCountry" ng-model="inputCountry" placeholder="País" required />
         </div>
 
         <div id="loadingStudent" class="text-center loading-login">
@@ -72,7 +75,7 @@
 
     </div>
     <div class="modal-footer">
-        <button type="submit" id="submitButtonStudent" class="btn btn-success">Criar conta</button>
+        <button type="submit" id="submitButtonStudent" class="btn btn-success" ng-disabled="!formStudent.$valid">Criar conta</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
     </div>
 </form>

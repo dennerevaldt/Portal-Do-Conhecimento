@@ -101,16 +101,16 @@
 
                     <input type="hidden" id="acessToken" ng-model="Account.acessToken" ng-init="Account.acessToken='@acessToken'" />
 
-                    <input type="hidden" id="ürlImageProfile" ng-model="Account.urlImageProfile" ng-init="Account.urlImageProfile='@url_image'" />
+                    <input type="hidden" id="urlImageProfile" ng-model="Account.urlImageProfile" ng-init="Account.urlImageProfile='@url_image'" />
 
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.firstName.$dirty && confirmAccount.firstName.$error.required }">
                         <label for="inputFirstName">Primeiro nome</label>
-                        <input type="text" class="form-control" id="inputFirstName" placeholder="Primeiro nome" ng-model="Account.firstName" ng-init="Account.firstName='@first_name'" value="@first_name"/>
+                        <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primeiro nome" ng-model="Account.firstName" ng-init="Account.firstName='@first_name'" value="@first_name" required/>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.lastName.$dirty && confirmAccount.lastName.$error.required }">
                         <label for="inputLastName">Segundo nome</label>
-                        <input type="text" class="form-control" id="inputLastName" placeholder="Segundo nome" ng-model="Account.lastName" ng-init="Account.lastName='@last_name'" value="@last_name" />
+                        <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Segundo nome" ng-model="Account.lastName" ng-init="Account.lastName='@last_name'" value="@last_name" required />
                     </div>
 
 
@@ -121,22 +121,22 @@
                             <label>
                                 @if (male == "active")
                                 {
-                                    <input type="radio" id="ïnputGender" value="M" ng-model="Account.gender" ng-checked="Account.gender" ng-init="Account.gender='M'" />
+                                    <input type="radio" id="inputGender" value="M" ng-model="Account.gender" ng-checked="true" ng-init="Account.gender='M'" />
                                 }
                                 else
                                 {
-                                    <input type="radio" id="ïnputGender" value="M" ng-model="Account.gender" />
+                                    <input type="radio" id="inputGender" value="M" ng-model="Account.gender" />
                                 }
                                 Homem
                             </label>
                             <label>
                                 @if (female == "active")
                                 {
-                                    <input type="radio" id="ïnputGender" value="F" ng-model="Account.gender" ng-checked="true" ng-init="Account.gender='F'" />
+                                    <input type="radio" id="inputGender" value="F" ng-model="Account.gender" ng-checked="true" ng-init="Account.gender='F'" />
                                 }
                                 else
                                 {
-                                    <input type="radio" id="ïnputGender" value="F" ng-model="Account.gender" />
+                                    <input type="radio" id="inputGender" value="F" ng-model="Account.gender" />
                                 }
                                 Mulher
                             </label>
@@ -157,24 +157,24 @@
                     </div>
 
 
-                    <div class="form-group">
-                        <label for="inputBirthday">Data Nasc.</label>
-                        <input type="text" class="form-control" id="inputBirthday" placeholder="Data de nascimento" value="@birthday" ng-model="Account.dateOfBirth" ng-init="Account.dateOfBirth='@birthday'" />
+                    <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.dateOfBirth.$invalid || confirmAccount.dateOfBirth.$error.required }">
+                        <label for="dateOfBirth">Data Nasc.</label>
+                        <input type="text" class="form-control" id="dateOfBirth" name="dateOfBirth" value="@birthday" ng-model="Account.dateOfBirth" ng-init="Account.dateOfBirth='@birthday'" ng-minlength="10" ng-maxlength="10" placeholder="dd/mm/aaaa" required/>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.email.$error.required || confirmAccount.email.$error.email }">
                         <label for="inputEmail">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="@email" ng-model="Account.email" ng-init="Account.email='@email'" />
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="@email" ng-model="Account.email" ng-init="Account.email='@email'" required />
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.location.$dirty && confirmAccount.location.$error.required }">
                         <label for="inputCity">Cidade</label>
-                        <input type="text" class="form-control" id="inputCity" placeholder="Cidade" value="@location" ng-model="Account.location" ng-init="Account.location='@location'" />
+                        <input type="text" class="form-control" id="location" name="location" placeholder="Cidade" value="@location" ng-model="Account.location" ng-init="Account.location='@location'" required />
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.country.$dirty && confirmAccount.country.$error.required }">
                         <label for="inputCountry">País</label>
-                        <input type="text" class="form-control" id="inputCountry" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" />
+                        <input type="text" class="form-control" id="country" name="country" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" required/>
                     </div>
 
                     <button type="submit" class="btn btn-success btn-block" ng-disabled="submitConfirmButton">Confirmar</button>
@@ -193,6 +193,14 @@
 
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+    @*@Scripts.Render("~/Scripts/jquery.maskedinput.js")
+
+    <script>
+    jQuery(function($){
+        $("#dateOfBirth").mask("99/99/9999");
+    });
+    </script>*@
 
     <!-- Plugins -->
     @Scripts.Render("~/bundles/bootstrap")

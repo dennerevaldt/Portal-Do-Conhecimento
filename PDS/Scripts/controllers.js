@@ -101,7 +101,7 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
                 }).success(function (data) {
                     console.log(data);
                     if (data.success) { //success comes from the return json object
-                        $scope.submitButtonLogin = true;
+                        $scope.submitConfirmButton = true;
                         $scope.loading = false;
 
                         if (data.returnUrl != null) {
@@ -112,7 +112,7 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
                         }
 
                     } else {
-                        $scope.submitButtonLogin = false;
+                        $scope.submitConfirmButton = false;
                         $scope.resultMessage = data.message;
                         $scope.result = 'bg-danger';
                         $scope.loading = false;
@@ -129,7 +129,7 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
                 }).success(function (data) {
                     console.log(data);
                     if (data.success) { //success comes from the return json object
-                        $scope.submitButtonLogin = true;
+                        $scope.submitConfirmButton = true;
                         $scope.resultMessage = data.message;
                         $scope.result = 'bg-success';
                         $scope.loading = false;
@@ -142,7 +142,7 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
                         }
 
                     } else {
-                        $scope.submitButtonLogin = false;
+                        $scope.submitConfirmButton = false;
                         $scope.resultMessage = data.message;
                         $scope.result = 'bg-danger';
                         $scope.loading = false;
@@ -153,7 +153,7 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
 
 
         } else {
-            $scope.submitButtonLogin = false;
+            $scope.submitConfirmButton = false;
             $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
             $scope.result = 'bg-danger';
             $scope.loading = false;

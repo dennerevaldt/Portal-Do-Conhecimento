@@ -44,7 +44,7 @@ namespace PDS.Controllers
             parameters.response_type = "code";
             parameters.display = "page";
 
-            var extendedPermissions = "user_about_me,user_activities,email,user_birthday,user_location";
+            var extendedPermissions = "user_about_me,email,user_birthday,user_location";
             parameters.scope = extendedPermissions;
 
             var _fb = new FacebookClient();
@@ -82,19 +82,18 @@ namespace PDS.Controllers
                 if(resultEmail)
                 {
                     //login
-                    dynamic userInfo = AccountsRepository.getUserData(dataE["email"].ToString());
+                    dynamic userInfo = AccountsRepository.GetUserData(dataE["email"].ToString());
 
                     FormsAuthentication.SetAuthCookie(userInfo.Account.email, false);
 
                     if (userInfo.accountType.ToString() == "T")
                     {
-                        //converter int64 to string
-                        //Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount;
+                        Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount.ToString("D9");
                         Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
                         Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
                         Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
-                       // Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson);
-                        //Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher);
+                        Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D9"));
+                        Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D9"));
                         Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
                         Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
                         Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());

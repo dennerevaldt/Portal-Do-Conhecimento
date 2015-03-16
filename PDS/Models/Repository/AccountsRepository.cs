@@ -42,7 +42,7 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="email">String Email.</param>
         /// <returns>Objeto object.</returns>
-        public static object getUserData(string email)
+        public static object GetUserData(string email)
         {
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
@@ -122,6 +122,54 @@ namespace PDS.Models.Repository
             }
 
             return objeto;
+        }
+
+        /// <summary>
+        /// Método para retornar dados da conta do usuário.
+        /// </summary>
+        /// <param name="email">String email.</param>
+        /// <returns>Object Accounts.</returns>
+        public static Accounts GetDataAccount(string email)
+        {
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Accounts account = new Accounts();
+
+            cmm.Parameters.AddWithValue("@email", email);
+
+            sql.Append("CALL getDataAccount(@email)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                ADOMySQL.MySQL.Conectar();
+                dr = ADOMySQL.MySQL.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    account = new Accounts
+                    {
+                        idAccount = Convert.ToInt64(dr["idAccount"]),
+                        email = Convert.ToString(dr["email"]),
+                        password = Convert.ToString(dr["password"]),
+                        acessToken = Convert.ToString(dr["acessToken"])
+                    };
+                    
+                }
+
+                dr.Close();
+
+                ADOMySQL.MySQL.Desconectar();
+            }
+            catch (Exception)
+            {
+                dr.Close();
+                ADOMySQL.MySQL.Desconectar();
+                throw;
+            }
+
+            return account;
         }
 
         /// <summary>

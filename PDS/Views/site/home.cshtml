@@ -117,6 +117,7 @@
                     <div class="modal-body" ng-controller="ContactController">
                         <!--Start Contact form -->
                         <form name="contactform" id="contactform" method="post" ng-submit="submit(contactform)" role="form">
+                            
                             <div class="form-group" ng-class="{ 'has-error has-feedback': contactform.name.$dirty && contactform.name.$error.required }">
                                 <label class="control-label">Nome</label>
                                 <div>

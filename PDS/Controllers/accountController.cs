@@ -29,8 +29,8 @@ namespace PDS.Controllers
                 // Insert Account
 
                 Accounts account = new Accounts();
-                account.email = form["inputEmail"];
-                account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                account.email = form["inputEmailT"];
+                account.password = AccountsRepository.EncryptPassword(form["inputPasswordT"]);
                 account.acessToken = form["inputAcessToken"];
 
                 Int64 idAccount = AccountsRepository.Create(account);
@@ -40,22 +40,28 @@ namespace PDS.Controllers
                 Teachers teacher = new Teachers();
                 teacher.Account = new Accounts();
                 teacher.Account.idAccount = idAccount;
-                teacher.firstName = form["inputFirstName"];
-                teacher.lastName = form["inputLastName"];
+                teacher.firstName = form["inputFirstNameT"];
+                teacher.lastName = form["inputLastNameT"];
                 teacher.gender = Convert.ToChar(form["inputGender"]);
-                teacher.dateOfBirth = Convert.ToDateTime(form["inputDateOfBirth"]);
+                teacher.dateOfBirth = Convert.ToDateTime(form["inputDateOfBirthT"]);
                 teacher.accountType = Convert.ToChar("T");
-                teacher.city = form["inputCity"];
-                teacher.country = form["inputCountry"];
+                teacher.city = form["inputCityT"];
+                teacher.country = form["inputCountryT"];
 
-                if (inputFile.ContentLength > 0)
+                if (inputFile != null)
                 {
                     string extension = Path.GetExtension(inputFile.FileName);
                     path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
                     inputFile.SaveAs(path);
+
+                    teacher.urlImageProfile = path;
+                }
+                else
+                {
+                    teacher.urlImageProfile = "/Content/images/noPhoto.png";
                 }
 
-                teacher.urlImageProfile = path;
+                
 
                 TeachersRepository.Create(teacher);
 
@@ -101,14 +107,19 @@ namespace PDS.Controllers
                 student.city = form["inputCity"];
                 student.country = form["inputCountry"];
 
-                if (inputFile.ContentLength > 0)
+                if (inputFile != null)
                 {
                     string extension = Path.GetExtension(inputFile.FileName);
                     path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
                     inputFile.SaveAs(path);
-                }
 
-                student.urlImageProfile = path;
+                    student.urlImageProfile = path;
+                }
+                else
+                {
+                    student.urlImageProfile = "/Content/images/noPhoto.png";
+                }
+               
 
                 StudentsRepository.Create(student);
 
@@ -159,14 +170,14 @@ namespace PDS.Controllers
                 TeachersRepository.Create(teacher);
 
                 // Return Sucess
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = null, location = "/home/index" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
 
             }
             catch (Exception)
             {
                 // Return Error
-                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente.", returnUrl = "", location = "" };
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente.", returnUrl = null, location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
             }
 
@@ -182,7 +193,7 @@ namespace PDS.Controllers
 
                 Accounts account = new Accounts();
                 account.email = form["inputEmail"];
-                account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                account.password = "";
                 account.acessToken = form["inputAcessToken"];
 
                 Int64 idAccount = AccountsRepository.Create(account);
@@ -204,7 +215,7 @@ namespace PDS.Controllers
                 StudentsRepository.Create(student);
 
                 // Return Sucess
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = "", location = "/home/index" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
 
             }
@@ -240,31 +251,37 @@ namespace PDS.Controllers
 
                 if (inputEmail != null || inputPassword != null)
                 {
-                    //userReturn = UsuariosRepositorio.GetUser(user);
+                    Accounts account = new Accounts();
 
-                    //if (userReturn != null)
-                    if (inputEmail == "dd@email")
+                    account = AccountsRepository.GetDataAccount(inputEmail);
+
+                    if (account != null)
                     {
-                        if (inputRememberme == "true")
+                        if (AccountsRepository.CheckPassword(inputPassword,account.password))
                         {
-                            //Autenticação do usuário, cookie indestrutível.
-                            FormsAuthentication.SetAuthCookie("Denner", true);
+                            if (inputRememberme == "true")
+                            {
+                                //Autenticação do usuário, cookie indestrutível.
+                                FormsAuthentication.SetAuthCookie(account.email, true);
+                                CreateCookieInfoUser(AccountsRepository.GetUserData(account.email));
+                            }
+                            else
+                            {
+                                //Autenticação do usuário, destrói cookie ao fechar o navegador.
+                                FormsAuthentication.SetAuthCookie(account.email, false);
+                                CreateCookieInfoUser(AccountsRepository.GetUserData(account.email));
+                            }
+
+                            objectToSerializeSuc = new ReturnJson { success = true, message = "Entrando...", returnUrl = returnUrlStr, location = "/home/index" };
+                            Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                         }
                         else
                         {
-                            //Autenticação do usuário, destrói cookie ao fechar o navegador.
-                            FormsAuthentication.SetAuthCookie("Denner", false);
+                            objectToSerializeErr = new ReturnJson { success = false, message = "Email ou Senha incorretos. Verifique-os e tente novamente." };
+                            Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
                         }
-
-                        objectToSerializeSuc = new ReturnJson { success = true, message = "Entrando...", returnUrl = returnUrlStr, location = "/home/index" };
-                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
-
                     }
-                    else
-                    {
-                        objectToSerializeErr = new ReturnJson { success = false, message = "Email ou Senha incorretos. Verifique-os e tente novamente." };
-                        Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
-                    }
+                    
                 }
                 else
                 {
@@ -280,7 +297,59 @@ namespace PDS.Controllers
 
         }
 
-        // Logoff
+        /// <summary>
+        /// Cria o cookie com todas informações do usuário.
+        /// </summary>
+        /// <param name="userInfo">Dynamic userInfo.</param>
+        private void CreateCookieInfoUser(dynamic userInfo)
+        {
+            Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount.ToString("D9");
+            Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+            Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
+            Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+            Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D9"));
+            if (userInfo.accountType.ToString() == "T")
+            {
+                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D9"));
+            }
+            else
+            {
+                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D9"));
+            }
+            Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+            Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+            Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+            Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+            Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+            Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+            Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+
+            setcookie("userImage", userInfo.urlImageProfile);
+        }
+
+        /// <summary>
+        /// Criptografa string.
+        /// </summary>
+        /// <param name="value">String value.</param>
+        /// <returns>String encrypted.</returns>
+        public string encrypt(string value)
+        {
+            if (value != null)
+            {
+                var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
+                return encValue;
+            }
+            else
+            {
+                var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes("No Informed"));
+                return encValue;
+            }
+        }
+
+        /// <summary>
+        /// Método para deslogar usuário e destruir cookies existentes.
+        /// </summary>
+        /// <returns>Redirect to Home.</returns>
         public ActionResult logoff()
         {
             // Rotina para remover autenticação do usuário
@@ -304,7 +373,11 @@ namespace PDS.Controllers
             return RedirectToAction("home", "site");
         }
 
-        // Set Cookie
+        /// <summary>
+        /// Método para setar cookie criptografado.
+        /// </summary>
+        /// <param name="key">String key.</param>
+        /// <param name="value">String value.</param>
         public void setcookie(string key, string value)
         {
             var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
