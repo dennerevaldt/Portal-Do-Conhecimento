@@ -49,6 +49,9 @@
         var iEmail = Server.UrlTokenDecode(userInfo["email"]);
         string email = System.Text.UTF8Encoding.UTF8.GetString(iEmail);
 
+        var iAcessToken = Server.UrlTokenDecode(userInfo["acessToken"]);
+        string acessToken = System.Text.UTF8Encoding.UTF8.GetString(iAcessToken);
+
         var iLocation = Server.UrlTokenDecode(userInfo["location"]);
         string location = System.Text.UTF8Encoding.UTF8.GetString(iLocation);
         if (location == "No Informed") { location = string.Empty; }
@@ -80,7 +83,7 @@
     <![endif]-->
 
 </head>
-<body>
+<body ng-app="accountModule">
     <div class="container margin-top-40">
         <div class="col-md-offset-2 col-md-4" style="border-right: 1px solid #cccccc;">
             <div class="pull-left">
@@ -94,68 +97,93 @@
 
         <div class="col-md-12 margin-bottom-40">
             <div class="col-md-offset-3 col-md-6 margin-top-40">
-                <form class="form" action="#" method="post">
+                <form class="form" id="confirmAccount" name="confirmAccount" method="post" ng-controller="ConfirmAccountController" ng-submit="submit(confirmAccount)">
+
+                    <input type="hidden" id="acessToken" ng-model="Account.acessToken" ng-init="Account.acessToken='@acessToken'" />
+
+                    <input type="hidden" id="ürlImageProfile" ng-model="Account.urlImageProfile" ng-init="Account.urlImageProfile='@url_image'" />
 
                     <div class="form-group">
                         <label for="inputFirstName">Primeiro nome</label>
-                        <input type="text" class="form-control" id="inputFirstName" placeholder="Primeiro nome" value="@first_name" />
+                        <input type="text" class="form-control" id="inputFirstName" placeholder="Primeiro nome" ng-model="Account.firstName" ng-init="Account.firstName='@first_name'" value="@first_name"/>
                     </div>
 
                     <div class="form-group">
                         <label for="inputLastName">Segundo nome</label>
-                        <input type="text" class="form-control" id="inputLastName" placeholder="Segundo nome" value="@last_name"/>
+                        <input type="text" class="form-control" id="inputLastName" placeholder="Segundo nome" ng-model="Account.lastName" ng-init="Account.lastName='@last_name'" value="@last_name" />
                     </div>
 
-                    
+
                     <div class="col-md-6 form-group">
-                        <label for="inputSexo">Sexo</label>
+                        <label for="inputGender">Sexo</label>
                         <br />
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary @male">
-                                <input type="radio" id="inputSexo" name="inputSexo" value="H" checked> Homem
+                        <div class="btn-group">
+                            <label>
+                                @if (male == "active")
+                                {
+                                    <input type="radio" id="ïnputGender" value="M" ng-model="Account.gender" ng-checked="Account.gender" ng-init="Account.gender='M'" />
+                                }
+                                else
+                                {
+                                    <input type="radio" id="ïnputGender" value="M" ng-model="Account.gender" />
+                                }
+                                Homem
                             </label>
-                            <label class="btn btn-primary @female">
-                                <input type="radio" id="inputSexo" name="inputSexo" value="M"> Mulher
+                            <label>
+                                @if (female == "active")
+                                {
+                                    <input type="radio" id="ïnputGender" value="F" ng-model="Account.gender" ng-checked="true" ng-init="Account.gender='F'" />
+                                }
+                                else
+                                {
+                                    <input type="radio" id="ïnputGender" value="F" ng-model="Account.gender" />
+                                }
+                                Mulher
                             </label>
                         </div>
                     </div>
 
                     <div class="col-md-6 form-group">
-                        <label for="inputCategory">Categoria</label>
+                        <label for="inputAccountType">Categoria</label>
                         <br />
-                        <div class="btn-group" data-toggle="buttons">
-                            <label class="btn btn-primary active">
-                                <input type="radio" id="inputCategory" name="inputCategory" value="T" checked> Professor(a)
+                        <div class="btn-group">
+                            <label>
+                                <input type="radio" id="inputAccountType" ng-model="Account.accountType" value="T" ng-checked="true" ng-init="Account.accountType='T'"> Professor(a)
                             </label>
-                            <label class="btn btn-primary">
-                                <input type="radio" id="inputCategory" name="inputCategory" value="S"> Estudante
+                            <label>
+                                <input type="radio" id="inputAccountType" ng-model="Account.accountType" value="S"> Estudante
                             </label>
                         </div>
                     </div>
-                    
+
 
                     <div class="form-group">
                         <label for="inputBirthday">Data Nasc.</label>
-                        <input type="text" class="form-control" id="inputBirthday" placeholder="Data de nascimento" value="@birthday" />
+                        <input type="text" class="form-control" id="inputBirthday" placeholder="Data de nascimento" value="@birthday" ng-model="Account.dateOfBirth" ng-init="Account.dateOfBirth='@birthday'" />
                     </div>
 
                     <div class="form-group">
                         <label for="inputEmail">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="@email"/>
+                        <input type="email" class="form-control" id="inputEmail" placeholder="Email" value="@email" ng-model="Account.email" ng-init="Account.email='@email'" />
                     </div>
 
                     <div class="form-group">
                         <label for="inputCity">Cidade</label>
-                        <input type="text" class="form-control" id="inputCity" placeholder="Cidade" value="@location" />
+                        <input type="text" class="form-control" id="inputCity" placeholder="Cidade" value="@location" ng-model="Account.location" ng-init="Account.location='@location'" />
                     </div>
 
                     <div class="form-group">
                         <label for="inputCountry">País</label>
-                        <input type="text" class="form-control" id="inputCountry" placeholder="País" value="@country" />
+                        <input type="text" class="form-control" id="inputCountry" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" />
                     </div>
 
-                    <button type="submit" class="btn btn-success btn-block">Confirmar</button>
+                    <button type="submit" class="btn btn-success btn-block" ng-disabled="submitConfirmButton">Confirmar</button>
 
+                    <div class="text-center loading">
+                        <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+                    </div>
+
+                    <div ng-class="result">{{ resultMessage }}</div>
                 </form>
 
             </div>

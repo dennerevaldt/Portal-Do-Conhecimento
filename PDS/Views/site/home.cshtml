@@ -194,11 +194,14 @@
     </script>
     <script type="text/javascript">
         jQuery(document).ready(function () {
-            $("#loading").hide();
+
+            $("#loadingTeacher").hide();
+            $("#loadingStudent").hide();
+
             $('#formTeacher').on('submit', function (e) {
                 e.preventDefault(); // prevent native submit
-                $("#loading").show();
-                $("#submitButton").prop("disabled", true);
+                $("#loadingTeacher").show();
+                $("#submitButtonTeacher").prop("disabled", true);
                 $(this).ajaxSubmit({
                     url: '/account/createaccountteacher',
                     type: 'post',
@@ -208,15 +211,42 @@
                         var data = JSON.parse(returnData);
 
                         if (data.success == true) {
-                            $("#loading").hide();
-                            $("#result").toggleClass("bg-success");
-                            $("#result").html(data.message);
-                            $("#submitButton").prop("disabled", true);
+                            $("#loadingTeacher").hide();
+                            $("#resultTeacher").toggleClass("bg-success");
+                            $("#resultTeacher").html(data.message);
+                            $("#submitButtonTeacher").prop("disabled", true);
                         }
                         else {
-                            $("#loading").hide();
-                            $("#result").toggleClass("bg-danger");
-                            $("#result").html(data.message);
+                            $("#loadingTeacher").hide();
+                            $("#resultTeacher").toggleClass("bg-danger");
+                            $("#resultTeacher").html(data.message);
+                        }
+                    }
+                })
+            });
+
+            $('#formStudent').on('submit', function (e) {
+                e.preventDefault(); // prevent native submit
+                $("#loadingStudent").show();
+                $("#submitButtonStudent").prop("disabled", true);
+                $(this).ajaxSubmit({
+                    url: '/account/createaccountstudent',
+                    type: 'post',
+                    success: function (returnData) {
+                        console.log(returnData);
+
+                        var data = JSON.parse(returnData);
+
+                        if (data.success == true) {
+                            $("#loadingStudent").hide();
+                            $("#resultStudent").toggleClass("bg-success");
+                            $("#resultStudent").html(data.message);
+                            $("#submitButtonStudent").prop("disabled", true);
+                        }
+                        else {
+                            $("#loadingStudent").hide();
+                            $("#resultStudent").toggleClass("bg-danger");
+                            $("#resultStudent").html(data.message);
                         }
                     }
                 })

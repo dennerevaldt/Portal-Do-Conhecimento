@@ -80,3 +80,83 @@ homeSite.controller('LoginController', function ($scope, $http) {
     }
 });
 
+accountModule.controller('ConfirmAccountController', function ($scope, $http) {
+    $scope.submitConfirmButton = false;
+    $scope.loading = false;
+
+    $scope.submit = function (confirmAccount) {
+        $scope.submitConfirmButton = true;
+        if (confirmAccount.$valid) {
+            $scope.loading = true;
+
+            console.log($scope.Account);
+
+            if ($scope.Account.accountType =='T')
+            {
+                $http({
+                    method: 'POST',
+                    url: '/account/confirmaccountteacher',
+                    data: $.param($scope.Account),  //param method from jQuery
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+                }).success(function (data) {
+                    console.log(data);
+                    if (data.success) { //success comes from the return json object
+                        $scope.submitButtonLogin = true;
+                        $scope.loading = false;
+
+                        if (data.returnUrl != null) {
+                            location.href = data.returnUrl;
+                        }
+                        else {
+                            location.href = data.location;
+                        }
+
+                    } else {
+                        $scope.submitButtonLogin = false;
+                        $scope.resultMessage = data.message;
+                        $scope.result = 'bg-danger';
+                        $scope.loading = false;
+                    }
+                });
+            }
+            else
+            {
+                $http({
+                    method: 'POST',
+                    url: '/account/confirmaccountstudent',
+                    data: $.param($scope.Account),  //param method from jQuery
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+                }).success(function (data) {
+                    console.log(data);
+                    if (data.success) { //success comes from the return json object
+                        $scope.submitButtonLogin = true;
+                        $scope.resultMessage = data.message;
+                        $scope.result = 'bg-success';
+                        $scope.loading = false;
+
+                        if (data.returnUrl != null) {
+                            location.href = data.returnUrl;
+                        }
+                        else {
+                            location.href = data.location;
+                        }
+
+                    } else {
+                        $scope.submitButtonLogin = false;
+                        $scope.resultMessage = data.message;
+                        $scope.result = 'bg-danger';
+                        $scope.loading = false;
+                    }
+                });
+            }
+            
+
+
+        } else {
+            $scope.submitButtonLogin = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+});

@@ -1,6 +1,6 @@
 ﻿@model PDS.Models.Entities.Teachers
 
-<form id="formTeacher" name="formTeacher" class="form" method="post" @*action="/account/createaccountteacher"*@ enctype="multipart/form-data">
+<form id="formTeacher" name="formTeacher" class="form" method="post" enctype="multipart/form-data">
     <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <h4 class="modal-title-custom">Criar conta de Professor</h4>
@@ -64,15 +64,15 @@
             <input type="text" class="form-control" name="inputCountry" placeholder="País" required />
         </div>
 
-        <div id="loading" class="text-center loading-login">
+        <div id="loadingTeacher" class="text-center loading-login">
             <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" />
         </div>
 
-        <div id="result" class="result"></div>
+        <div id="resultTeacher" class="result"></div>
 
     </div>
     <div class="modal-footer">
-        <button type="submit" id="submitButton" class="btn btn-success">Criar conta</button>
+        <button type="submit" id="submitButtonTeacher" class="btn btn-success">Criar conta</button>
         <button type="button" class="btn btn-primary" data-dismiss="modal">Fechar</button>
     </div>
 </form>

@@ -1,6 +1,7 @@
 ﻿using Facebook;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using PDS.Models.Repository;
 using PDS.Models.Utilities;
 using System;
 using System.Collections.Generic;
@@ -18,8 +19,8 @@ namespace PDS.Controllers
 {
     public class siteController : Controller
     {
-        private string host = "http://portaldoconhecimento.azurewebsites.net";
-        //private string host = "http://localhost:51918";
+        //private string host = "http://portaldoconhecimento.azurewebsites.net";
+        private string host = "http://localhost:51918";
 
         // Index
         public ActionResult home(string returnUrl)
@@ -72,27 +73,82 @@ namespace PDS.Controllers
 
                 var accessToken = result.access_token;
 
-                //TODO: Guardar no banco
-                Session.Add("FbUserToken", accessToken);
+                // get email api facebook
+                Dictionary<string, string> dataE = emailUser(accessToken);
 
-                Dictionary<string, string> data = detailsofuser();
+                // get email db
+                bool resultEmail = AccountsRepository.GetEmail(dataE["email"].ToString());
+        
+                if(resultEmail)
+                {
+                    //login
+                    dynamic userInfo = AccountsRepository.getUserData(dataE["email"].ToString());
 
-                FormsAuthentication.SetAuthCookie(data["id"], false);
+                    FormsAuthentication.SetAuthCookie(userInfo.Account.email, false);
 
-                Response.Cookies["userInfo"]["id"] = encrypt(data["id"]);
-                Response.Cookies["userInfo"]["first_name"] = encrypt(data["first_name"]);
-                Response.Cookies["userInfo"]["middle_name"] = encrypt(data["middle_name"]);
-                Response.Cookies["userInfo"]["last_name"] = encrypt(data["last_name"]);
-                Response.Cookies["userInfo"]["email"] = encrypt(data["email"]);
-                Response.Cookies["userInfo"]["birthday"] = encrypt(data["birthday"]);
-                Response.Cookies["userInfo"]["gender"] = encrypt(data["gender"]);
-                Response.Cookies["userInfo"]["location"] = encrypt(data["location"]);
-                Response.Cookies["userInfo"]["locale"] = encrypt(data["locale"]);
+                    if (userInfo.accountType.ToString() == "T")
+                    {
+                        //converter int64 to string
+                        //Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount;
+                        Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+                        Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
+                        Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+                       // Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson);
+                        //Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher);
+                        Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+                        Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+                        Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+                        Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+                        Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+                        Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+                        Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
 
-                setcookie("userImage", data["picture_url"]);
+                        setcookie("userImage", userInfo.urlImageProfile);
+                    }
+                    else
+                    {
+                        //converter int64 to string
+                        Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount;
+                        Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+                        Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
+                        Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+                        Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson);
+                        Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent);
+                        Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+                        Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+                        Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+                        Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+                        Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+                        Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+                        Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
 
+                        setcookie("userImage", userInfo.urlImageProfile);
+                    }
 
-                return Redirect("/account/confirmaccount");
+                    return Redirect("/home/index");
+                }
+                else
+                {
+                    Dictionary<string, string> data = detailsofuser(accessToken);
+
+                    FormsAuthentication.SetAuthCookie(data["id"], false);
+
+                    Response.Cookies["userInfo"]["id"] = encrypt(data["id"]);
+                    Response.Cookies["userInfo"]["first_name"] = encrypt(data["first_name"]);
+                    Response.Cookies["userInfo"]["middle_name"] = encrypt(data["middle_name"]);
+                    Response.Cookies["userInfo"]["last_name"] = encrypt(data["last_name"]);
+                    Response.Cookies["userInfo"]["email"] = encrypt(data["email"]);
+                    Response.Cookies["userInfo"]["birthday"] = encrypt(data["birthday"]);
+                    Response.Cookies["userInfo"]["gender"] = encrypt(data["gender"]);
+                    Response.Cookies["userInfo"]["location"] = encrypt(data["location"]);
+                    Response.Cookies["userInfo"]["locale"] = encrypt(data["locale"]);
+                    Response.Cookies["userInfo"]["acessToken"] = encrypt(accessToken);
+
+                    setcookie("userImage", data["picture_url"]);
+
+                    return Redirect("/account/confirmaccount");
+                }
+                
             }
             else
             {
@@ -103,14 +159,14 @@ namespace PDS.Controllers
             
         }
 
-        public Dictionary<string, string> detailsofuser()
+        public Dictionary<string, string> detailsofuser(string userKey)
         {
             //array data
             var dataArray = new Dictionary<string, string>();
 
-            if (Session["FbuserToken"] != null)
+            if (userKey != null)
             {
-                var _fb = new FacebookClient(Session["FbuserToken"].ToString());
+                var _fb = new FacebookClient(userKey);
 
                 //get user data
                 dynamic data = _fb.Get("me");
@@ -141,6 +197,25 @@ namespace PDS.Controllers
 
             return dataArray;
         }
+
+        public Dictionary<string, string> emailUser(string userKey)
+        {
+            //array data
+            var dataArray = new Dictionary<string, string>();
+
+            if (userKey != null)
+            {
+                var _fb = new FacebookClient(userKey);
+
+                //get user data
+                dynamic data = _fb.Get("me");
+                dataArray["email"] = data.email;
+
+            }
+
+            return dataArray;
+        }
+
         #endregion
 
         // Encrypt string

@@ -20,7 +20,7 @@ namespace PDS.Controllers
         private static ReturnJson objectToSerializeSuc;
         private static string path = "";
 
-        // Create account
+        // Create account teacher
         [HttpPost]
         public void createaccountteacher(HttpPostedFileBase inputFile, FormCollection form)
         {
@@ -51,7 +51,7 @@ namespace PDS.Controllers
                 if (inputFile.ContentLength > 0)
                 {
                     string extension = Path.GetExtension(inputFile.FileName);
-                    path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile"), idAccount.ToString()+extension);
+                    path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
                     inputFile.SaveAs(path);
                 }
 
@@ -71,6 +71,150 @@ namespace PDS.Controllers
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
             }
             
+        }
+
+        // Create account student
+        [HttpPost]
+        public void createaccountstudent(HttpPostedFileBase inputFile, FormCollection form)
+        {
+            try
+            {
+                // Insert Account
+
+                Accounts account = new Accounts();
+                account.email = form["inputEmail"];
+                account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                account.acessToken = form["inputAcessToken"];
+
+                Int64 idAccount = AccountsRepository.Create(account);
+
+                // Insert Teacher
+
+                Students student = new Students();
+                student.Account = new Accounts();
+                student.Account.idAccount = idAccount;
+                student.firstName = form["inputFirstName"];
+                student.lastName = form["inputLastName"];
+                student.gender = Convert.ToChar(form["inputGender"]);
+                student.dateOfBirth = Convert.ToDateTime(form["inputDateOfBirth"]);
+                student.accountType = Convert.ToChar("S");
+                student.city = form["inputCity"];
+                student.country = form["inputCountry"];
+
+                if (inputFile.ContentLength > 0)
+                {
+                    string extension = Path.GetExtension(inputFile.FileName);
+                    path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
+                    inputFile.SaveAs(path);
+                }
+
+                student.urlImageProfile = path;
+
+                StudentsRepository.Create(student);
+
+                // Return Sucess
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+
+            }
+            catch (Exception)
+            {
+                // Return Error
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente mais tarde.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+
+        }
+
+        // Confirm account teacher
+        [HttpPost]
+        public void confirmaccountteacher(FormCollection form)
+        {
+            try
+            {
+                // Insert Account
+
+                Accounts account = new Accounts();
+                account.email = form["email"];
+                account.password = "";
+                account.acessToken = form["acessToken"];
+
+                Int64 idAccount = AccountsRepository.Create(account);
+
+                // Insert Teacher
+
+                Teachers teacher = new Teachers();
+                teacher.Account = new Accounts();
+                teacher.Account.idAccount = idAccount;
+                teacher.firstName = form["firstName"];
+                teacher.lastName = form["lastName"];
+                teacher.gender = Convert.ToChar(form["gender"]);
+                teacher.dateOfBirth = Convert.ToDateTime(form["dateOfBirth"]);
+                teacher.accountType = Convert.ToChar("T");
+                teacher.city = form["location"];
+                teacher.country = form["country"];
+                teacher.urlImageProfile = form["urlImageProfile"];
+                teacher.Account.acessToken = form["acessToken"];
+
+                TeachersRepository.Create(teacher);
+
+                // Return Sucess
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+
+            }
+            catch (Exception)
+            {
+                // Return Error
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+
+        }
+
+        // Confirm account student
+        [HttpPost]
+        public void confirmaccountstudent(FormCollection form)
+        {
+            try
+            {
+                // Insert Account
+
+                Accounts account = new Accounts();
+                account.email = form["inputEmail"];
+                account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                account.acessToken = form["inputAcessToken"];
+
+                Int64 idAccount = AccountsRepository.Create(account);
+
+                // Insert Teacher
+
+                Students student = new Students();
+                student.Account = new Accounts();
+                student.Account.idAccount = idAccount;
+                student.firstName = form["firstName"];
+                student.lastName = form["lastName"];
+                student.gender = Convert.ToChar(form["gender"]);
+                student.dateOfBirth = Convert.ToDateTime(form["dateOfBirth"]);
+                student.accountType = Convert.ToChar("S");
+                student.city = form["location"];
+                student.country = form["locale"];
+                student.urlImageProfile = form["urlImageProfile"];
+
+                StudentsRepository.Create(student);
+
+                // Return Sucess
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+
+            }
+            catch (Exception)
+            {
+                // Return Error
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente mais tarde.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+
         }
 
 
@@ -157,7 +301,7 @@ namespace PDS.Controllers
                 Response.Cookies.Add(myCookie);
             }
 
-            return Redirect("/site/home");
+            return RedirectToAction("home", "site");
         }
 
         // Set Cookie

@@ -136,6 +136,7 @@
     <Compile Include="Models\Entities\Students.cs" />
     <Compile Include="Models\Entities\Teachers.cs" />
     <Compile Include="Models\Repository\AccountsRepository.cs" />
+    <Compile Include="Models\Repository\StudentsRepository.cs" />
     <Compile Include="Models\Repository\TeachersRepository.cs" />
     <Compile Include="Models\Utilities\ReturnJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -244,7 +245,8 @@
     <Content Include="Views\account\createaccountstudent.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\Uploads\ImagesProfile\" />
+    <Folder Include="App_Data\Uploads\ImagesProfile\Students\" />
+    <Folder Include="App_Data\Uploads\ImagesProfile\Teachers\" />
     <Folder Include="Content\UploadFiles\ImagesProfile\" />
   </ItemGroup>
   <ItemGroup>
