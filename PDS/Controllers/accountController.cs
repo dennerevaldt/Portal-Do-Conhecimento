@@ -43,7 +43,12 @@ namespace PDS.Controllers
                 teacher.firstName = form["inputFirstNameT"];
                 teacher.lastName = form["inputLastNameT"];
                 teacher.gender = Convert.ToChar(form["inputGender"]);
-                teacher.dateOfBirth = Convert.ToDateTime(form["inputDateOfBirthT"]);
+
+                DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
+                string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                DateTime dateValue = DateTime.Parse(formatForMySql);
+                teacher.dateOfBirth = dateValue;
+
                 teacher.accountType = Convert.ToChar("T");
                 teacher.city = form["inputCityT"];
                 teacher.country = form["inputCountryT"];
@@ -102,7 +107,13 @@ namespace PDS.Controllers
                 student.firstName = form["inputFirstName"];
                 student.lastName = form["inputLastName"];
                 student.gender = Convert.ToChar(form["inputGender"]);
-                student.dateOfBirth = Convert.ToDateTime(form["inputDateOfBirth"]);
+
+                DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
+                string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                DateTime dateValue = DateTime.Parse(formatForMySql);
+                student.dateOfBirth = dateValue;
+                
+
                 student.accountType = Convert.ToChar("S");
                 student.city = form["inputCity"];
                 student.country = form["inputCountry"];
@@ -160,7 +171,12 @@ namespace PDS.Controllers
                 teacher.firstName = form["firstName"];
                 teacher.lastName = form["lastName"];
                 teacher.gender = Convert.ToChar(form["gender"]);
-                teacher.dateOfBirth = Convert.ToDateTime(form["dateOfBirth"]);
+
+                DateTime dataOrg = Convert.ToDateTime(form["dateOfBirth"]);
+                string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                DateTime dateValue = DateTime.Parse(formatForMySql);
+                teacher.dateOfBirth = dateValue;
+
                 teacher.accountType = Convert.ToChar("T");
                 teacher.city = form["location"];
                 teacher.country = form["country"];
@@ -206,7 +222,12 @@ namespace PDS.Controllers
                 student.firstName = form["firstName"];
                 student.lastName = form["lastName"];
                 student.gender = Convert.ToChar(form["gender"]);
-                student.dateOfBirth = Convert.ToDateTime(form["dateOfBirth"]);
+
+                DateTime dataOrg = Convert.ToDateTime(form["dateOfBirth"]);
+                string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                DateTime dateValue = DateTime.Parse(formatForMySql);
+                student.dateOfBirth = dateValue;
+
                 student.accountType = Convert.ToChar("S");
                 student.city = form["location"];
                 student.country = form["locale"];

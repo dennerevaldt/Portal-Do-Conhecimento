@@ -107,12 +107,12 @@ namespace PDS.Controllers
                     else
                     {
                         //converter int64 to string
-                        Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount;
+                        Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount.ToString("D9");
                         Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
                         Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
                         Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
-                        Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson);
-                        Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent);
+                        Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D9"));
+                        Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D9"));
                         Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
                         Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
                         Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
