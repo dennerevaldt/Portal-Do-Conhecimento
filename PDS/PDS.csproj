@@ -984,7 +984,6 @@
   <ItemGroup>
     <Folder Include="App_Data\Uploads\ImagesProfile\Students\" />
     <Folder Include="App_Data\Uploads\ImagesProfile\Teachers\" />
-    <Folder Include="Content\UploadFiles\ImagesProfile\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
