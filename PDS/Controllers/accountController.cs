@@ -21,10 +21,10 @@ namespace PDS.Controllers
         private static string path = "";
 
         /// <summary>
-        /// 
+        /// Action para criar uma nova conta de Teacher.
         /// </summary>
-        /// <param name="inputFile"></param>
-        /// <param name="form"></param>
+        /// <param name="inputFile">HttpPostedFileBase file.</param>
+        /// <param name="form">FormCollection form.</param>
         [HttpPost]
         public void createaccountteacher(HttpPostedFileBase inputFile, FormCollection form)
         {
@@ -89,10 +89,10 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action para criar uma nova conta de Student.
         /// </summary>
-        /// <param name="inputFile"></param>
-        /// <param name="form"></param>
+        /// <param name="inputFile">HttpPostedFileBase file.</param>
+        /// <param name="form">FormCollection form.</param>
         [HttpPost]
         public void createaccountstudent(HttpPostedFileBase inputFile, FormCollection form)
         {
@@ -157,9 +157,9 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action para confirmar dados retornados do facebook para criação da conta de Teacher.
         /// </summary>
-        /// <param name="form"></param>
+        /// <param name="form">FormCollection form.</param>
         [HttpPost]
         public void confirmaccountteacher(FormCollection form)
         {
@@ -211,9 +211,9 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action para confirmar dados retornados do facebook para criação da conta de Student.
         /// </summary>
-        /// <param name="form"></param>
+        /// <param name="form">FormCollection form.</param>
         [HttpPost]
         public void confirmaccountstudent(FormCollection form)
         {
@@ -265,18 +265,18 @@ namespace PDS.Controllers
 
 
         /// <summary>
-        /// 
+        /// Action para retorna view com dados para confirmação de conta.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>View ConfirmAccount.</returns>
         public ActionResult confirmaccount()
         {
             return View("confirmaccount");
         }
 
         /// <summary>
-        /// 
+        /// Action para validar login e permitir permissão do usuário ao portal.
         /// </summary>
-        /// <param name="form"></param>
+        /// <param name="form">FormCollection form.</param>
         [HttpPost]
         public void login(FormCollection form)
         {
