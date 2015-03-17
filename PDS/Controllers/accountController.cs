@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
@@ -222,9 +223,9 @@ namespace PDS.Controllers
                 // Insert Account
 
                 Accounts account = new Accounts();
-                account.email = form["inputEmail"];
+                account.email = form["email"];
                 account.password = "";
-                account.acessToken = form["inputAcessToken"];
+                account.acessToken = form["acessToken"];
 
                 Int64 idAccount = AccountsRepository.Create(account);
 
@@ -250,14 +251,14 @@ namespace PDS.Controllers
                 StudentsRepository.Create(student);
 
                 // Return Sucess
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = "", location = "/home/index" };
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = null, location = "/home/index" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
 
             }
             catch (Exception)
             {
                 // Return Error
-                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente mais tarde.", returnUrl = "", location = "" };
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente mais tarde.", returnUrl = null, location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
             }
 
@@ -336,6 +337,123 @@ namespace PDS.Controllers
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
 
+        }
+
+        /// <summary>
+        /// Action para requisitar troca de senha.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        [HttpPost]
+        public void changekey(FormCollection form)
+        {
+            string email = form["email"].ToLower(); 
+
+            if (AccountsRepository.GetEmail(email))
+            {
+                dynamic account = AccountsRepository.GetUserData(email);
+
+                if (account.Account.password != null && account.Account.password != string.Empty)
+                {
+                    string emailC = encrypt(account.Account.email);
+                    string passwordC = account.Account.password;
+
+                    System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
+                    mail.To.Add("dnrevaldt@gmail.com");
+                    mail.From = new MailAddress(email);
+                    mail.Subject = "Mensagem do Portal";
+                    string Body = "<a href=http://localhost:51918/account/changekeyconfirm?email=" + emailC + "&password=" + passwordC +"> << Alterar Senha >> </a>";
+                    mail.Body = Body;
+                    mail.IsBodyHtml = true;
+                    SmtpClient smtp = new SmtpClient();
+                    smtp.Host = "smtp.gmail.com";
+                    smtp.Port = 587;
+                    smtp.UseDefaultCredentials = false;
+                    smtp.Credentials = new System.Net.NetworkCredential
+                    ("dnrevaldt@gmail.com", "02051994");// Enter seders User name and password
+                    smtp.EnableSsl = true;
+
+                    try
+                    {
+                        smtp.Send(mail);
+                        var objectToSerialize = new ReturnJson { success = true, message = "Obrigado, foi enviado para o seu email a alteração de senha." };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerialize));
+                    }
+                    catch (Exception)
+                    {
+                        var objectToSerialize = new ReturnJson { success = false, message = "Ops.. estamos com problemas. Verifique sua conexão e tente novamente." };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerialize));
+                    }
+                }
+                else
+                {
+                    var objectToSerialize = new ReturnJson { success = false, message = "Sua conta não está vinculada a nenhuma senha, use o facebook para logar ao portal." };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerialize));
+                }
+                
+
+            }
+            else
+            {
+                var objectToSerialize = new ReturnJson { success = false, message = "Ops.. estamos com problemas. Verifique seu email e tente novamente." };
+                Response.Write(JsonConvert.SerializeObject(objectToSerialize));
+            }
+
+        }
+
+        /// <summary>
+        /// Action para alterar a senha do usuário.
+        /// </summary>
+        /// <param name="email">String email.</param>
+        /// <param name="password">String Password.</param>
+        /// <returns>View changekeyconfirm.</returns>
+        [HttpGet]
+        public ActionResult changekeyconfirm(string email, string password)
+        {
+            try
+            {
+                var pEmail = Server.UrlTokenDecode(email);
+                string emailD = System.Text.UTF8Encoding.UTF8.GetString(pEmail);
+
+                dynamic account = AccountsRepository.GetUserData(emailD);
+
+                if (account.Account.password == password)
+                {
+                    ViewBag.email = emailD;
+                    return View("changekeyconfirm");
+                }
+            }
+            catch (Exception)
+            {
+                return View("Error");
+            }
+
+            return View("Error");
+                    
+        }
+
+        /// <summary>
+        /// Alterar senha do usuário.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        [HttpPost]
+        public void changekeyconfirmed(FormCollection form)
+        {
+            try
+            {
+                string email = form["email"];
+                string password = AccountsRepository.EncryptPassword(form["password"]);
+
+                AccountsRepository.UpdateUserPassword(email, password);
+
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Senha alterada com sucesso, faça login e aproveite!", returnUrl = null, location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            catch (Exception)
+            {
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops.. estamo com problemas. Tente novamente.", returnUrl = null, location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            
         }
 
         /// <summary>

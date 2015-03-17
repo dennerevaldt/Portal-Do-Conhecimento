@@ -80,6 +80,44 @@ homeSite.controller('LoginController', function ($scope, $http) {
     }
 });
 
+homeSite.controller('ChangeKeyController', function ($scope, $http) {
+    $scope.submitButton = false;
+    $scope.loading = false;
+
+    $scope.submit = function (formChangeKey) {
+        $scope.submitButton = true;
+        if (formChangeKey.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/account/changekey',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-success';
+                    $scope.loading = false;
+
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
+});
+
 accountModule.controller('ConfirmAccountController', function ($scope, $http) {
     $scope.submitConfirmButton = false;
     $scope.loading = false;
@@ -159,4 +197,42 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
             $scope.loading = false;
         }
     }
+});
+
+changeKeyModule.controller('ChangeKeyConfirmController', function ($scope, $http) {
+    $scope.submitButton = false;
+    $scope.loading = false;
+
+    $scope.submit = function (formChangeKeyConfirm) {
+        $scope.submitButton = true;
+        if (formChangeKeyConfirm.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/account/changekeyconfirmed',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-success';
+                    $scope.loading = false;
+
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
 });

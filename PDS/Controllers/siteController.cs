@@ -23,10 +23,10 @@ namespace PDS.Controllers
         private string host = "http://localhost:51918";
 
         /// <summary>
-        /// 
+        /// Action para retornar home do site.
         /// </summary>
-        /// <param name="returnUrl"></param>
-        /// <returns></returns>
+        /// <param name="returnUrl">String returnUrl</param>
+        /// <returns>View home.</returns>
         public ActionResult home(string returnUrl)
         {
             if (!string.IsNullOrEmpty(returnUrl))
@@ -41,9 +41,9 @@ namespace PDS.Controllers
 
         #region Login Facebook
         /// <summary>
-        /// 
+        /// Método para retornar a url de login com facebook.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>String url.</returns>
         public string getfacebookloginurl()
         {
             dynamic parameters = new ExpandoObject();
@@ -62,9 +62,9 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action para pegar retorno do facebook.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>View home portal.</returns>
         public ActionResult returnfb()
         {
             var _fb = new FacebookClient();
@@ -170,10 +170,10 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Método para criar um array de dados do usuário, retornado pelo facebook.
         /// </summary>
-        /// <param name="userKey"></param>
-        /// <returns></returns>
+        /// <param name="userKey">String userKey.</param>
+        /// <returns>Array data.</returns>
         public Dictionary<string, string> detailsofuser(string userKey)
         {
             //array data
@@ -214,10 +214,10 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Método para criar um array de retorno com o email somente, retornado pelo facebook.
         /// </summary>
-        /// <param name="userKey"></param>
-        /// <returns></returns>
+        /// <param name="userKey">String userKey.</param>
+        /// <returns>Array data.</returns>
         public Dictionary<string, string> emailUser(string userKey)
         {
             //array data
@@ -239,10 +239,10 @@ namespace PDS.Controllers
         #endregion
 
         /// <summary>
-        /// 
+        /// Método para criptografar uma string.
         /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
+        /// <param name="value">String value.</param>
+        /// <returns>String encrypt.</returns>
         public string encrypt(string value)
         {
             if (value != null)
@@ -258,10 +258,10 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Método para setar um cookie criptografado.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">String key.</param>
+        /// <param name="value">String value.</param>
         public void setcookie(string key, string value)
         {
             var encValue = Server.UrlTokenEncode(UTF8Encoding.UTF8.GetBytes(value));
@@ -270,9 +270,9 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Método para enviar email de contato.
         /// </summary>
-        /// <param name="form"></param>
+        /// <param name="form">FromCollection form.</param>
         [HttpPost]
         public void contact(FormCollection form)
         {

@@ -63,7 +63,7 @@
                     <input type="checkbox" id="inputRememberme" name="inputRememberme" ng-model="formLogin.inputRememberme" value="remember-me"> Lembrar-me
                 </label>
                 <label>
-                    <a href="#" align="right"><u>Esqueci a minha senha</u></a>
+                    <a href="#" align="right" data-toggle="modal" data-target=".change-key"><u>Esqueci a minha senha</u></a>
                 </label>
             </div>
 
@@ -169,7 +169,7 @@
         <!-- Modal Create Account Student -->
         <div class="modal fade account-student" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content" >
+                <div class="modal-content" ng-controller="ChangeKeyController">
                     @Html.Partial("~/Views/account/createaccountstudent.cshtml")
                 </div>
             </div>
@@ -184,6 +184,14 @@
             </div>
         </div>
 
+        <!-- Modal Esqueci a minha Senha -->
+        <div class="modal fade change-key" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" ng-controller="ChangeKeyController">
+                    @Html.Partial("~/Views/account/changekey.cshtml")
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- jQuery -->

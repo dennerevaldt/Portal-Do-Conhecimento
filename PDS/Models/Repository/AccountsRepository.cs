@@ -173,7 +173,7 @@ namespace PDS.Models.Repository
         }
 
         /// <summary>
-        /// Método para retornar a existência de um token do Facebook armazenado.
+        /// Método para retornar a existência de um email já armazenado.
         /// </summary>
         /// <param name="email">String Email.</param>
         /// <returns>True or False.</returns>
@@ -198,6 +198,26 @@ namespace PDS.Models.Repository
             {
                 return true;
             }
+        }
+
+        /// <summary>
+        /// Método para atualizar a senha do usuário.
+        /// </summary>
+        /// <param name="email">String email.</param>
+        /// <param name="password">String password.</param>
+        public static void UpdateUserPassword(string email, string password)
+        {
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@email", email);
+            cmm.Parameters.AddWithValue("@password", password);
+
+            sql.Append("CALL updateUserPassword(@email, @password)");
+
+            cmm.CommandText = sql.ToString();
+
+            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
         }
 
         /// <summary>

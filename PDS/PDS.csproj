@@ -982,6 +982,8 @@
     <Content Include="Views\account\createaccountteacher.cshtml" />
     <Content Include="Views\account\createaccountstudent.cshtml" />
     <Content Include="Scripts\version.json" />
+    <Content Include="Views\account\changekey.cshtml" />
+    <Content Include="Views\account\changekeyconfirm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\ImagesProfile\Students\" />
