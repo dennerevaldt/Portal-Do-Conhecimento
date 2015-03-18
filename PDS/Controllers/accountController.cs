@@ -503,7 +503,7 @@ namespace PDS.Controllers
                     mail.To.Add("dnrevaldt@gmail.com");
                     mail.From = new MailAddress(email);
                     mail.Subject = "Mensagem do Portal";
-                    string Body = "<a href=http://localhost:51918/account/changekeyconfirm?email=" + emailC + "&password=" + passwordC +"> << Alterar Senha >> </a>";
+                    string Body = "<p>Alterar senha do <b>Portal do Conhecimento</b></p> <br /> <a href=http://localhost:51918/account/changekeyconfirm?email=" + emailC + "&password=" + passwordC + "> << Alterar Senha >> </a>";
                     mail.Body = Body;
                     mail.IsBodyHtml = true;
                     SmtpClient smtp = new SmtpClient();
