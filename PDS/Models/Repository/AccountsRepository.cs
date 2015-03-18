@@ -38,6 +38,24 @@ namespace PDS.Models.Repository
         }
 
         /// <summary>
+        /// Método para excluir conta de usuário.
+        /// </summary>
+        /// <param name="email">String email.</param>
+        public static void Delete(string email)
+        {
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@email", email);
+
+            sql.Append("CALL deleteAccount(@email)");
+
+            cmm.CommandText = sql.ToString();
+
+            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+        }
+
+        /// <summary>
         /// Método para retornar os dados de usuário.
         /// </summary>
         /// <param name="email">String Email.</param>
@@ -218,6 +236,50 @@ namespace PDS.Models.Repository
             cmm.CommandText = sql.ToString();
 
             ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+        }
+
+        /// <summary>
+        /// Método para fazer update dos dados da conta.
+        /// </summary>
+        /// <param name="account">Accounts account.</param>
+        public static void UpdateAccount(Accounts account)
+        {
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@idAccount", account.idAccount);
+            cmm.Parameters.AddWithValue("@email", account.email);
+
+            sql.Append("CALL updateAccount(@idAccount,@email)");
+
+            cmm.CommandText = sql.ToString();
+
+            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+        }
+
+        /// <summary>
+        /// Método para fazer update dos dados pessoais.
+        /// </summary>
+        /// <param name="person"Dynamic person.></param>
+        public static void UpdatePerson(dynamic person)
+        {
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@idPerson", person.idPerson);
+            cmm.Parameters.AddWithValue("@firstName", person.firstName);
+            cmm.Parameters.AddWithValue("@lastName", person.lastName);
+            cmm.Parameters.AddWithValue("@gender", person.gender);
+            cmm.Parameters.AddWithValue("@dateOfBirth", person.dateOfBirth);
+            cmm.Parameters.AddWithValue("@location", person.city);
+            cmm.Parameters.AddWithValue("@country", person.country);
+
+            sql.Append("CALL updatePerson(@idPerson,@firstName,@lastName,@gender,@dateOfBirth,@location,@country)");
+
+            cmm.CommandText = sql.ToString();
+
+            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            
         }
 
         /// <summary>

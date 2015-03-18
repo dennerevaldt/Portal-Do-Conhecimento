@@ -984,6 +984,11 @@
     <Content Include="Scripts\version.json" />
     <Content Include="Views\account\changekey.cshtml" />
     <Content Include="Views\account\changekeyconfirm.cshtml" />
+    <Content Include="Views\account\manage.cshtml" />
+    <Content Include="Views\Shared\_LayoutManage.cshtml" />
+    <Content Include="Views\account\changeKeyManage.cshtml" />
+    <Content Include="Views\account\changeDataManage.cshtml" />
+    <Content Include="Views\account\deleteAccountManage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\Uploads\ImagesProfile\Students\" />

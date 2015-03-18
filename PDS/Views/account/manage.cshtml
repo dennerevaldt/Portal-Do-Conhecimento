@@ -1,0 +1,67 @@
+﻿
+@{
+    ViewBag.Title = "Manage";
+    Layout = "~/Views/Shared/_LayoutManage.cshtml";
+}
+
+<div style="padding-top: 40px;" ng-controller="ManageController">
+    <div class="col-md-4">
+        <div>
+            <div style="padding-bottom: 30px;">
+                <img src="~/Content/images/logo-portal.png" style="width:100%;" />
+            </div>
+            <a class="btn btn-default btn-block" ng-click="changeDt()" ng-class="cDt">Alterar dados cadastrais</a>
+            <a class="btn btn-default btn-block" ng-click="changeK()" ng-class="cK">Alterar senha</a>
+            <a class="btn btn-default btn-block" ng-click="deleteAc()" ng-class="dAc">Excluir conta</a>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+
+        <div class="panel" ng-model="changeData" ng-show="changeData" >
+            <div class="panel panel-default">
+
+                @Html.Partial("~/Views/account/changeDataManage.cshtml")      
+                       
+            </div>
+        </div>
+
+        <div class="panel" ng-model="changeKey" ng-show="changeKey" >
+            <div class="panel panel-default">
+                
+                @Html.Partial("~/Views/account/changeKeyManage.cshtml")
+
+            </div>
+        </div>
+
+        <div class="panel" ng-model="deleteAccount" ng-show="deleteAccount" >
+            <div class="panel panel-default">
+                
+                <div class="panel-heading">
+                    <h1 class="panel-title">Excluir conta</h1>
+                </div>
+
+                <div class="panel-body">
+                    Apagar sua conta do Portal do conhecimento?
+                </div>
+
+                <div class="panel-footer clearfix">
+                    <div class="pull-right">
+                        <a href="#" class="btn btn-danger" data-toggle="modal" data-target=".delete-account">Excluir</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Modal delete account -->
+        <div class="modal fade delete-account" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    @Html.Partial("~/Views/account/deleteAccountManage.cshtml")
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

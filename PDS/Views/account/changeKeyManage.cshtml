@@ -1,0 +1,40 @@
+﻿@{
+    HttpCookie userInfo = Request.Cookies["userInfo"];
+    var iEmail = Server.UrlTokenDecode(userInfo["email"]);
+    string email = System.Text.UTF8Encoding.UTF8.GetString(iEmail);
+}
+
+<form id="formChangeKey" name="formChangeKey" class="form" method="post" ng-controller="ManageController" ng-submit="submitCk(formChangeKey)">
+
+    <div class="panel-heading">
+        <h1 class="panel-title">Alterar senha</h1>
+    </div>
+
+    <input type="hidden" id="inputEmail" name="inputEmail" ng-model="Account.email" value="@email" ng-init="Account.email='@email'" />
+
+    <div class="panel-body">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formChangeKey.inputPassword.$dirty && formChangeKey.inputPassword.$error.required }">
+            <label for="inputPassword">Nova senha</label>
+            <input type="password" class="form-control" name="inputPassword" ng-model="Account.password" placeholder="Senha" ng-minlength="6" required />
+            <p class="bg-danger" ng-show="formChangeKey.inputPassword.$error.minlength">
+                A senha deve conter no mínimo 6 caracteres.
+            </p>
+        </div>
+
+        <div class="text-center">
+            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+        </div>
+
+        <div ng-class="result">{{ resultMessage }}</div>
+
+        <div class="text-info">Obs.: Se você tem conta somente com login do facebook, se desejar, utilize este mesmo local para criar uma senha para login.</div>
+
+    </div>
+
+    <div class="panel-footer clearfix">
+        <div class="pull-right">
+            <button type="submit" href="#" class="btn btn-primary" ng-disabled="submitButton">Alterar</button>
+        </div>
+    </div>
+
+</form>

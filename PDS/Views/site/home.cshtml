@@ -248,12 +248,14 @@
 
                         if (data.success == true) {
                             $("#loadingStudent").hide();
+                            $("#resultStudent").removeClass("bg-danger");
                             $("#resultStudent").toggleClass("bg-success");
                             $("#resultStudent").html(data.message);
                             $("#submitButtonStudent").prop("disabled", true);
                         }
                         else {
                             $("#loadingStudent").hide();
+                            $("#resultStudent").removeClass("bg-success");
                             $("#resultStudent").toggleClass("bg-danger");
                             $("#resultStudent").html(data.message);
                         }

@@ -1,0 +1,153 @@
+﻿@{
+    HttpCookie userInfo = Request.Cookies["userInfo"];
+    var fName = Server.UrlTokenDecode(userInfo["first_name"]);
+    string first_name = System.Text.UTF8Encoding.UTF8.GetString(fName);
+
+    var lName = Server.UrlTokenDecode(userInfo["last_name"]);
+    string last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
+
+    var iGender = Server.UrlTokenDecode(userInfo["gender"]);
+    string gender = System.Text.UTF8Encoding.UTF8.GetString(iGender);
+    string male = "";
+    string female = "";
+
+    if (gender == "M")
+    {
+        male = "active";
+    }
+    else
+    {
+        female = "active";
+    }
+
+    var dBirthday = Server.UrlTokenDecode(userInfo["birthday"]);
+    string birthday = System.Text.UTF8Encoding.UTF8.GetString(dBirthday);
+    if (birthday == "No Informed")
+    {
+        birthday = string.Empty;
+    }
+    else
+    {
+        DateTime dateBirthday = Convert.ToDateTime(birthday);
+        birthday = dateBirthday.ToString("dd/MM/yyyy");
+    }
+
+    var iEmail = Server.UrlTokenDecode(userInfo["email"]);
+    string email = System.Text.UTF8Encoding.UTF8.GetString(iEmail);
+
+    var iAcessToken = Server.UrlTokenDecode(userInfo["acessToken"]);
+    string acessToken = System.Text.UTF8Encoding.UTF8.GetString(iAcessToken);
+
+    var iLocation = Server.UrlTokenDecode(userInfo["location"]);
+    string location = System.Text.UTF8Encoding.UTF8.GetString(iLocation);
+    if (location == "No Informed") { location = string.Empty; }
+
+    var iCountry = Server.UrlTokenDecode(userInfo["locale"]);
+    string country = System.Text.UTF8Encoding.UTF8.GetString(iCountry);
+
+    var idPersonC = Server.UrlTokenDecode(userInfo["id_person"]);
+    string idPerson = System.Text.UTF8Encoding.UTF8.GetString(idPersonC);
+
+    var idAccountC = Server.UrlTokenDecode(userInfo["id_account"]);
+    string idAccount = System.Text.UTF8Encoding.UTF8.GetString(idAccountC);
+
+    var acType = Server.UrlTokenDecode(userInfo["account_type"]);
+    string accountType = System.Text.UTF8Encoding.UTF8.GetString(acType);
+
+    HttpCookie cookie_image = Request.Cookies["userImage"];
+    var decValue = Server.UrlTokenDecode(cookie_image.Value);
+    string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValue);
+
+}
+
+<form id="changeDataForm" name="changeDataForm" method="post" ng-controller="ManageController" ng-submit="submitCd(changeDataForm)">
+    <div class="panel-heading">
+        <h1 class="panel-title">Alterar dados cadastrais</h1>
+    </div>
+
+    <div class="panel-body">
+
+        <input type="hidden" id="idPerson" name="idPerson" ng-model="Account.idPerson" ng-init="Account.idPerson='@idPerson'" />
+
+        <input type="hidden" id="idAccount" name="idAccount" ng-model="Account.idAccount" ng-init="Account.idAccount='@idAccount'" />
+
+        <input type="hidden" id="accountType" name="accountType" ng-model="Account.accountType" ng-init="Account.accountType='@accountType'" />
+
+
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.firstName.$dirty && changeDataForm.firstName.$error.required }">
+            <label for="inputFirstName">Primeiro nome</label>
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primeiro nome" ng-model="Account.firstName" ng-init="Account.firstName='@first_name'" value="@first_name" required />
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.lastName.$dirty && changeDataForm.lastName.$error.required }">
+            <label for="inputLastName">Segundo nome</label>
+            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Segundo nome" ng-model="Account.lastName" ng-init="Account.lastName='@last_name'" value="@last_name" required />
+        </div>
+
+
+        <div class="col-md-12 form-group">
+            <label for="inputGender">Sexo</label>
+            <br />
+            <div class="btn-group">
+                <label>
+                    @if (male == "active")
+                    {
+                        <input type="radio" id="inputGender" value="M" ng-model="Account.gender" ng-checked="true" ng-init="Account.gender='M'" />
+                    }
+                    else
+                    {
+                        <input type="radio" id="inputGender" value="M" ng-model="Account.gender" />
+                    }
+                    Homem
+                </label>
+                <label>
+                    @if (female == "active")
+                    {
+                        <input type="radio" id="inputGender" value="F" ng-model="Account.gender" ng-checked="true" ng-init="Account.gender='F'" />
+                    }
+                    else
+                    {
+                        <input type="radio" id="inputGender" value="F" ng-model="Account.gender" />
+                    }
+                    Mulher
+                </label>
+            </div>
+        </div>
+
+
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.dateOfBirth.$invalid || changeDataForm.dateOfBirth.$error.required }">
+            <label for="dateOfBirth">Data Nasc.</label>
+            <input type="text" class="form-control" id="dateOfBirth" name="dateOfBirth" value="@birthday" ng-model="Account.dateOfBirth" ng-init="Account.dateOfBirth='@birthday'" ng-minlength="10" ng-maxlength="10" placeholder="dd/mm/aaaa" required />
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.email.$error.required || changeDataForm.email.$error.email }">
+            <label for="inputEmail">Email</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="@email" ng-model="Account.email" ng-init="Account.email='@email'" readonly />
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.location.$dirty && changeDataForm.location.$error.required }">
+            <label for="inputCity">Cidade</label>
+            <input type="text" class="form-control" id="location" name="location" placeholder="Cidade" value="@location" ng-model="Account.location" ng-init="Account.location='@location'" required />
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.country.$dirty && changeDataForm.country.$error.required }">
+            <label for="inputCountry">País</label>
+            <input type="text" class="form-control" id="country" name="country" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" required />
+        </div>
+
+        <div class="text-center">
+            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+        </div>
+
+        <div ng-class="result">{{ resultMessage }}</div>
+
+        <div class="text-info">Obs.: Suas informações serão atualizadas no próximo login.</div>
+
+    </div>
+
+    <div class="panel-footer clearfix">
+        <div class="pull-right">
+            <button type="submit" class="btn btn-primary">Salvar</button>
+        </div>
+    </div>
+</form>

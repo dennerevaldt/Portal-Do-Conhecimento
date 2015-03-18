@@ -14,6 +14,7 @@
     <!-- Css -->
     @Styles.Render("~/Content/bootstrap.css")
     @Styles.Render("~/Content/home.css")
+    @Styles.Render("~/Content/Site.css")
     @Scripts.Render("~/bundles/modernizr")
 
     @{
@@ -23,6 +24,8 @@
 
         var lName = Server.UrlTokenDecode(userInfo["last_name"]);
         string last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
+
+        string idAccount = userInfo["id_account"];
         
         HttpCookie cookie_image = Request.Cookies["userImage"];
         var decValue = Server.UrlTokenDecode(cookie_image.Value);
@@ -47,10 +50,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a href="#menu-toggle" class="navbar-brand" id="menu-toggle">
-                    <span class="glyphicon glyphicon-indent-left"></span>
-                </a>
-                <p class="navbar-text">PORTAL DO CONHECIMENTO</p>
+                <a class="navbar-text" href="/home/index">PORTAL DO CONHECIMENTO</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
@@ -63,7 +63,7 @@
                             <li><a href="#">Convidar amigos</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Conta</li>
-                            <li><a href="/account/manage">Gerenciar</a></li>
+                            <li><a href="/account/manage?idAccount=@idAccount">Gerenciar</a></li>
                             <li><a href="/account/logoff">Sair</a></li>
                         </ul>
                     </li>
@@ -71,81 +71,19 @@
             </div><!--/.nav-collapse -->
         </div>
     </nav>
-    <div id="wrapper" class="">
-        <!-- Sidebar -->
-        <div id="sidebar-wrapper">
-            <div class="sidebar-brand">
-                <a href="#">
-                    <img src="@url_image" alt="Image" class="img-circle">
-                </a>
-                <h4 class="sidebar-heading">@first_name @last_name</h4>
-            </div>
-            <ul class="sidebar-nav">
-                <p class="sidebar-heading-li">MENU</p>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-user"></span> Professores</a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-duplicate"></span> Atividades <span class="badge">0</span></a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-star"></span> Estrelinhas</a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-envelope"></span> Mensagens <span class="badge">0</span></a>
-                </li>
-            </ul>
-        </div>
-        <!-- /#sidebar-wrapper -->
-        <!-- Page Content -->
-        @RenderBody()
-        <!-- /#page-content-wrapper -->
-        <!-- Page-content-wrapper-right -->
-        <div id="wrapper-right" class="toggled">
-            <div id="sidebar-wrapper-right">
-                <div id="page-content-wrapper-right">
-                    <div class="container-wrapper-right">
-                        <div class="row">
-                            <div class="col-md-12 border-b">
-                                <h4>Notas</h4>
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <textarea class="form-control share-text" name="anottation" id="anottation" rows="4" placeholder="Digite aqui..."></textarea>
-                                    </div>
-                                </div>
-                                <button class="btn btn-block btn-default">Salvar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Page-content-wrapper-right -->
-    </div>
-    <!-- /#wrapper -->
+       <div class="container" ng-app="manageModule">
+           @RenderBody()
+       </div>
+
     <!-- jQuery -->
     <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
 
-    <!-- Menu Toggle Script -->
-    <script>
-      $(document).ready(function () {
-        if (screen.width < 768){
-          $("#menu-toggle").toggleClass("visibility-visible");
-          $("#wrapper-right").toggleClass("toggled");
-        }
-        else{
-          $("#menu-toggle").toggleClass("visibility-collapse");
-          $("#wrapper").toggleClass("toggled");
-        }
-      })
-
-      $("#menu-toggle").click(function(e) {
-          e.preventDefault();
-          $("#wrapper").toggleClass("toggled");
-      });
-    </script>
-
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Angular JS-->
+    @Scripts.Render("~/Scripts/angular.js")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/controllers.js")
 </body>
 </html>

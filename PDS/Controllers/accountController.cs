@@ -20,6 +20,103 @@ namespace PDS.Controllers
         private static ReturnJson objectToSerializeErr;
         private static ReturnJson objectToSerializeSuc;
         private static string path = "";
+        private static dynamic person;
+
+        /// <summary>
+        /// Action para retornar painel de gerenciamento da conta de usuário.
+        /// </summary>
+        /// <returns>View manage.</returns>
+        public ActionResult manage()
+        {
+            return View("manage");
+        }
+
+        /// <summary>
+        /// Action para alterar dados cadastrais do usuário.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        public void changedata(FormCollection form)
+        {
+            try
+            {
+                Accounts account = new Accounts();
+                account.email = form["email"];
+                account.idAccount = Convert.ToInt64(form["idAccount"]);
+
+                AccountsRepository.UpdateAccount(account);
+
+                if (form["accountType"] == "T")
+                {
+                    Teachers teacher = new Teachers();
+
+                    teacher.idPerson = Convert.ToInt64(form["idPerson"]);
+                    teacher.firstName = form["firstName"];
+                    teacher.lastName = form["lastName"];
+                    teacher.gender = Convert.ToChar(form["gender"]);
+
+                    DateTime dataOrg = Convert.ToDateTime(form["dateOfbirth"]);
+                    string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                    DateTime dateValue = DateTime.Parse(formatForMySql);
+                    teacher.dateOfBirth = dateValue;
+
+                    teacher.city = form["location"];
+                    teacher.country = form["country"];
+
+                    AccountsRepository.UpdatePerson(teacher);
+                }
+                else
+                {
+                    Students student = new Students();
+
+                    student.idPerson = Convert.ToInt64(form["idPerson"]);
+                    student.firstName = form["firstName"];
+                    student.lastName = form["lastName"];
+                    student.gender = Convert.ToChar(form["gender"]);
+
+                    DateTime dataOrg = Convert.ToDateTime(form["dateOfbirth"]);
+                    string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                    DateTime dateValue = DateTime.Parse(formatForMySql);
+                    student.dateOfBirth = dateValue;
+
+                    student.city = form["location"];
+                    student.country = form["country"];
+
+                    AccountsRepository.UpdatePerson(student);
+                }
+
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Dados atualizados com sucesso.", returnUrl = null, location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                
+            }
+            catch (Exception)
+            {
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops.. estamos com problemas, verifique todos os campos e tente novamente.", returnUrl = null, location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+        }
+
+        /// <summary>
+        /// Action para deletar conta de usuário.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        [HttpPost]
+        public void deleteaccount(FormCollection form)
+        {
+            try
+            {
+                string email = form["email"];
+                AccountsRepository.Delete(email);
+
+                objectToSerializeSuc = new ReturnJson { success = true, message = null, returnUrl = null, location = "/site/home" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+
+            }
+            catch (Exception)
+            {
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops.. Estamos com problemas, tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+        }
 
         /// <summary>
         /// Action para criar uma nova conta de Teacher.
@@ -31,54 +128,61 @@ namespace PDS.Controllers
         {
             try
             {
-                // Insert Account
+                if (AccountsRepository.GetEmail(form["inputEmailT"].ToLower()) == false)
+                {    
+                    // Insert Account
 
-                Accounts account = new Accounts();
-                account.email = form["inputEmailT"];
-                account.password = AccountsRepository.EncryptPassword(form["inputPasswordT"]);
-                account.acessToken = form["inputAcessToken"];
+                    Accounts account = new Accounts();
+                    account.email = form["inputEmailT"];
+                    account.password = AccountsRepository.EncryptPassword(form["inputPasswordT"]);
+                    account.acessToken = form["inputAcessToken"];
 
-                Int64 idAccount = AccountsRepository.Create(account);
+                    Int64 idAccount = AccountsRepository.Create(account);
 
-                // Insert Teacher
+                    // Insert Teacher
 
-                Teachers teacher = new Teachers();
-                teacher.Account = new Accounts();
-                teacher.Account.idAccount = idAccount;
-                teacher.firstName = form["inputFirstNameT"];
-                teacher.lastName = form["inputLastNameT"];
-                teacher.gender = Convert.ToChar(form["inputGender"]);
+                    Teachers teacher = new Teachers();
+                    teacher.Account = new Accounts();
+                    teacher.Account.idAccount = idAccount;
+                    teacher.firstName = form["inputFirstNameT"];
+                    teacher.lastName = form["inputLastNameT"];
+                    teacher.gender = Convert.ToChar(form["inputGender"]);
 
-                DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
-                string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
-                DateTime dateValue = DateTime.Parse(formatForMySql);
-                teacher.dateOfBirth = dateValue;
+                    DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
+                    string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                    DateTime dateValue = DateTime.Parse(formatForMySql);
+                    teacher.dateOfBirth = dateValue;
 
-                teacher.accountType = Convert.ToChar("T");
-                teacher.city = form["inputCityT"];
-                teacher.country = form["inputCountryT"];
+                    teacher.accountType = Convert.ToChar("T");
+                    teacher.city = form["inputCityT"];
+                    teacher.country = form["inputCountryT"];
 
-                if (inputFile != null)
-                {
-                    string extension = Path.GetExtension(inputFile.FileName);
-                    path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
-                    inputFile.SaveAs(path);
+                    if (inputFile != null)
+                    {
+                        string extension = Path.GetExtension(inputFile.FileName);
+                        path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
+                        inputFile.SaveAs(path);
 
-                    teacher.urlImageProfile = path;
-                }
-                else
-                {
-                    teacher.urlImageProfile = "/Content/images/noPhoto.png";
-                }
+                        teacher.urlImageProfile = path;
+                    }
+                    else
+                    {
+                        teacher.urlImageProfile = "/Content/images/noPhoto.png";
+                    }
 
                 
 
-                TeachersRepository.Create(teacher);
+                    TeachersRepository.Create(teacher);
 
-                // Return Sucess
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
-
+                    // Return Sucess
+                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                }
+                else
+                {
+                    objectToSerializeSuc = new ReturnJson { success = false, message = "Email já existente no portal, informe outro e tente novamente.", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                }
             }
             catch (Exception)
             {
@@ -99,54 +203,61 @@ namespace PDS.Controllers
         {
             try
             {
-                // Insert Account
-
-                Accounts account = new Accounts();
-                account.email = form["inputEmail"];
-                account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
-                account.acessToken = form["inputAcessToken"];
-
-                Int64 idAccount = AccountsRepository.Create(account);
-
-                // Insert Teacher
-
-                Students student = new Students();
-                student.Account = new Accounts();
-                student.Account.idAccount = idAccount;
-                student.firstName = form["inputFirstName"];
-                student.lastName = form["inputLastName"];
-                student.gender = Convert.ToChar(form["inputGender"]);
-
-                DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
-                string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
-                DateTime dateValue = DateTime.Parse(formatForMySql);
-                student.dateOfBirth = dateValue;
-                
-
-                student.accountType = Convert.ToChar("S");
-                student.city = form["inputCity"];
-                student.country = form["inputCountry"];
-
-                if (inputFile != null)
+                if (AccountsRepository.GetEmail(form["inputEmail"].ToLower()) == false)
                 {
-                    string extension = Path.GetExtension(inputFile.FileName);
-                    path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
-                    inputFile.SaveAs(path);
+                    // Insert Account
 
-                    student.urlImageProfile = path;
+                    Accounts account = new Accounts();
+                    account.email = form["inputEmail"];
+                    account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                    account.acessToken = form["inputAcessToken"];
+
+                    Int64 idAccount = AccountsRepository.Create(account);
+
+                    // Insert Teacher
+
+                    Students student = new Students();
+                    student.Account = new Accounts();
+                    student.Account.idAccount = idAccount;
+                    student.firstName = form["inputFirstName"];
+                    student.lastName = form["inputLastName"];
+                    student.gender = Convert.ToChar(form["inputGender"]);
+
+                    DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
+                    string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                    DateTime dateValue = DateTime.Parse(formatForMySql);
+                    student.dateOfBirth = dateValue;
+
+
+                    student.accountType = Convert.ToChar("S");
+                    student.city = form["inputCity"];
+                    student.country = form["inputCountry"];
+
+                    if (inputFile != null)
+                    {
+                        string extension = Path.GetExtension(inputFile.FileName);
+                        path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
+                        inputFile.SaveAs(path);
+
+                        student.urlImageProfile = path;
+                    }
+                    else
+                    {
+                        student.urlImageProfile = "/Content/images/noPhoto.png";
+                    }
+
+
+                    StudentsRepository.Create(student);
+
+                    // Return Sucess
+                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                 }
                 else
                 {
-                    student.urlImageProfile = "/Content/images/noPhoto.png";
+                    objectToSerializeSuc = new ReturnJson { success = false, message = "Email já existente no portal, informe outro e tente novamente.", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                 }
-               
-
-                StudentsRepository.Create(student);
-
-                // Return Sucess
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
-
             }
             catch (Exception)
             {
@@ -197,6 +308,22 @@ namespace PDS.Controllers
 
                 TeachersRepository.Create(teacher);
 
+                dynamic userInfo = AccountsRepository.GetUserData(account.email);
+
+                Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
+                Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+                Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+                Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
+                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D1"));
+                Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+                Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+                Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+                Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+                Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+                Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+                Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+
+
                 // Return Sucess
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = null, location = "/home/index" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
@@ -245,10 +372,25 @@ namespace PDS.Controllers
 
                 student.accountType = Convert.ToChar("S");
                 student.city = form["location"];
-                student.country = form["locale"];
+                student.country = form["country"];
                 student.urlImageProfile = form["urlImageProfile"];
 
                 StudentsRepository.Create(student);
+
+                dynamic userInfo = AccountsRepository.GetUserData(account.email);
+
+                Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
+                Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+                Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+                Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
+                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D1"));
+                Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+                Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+                Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+                Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+                Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+                Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+                Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
 
                 // Return Sucess
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = null, location = "/home/index" };
@@ -445,7 +587,7 @@ namespace PDS.Controllers
 
                 AccountsRepository.UpdateUserPassword(email, password);
 
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Senha alterada com sucesso, faça login e aproveite!", returnUrl = null, location = "" };
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Senha alterada com sucesso.", returnUrl = null, location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
             }
             catch (Exception)
@@ -462,18 +604,18 @@ namespace PDS.Controllers
         /// <param name="userInfo">Dynamic userInfo.</param>
         private void CreateCookieInfoUser(dynamic userInfo)
         {
-            Response.Cookies["userInfo"]["id_account"] = userInfo.Account.idAccount.ToString("D9");
+            Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
             Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
             Response.Cookies["userInfo"]["password"] = encrypt(userInfo.Account.password);
             Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
-            Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D9"));
+            Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
             if (userInfo.accountType.ToString() == "T")
             {
-                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D9"));
+                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D1"));
             }
             else
             {
-                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D9"));
+                Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D1"));
             }
             Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
             Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
@@ -543,5 +685,6 @@ namespace PDS.Controllers
             var c = new HttpCookie(key, encValue) { Expires = DateTime.Now.AddDays(7) };
             Response.Cookies.Add(c);
         }
+
     }
 }

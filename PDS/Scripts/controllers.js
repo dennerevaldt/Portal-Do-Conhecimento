@@ -236,3 +236,145 @@ changeKeyModule.controller('ChangeKeyConfirmController', function ($scope, $http
     }
 
 });
+
+manageModule.controller('ManageController', function ($scope, $http) {
+
+    $scope.changeData = true;
+    $scope.changeKey = false;
+    $scope.deleteAccount = false;
+    $scope.cK = "";
+    $scope.cDt = "active";
+    $scope.dAc = "";
+
+    $scope.changeDt = function () {
+        $scope.changeData = true;
+        $scope.changeKey = false;
+        $scope.deleteAccount = false;
+
+        $scope.cK = "";
+        $scope.cDt = "active";
+        $scope.dAc = "";
+    }
+
+    $scope.changeK = function () {
+        $scope.changeData = false;
+        $scope.changeKey = true;
+        $scope.deleteAccount = false;
+
+        $scope.cK = "active";
+        $scope.cDt = "";
+        $scope.dAc = "";
+    }
+
+    $scope.deleteAc = function () {
+        $scope.changeData = false;
+        $scope.changeKey = false;
+        $scope.deleteAccount = true;
+
+        $scope.cK = "";
+        $scope.cDt = "";
+        $scope.dAc = "active";
+    }
+
+    //submit key
+
+    $scope.submitCk = function (formChangeKey) {
+        $scope.submitButton = true;
+        if (formChangeKey.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/account/changekeyconfirmed',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-success';
+                    $scope.loading = false;
+
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
+    //submit delete
+
+    $scope.submitAc = function (formDeleteAccount) {
+        $scope.submitButton = true;
+        if (formDeleteAccount.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/account/deleteaccount',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.loading = false;
+                    location.href = data.location;
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Estamos com problemas, tente novamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
+    
+    //submit change data
+
+    $scope.submitCd = function (formChangeData) {
+        $scope.submitButton = true;
+        if (formChangeData.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/account/changedata',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-success';
+                    $scope.loading = false;
+
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
+})

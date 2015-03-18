@@ -1,0 +1,31 @@
+﻿@{
+    HttpCookie userInfo = Request.Cookies["userInfo"];
+    var iEmail = Server.UrlTokenDecode(userInfo["email"]);
+    string email = System.Text.UTF8Encoding.UTF8.GetString(iEmail);
+}
+
+<form id="formDeleteAccount" name="formDeleteAccount" class="form" method="post" ng-submit="submitAc(formDeleteAccount)">
+
+    <div class=" modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title-custom" id="myModalLabel">Confirmação</h4>
+    </div>
+    <div class="modal-body">
+        <p>Deseja realmente apagar sua conta no <b>Portal do Conhecimento</b> ?</p>
+
+        <div ng-class="result">{{ resultMessage }}</div>
+
+        <div class="text-center">
+            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+        </div>
+
+        <input type="hidden" id="inputEmail" name="inputEmail" ng-model="Account.email" value="@email" ng-init="Account.email='@email'" />
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+        <button type="submit" class="btn btn-danger" ng-disabled="submitButton">Excluir</button>
+    </div>
+</form>
+
+
+
