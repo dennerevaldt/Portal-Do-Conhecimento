@@ -19,7 +19,8 @@ namespace PDS.Controllers
     {
         private static ReturnJson objectToSerializeErr;
         private static ReturnJson objectToSerializeSuc;
-        private static string path = "";
+        private static string path = string.Empty;
+        private static string extension = string.Empty;
         private static dynamic person;
 
         /// <summary>
@@ -148,7 +149,7 @@ namespace PDS.Controllers
                     teacher.lastName = form["inputLastNameT"];
                     teacher.gender = Convert.ToChar(form["inputGender"]);
 
-                    DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
+                    DateTime dataOrg = Convert.ToDateTime(form["inputBirthdayT"]);
                     string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
                     DateTime dateValue = DateTime.Parse(formatForMySql);
                     teacher.dateOfBirth = dateValue;
@@ -159,11 +160,11 @@ namespace PDS.Controllers
 
                     if (inputFile != null)
                     {
-                        string extension = Path.GetExtension(inputFile.FileName);
-                        path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
+                        extension = Path.GetExtension(inputFile.FileName);
+                        path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
                         inputFile.SaveAs(path);
 
-                        teacher.urlImageProfile = path;
+                        teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/"+idAccount.ToString()+extension;
                     }
                     else
                     {
@@ -236,10 +237,10 @@ namespace PDS.Controllers
                     if (inputFile != null)
                     {
                         string extension = Path.GetExtension(inputFile.FileName);
-                        path = Path.Combine(Server.MapPath("~/App_Data/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
+                        path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
                         inputFile.SaveAs(path);
 
-                        student.urlImageProfile = path;
+                        student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
                     }
                     else
                     {
@@ -500,8 +501,8 @@ namespace PDS.Controllers
                     string passwordC = account.Account.password;
 
                     System.Net.Mail.MailMessage mail = new System.Net.Mail.MailMessage();
-                    mail.To.Add("dnrevaldt@gmail.com");
-                    mail.From = new MailAddress(email);
+                    mail.To.Add(email);
+                    mail.From = new MailAddress("dnrevaldt@gmail.com","Portal do conhecimento");
                     mail.Subject = "Mensagem do Portal";
                     string Body = "<p>Alterar senha do <b>Portal do Conhecimento</b></p> <br /> <a href=http://localhost:51918/account/changekeyconfirm?email=" + emailC + "&password=" + passwordC + "> << Alterar Senha >> </a>";
                     mail.Body = Body;
@@ -511,7 +512,7 @@ namespace PDS.Controllers
                     smtp.Port = 587;
                     smtp.UseDefaultCredentials = false;
                     smtp.Credentials = new System.Net.NetworkCredential
-                    ("dnrevaldt@gmail.com", "02051994");// Enter seders User name and password
+                    ("dnrevaldt@gmail.com", "letitbe10");// Enter seders User name and password
                     smtp.EnableSsl = true;
 
                     try

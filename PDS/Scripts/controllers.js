@@ -378,3 +378,42 @@ manageModule.controller('ManageController', function ($scope, $http) {
     }
 
 })
+
+homePortal.controller('InviteFriendsController', function ($scope, $http) {
+    $scope.submitButton = false;
+    $scope.loading = false;
+
+    $scope.submit = function (inviteForm) {
+        $scope.submitButton = true;
+        if (inviteForm.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/home/invitefriend',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-success';
+                    $scope.loading = false;
+
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
+
+})

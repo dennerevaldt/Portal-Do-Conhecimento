@@ -991,8 +991,9 @@
     <Content Include="Views\account\deleteAccountManage.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\Uploads\ImagesProfile\Students\" />
-    <Folder Include="App_Data\Uploads\ImagesProfile\Teachers\" />
+    <Folder Include="App_Data\" />
+    <Folder Include="Content\Uploads\ImagesProfile\Students\" />
+    <Folder Include="Content\Uploads\ImagesProfile\Teachers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

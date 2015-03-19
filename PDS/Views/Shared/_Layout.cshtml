@@ -36,7 +36,7 @@
       <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body>
+<body ng-app="homePortal">
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top font-light">
         <div class="container">
@@ -59,8 +59,7 @@
                             <img src="@url_image" alt="Image" class="img-navbar" /> @first_name <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            @*<li><a href="#">Preferências</a></li>*@
-                            <li><a href="#">Convidar amigos</a></li>
+                            <li><a href="#" data-toggle="modal" data-target=".invite-friends">Convidar amigos</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Conta</li>
                             <li><a href="/account/manage">Gerenciar</a></li>
@@ -147,5 +146,10 @@
 
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <!-- Angular JS-->
+    @Scripts.Render("~/Scripts/angular.js")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/controllers.js")
 </body>
 </html>

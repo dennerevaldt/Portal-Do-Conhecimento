@@ -292,7 +292,7 @@ namespace PDS.Controllers
                 smtp.Port = 587;
                 smtp.UseDefaultCredentials = false;
                 smtp.Credentials = new System.Net.NetworkCredential
-                ("dnrevaldt@gmail.com", "02051994");// Enter seders User name and password
+                ("dnrevaldt@gmail.com", "letitbe10");// Enter seders User name and password
                 smtp.EnableSsl = true;
 
                 try

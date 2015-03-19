@@ -13,9 +13,12 @@ body {
 	color: black;	
 }
 
-/* text-nav ------------------------------- */
-
-/* text-nav ------------------------------- */
+.bg-success, .bg-danger {
+  padding: 15px;
+  margin: 0;
+  margin-top: 15px;
+  text-align: center;
+}
 
 
 /* Panel post ------------------------------------------ */
