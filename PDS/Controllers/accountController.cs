@@ -175,8 +175,12 @@ namespace PDS.Controllers
 
                     TeachersRepository.Create(teacher);
 
+                    dynamic user = AccountsRepository.GetUserData(teacher.Account.email);
+
+                    CreateCookieInfoUser(user);
+
                     // Return Sucess
-                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
                     Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                 }
                 else
@@ -250,8 +254,12 @@ namespace PDS.Controllers
 
                     StudentsRepository.Create(student);
 
+                    dynamic user = AccountsRepository.GetUserData(student.Account.email);
+
+                    CreateCookieInfoUser(user);
+
                     // Return Sucess
-                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso, faça login e aproveite!", returnUrl = "", location = "" };
+                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
                     Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                 }
                 else

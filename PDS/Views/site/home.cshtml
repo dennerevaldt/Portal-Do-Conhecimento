@@ -224,6 +224,7 @@
                             $("#resultTeacher").toggleClass("bg-success");
                             $("#resultTeacher").html(data.message);
                             $("#submitButtonTeacher").prop("disabled", true);
+                            location.href = data.location;
                         }
                         else {
                             $("#loadingTeacher").hide();
@@ -252,6 +253,7 @@
                             $("#resultStudent").toggleClass("bg-success");
                             $("#resultStudent").html(data.message);
                             $("#submitButtonStudent").prop("disabled", true);
+                            location.href = data.location;
                         }
                         else {
                             $("#loadingStudent").hide();

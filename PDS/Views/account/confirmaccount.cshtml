@@ -178,7 +178,7 @@
                         <input type="text" class="form-control" id="country" name="country" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" required/>
                     </div>
 
-                    <button type="submit" class="btn btn-success btn-block" ng-disabled="submitConfirmButton">Confirmar</button>
+                    <button type="submit" class="btn btn-success btn-block" ng-disabled="!confirmAccount.$valid || submitConfirmButton">Confirmar</button>
 
                     <div class="text-center loading">
                         <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />

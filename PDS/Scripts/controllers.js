@@ -100,7 +100,6 @@ homeSite.controller('ChangeKeyController', function ($scope, $http) {
                     $scope.resultMessage = data.message;
                     $scope.result = 'bg-success';
                     $scope.loading = false;
-
                 } else {
                     $scope.submitButton = false;
                     $scope.resultMessage = data.message;
@@ -200,7 +199,6 @@ accountModule.controller('ConfirmAccountController', function ($scope, $http) {
 });
 
 changeKeyModule.controller('ChangeKeyConfirmController', function ($scope, $http) {
-    $scope.submitButton = false;
     $scope.loading = false;
 
     $scope.submit = function (formChangeKeyConfirm) {
@@ -215,20 +213,17 @@ changeKeyModule.controller('ChangeKeyConfirmController', function ($scope, $http
             }).success(function (data) {
                 console.log(data);
                 if (data.success) { //success comes from the return json object
-                    $scope.submitButton = true;
                     $scope.resultMessage = data.message;
                     $scope.result = 'bg-success';
                     $scope.loading = false;
 
                 } else {
-                    $scope.submitButton = false;
                     $scope.resultMessage = data.message;
                     $scope.result = 'bg-danger';
                     $scope.loading = false;
                 }
             });
         } else {
-            $scope.submitButton = false;
             $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
             $scope.result = 'bg-danger';
             $scope.loading = false;
@@ -237,7 +232,7 @@ changeKeyModule.controller('ChangeKeyConfirmController', function ($scope, $http
 
 });
 
-manageModule.controller('ManageController', function ($scope, $http) {
+manageModule.controller('ManageController', function ($scope, $http, $timeout) {
 
     $scope.changeData = true;
     $scope.changeKey = false;
@@ -245,6 +240,9 @@ manageModule.controller('ManageController', function ($scope, $http) {
     $scope.cK = "";
     $scope.cDt = "active";
     $scope.dAc = "";
+    $scope.resultShow = false;
+;
+
 
     $scope.changeDt = function () {
         $scope.changeData = true;
@@ -294,6 +292,10 @@ manageModule.controller('ManageController', function ($scope, $http) {
                     $scope.resultMessage = data.message;
                     $scope.result = 'bg-success';
                     $scope.loading = false;
+                    $scope.resultShow = true;
+                    $timeout(function () {
+                        $scope.resultShow = false;
+                    }, 3000);
 
                 } else {
                     $scope.submitButton = false;

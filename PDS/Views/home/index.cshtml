@@ -142,6 +142,9 @@
                     <div class="form-group" ng-class="{ 'has-error has-feedback': inviteForm.inputEmail.$dirty && inviteForm.inputEmail.$error.email }">
                         <label for="inputEmail">Email</label>
                         <input type="email" class="form-control" id="inputEmail" name="inputEmail" ng-model="Account.email" placeholder="Email" required />
+                        <p class="bg-danger" ng-show="inviteForm.inputEmail.$error.email">
+                            Email inválido.
+                        </p>
                     </div>
                     <div class="text-center">
                         <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
