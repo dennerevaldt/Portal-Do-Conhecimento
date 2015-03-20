@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MySql.Data.MySqlClient;
+using Newtonsoft.Json;
 using PDS.Models.Entities;
 using PDS.Models.Repository;
 using PDS.Models.Utilities;
@@ -131,65 +132,74 @@ namespace PDS.Controllers
             try
             {
                 if (AccountsRepository.GetEmail(form["inputEmailT"].ToLower()) == false)
-                {    
-                    // Insert Account
+                {
+                    // get type file
+                    string type = Path.GetExtension(inputFile.FileName);
 
-                    Accounts account = new Accounts();
-                    account.email = form["inputEmailT"];
-                    account.password = AccountsRepository.EncryptPassword(form["inputPasswordT"]);
-                    account.acessToken = form["inputAcessToken"];
-
-                    Int64 idAccount = AccountsRepository.Create(account);
-
-                    // Insert Teacher
-
-                    Teachers teacher = new Teachers();
-                    teacher.Account = new Accounts();
-                    teacher.Account.idAccount = idAccount;
-                    teacher.firstName = form["inputFirstNameT"];
-                    teacher.lastName = form["inputLastNameT"];
-                    teacher.gender = Convert.ToChar(form["inputGender"]);
-
-                    DateTime dataOrg = Convert.ToDateTime(form["inputBirthdayT"]);
-                    string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
-                    DateTime dateValue = DateTime.Parse(formatForMySql);
-                    teacher.dateOfBirth = dateValue;
-
-                    teacher.accountType = Convert.ToChar("T");
-                    teacher.city = form["inputCityT"];
-                    teacher.country = form["inputCountryT"];
-
-                    if (inputFile != null)
+                    if(type == ".jpg" || type == ".png")
                     {
-                        //extension = Path.GetExtension(inputFile.FileName);
-                        //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
-                        //inputFile.SaveAs(path);
+                        // Insert Account
 
-                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+                        Accounts account = new Accounts();
+                        account.email = form["inputEmailT"];
+                        account.password = AccountsRepository.EncryptPassword(form["inputPasswordT"]);
+                        account.acessToken = form["inputAcessToken"];
 
-                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200,200));
+                        Int64 idAccount = AccountsRepository.Create(account);
 
-                        imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"),idAccount.ToString()+".jpg"));
+                        // Insert Teacher
 
-                        teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/"+idAccount.ToString()+".jpg";
+                        Teachers teacher = new Teachers();
+                        teacher.Account = new Accounts();
+                        teacher.Account.idAccount = idAccount;
+                        teacher.firstName = form["inputFirstNameT"];
+                        teacher.lastName = form["inputLastNameT"];
+                        teacher.gender = Convert.ToChar(form["inputGender"]);
+
+                        DateTime dataOrg = Convert.ToDateTime(form["inputBirthdayT"]);
+                        string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                        DateTime dateValue = DateTime.Parse(formatForMySql);
+                        teacher.dateOfBirth = dateValue;
+
+                        teacher.accountType = Convert.ToChar("T");
+                        teacher.city = form["inputCityT"];
+                        teacher.country = form["inputCountryT"];
+
+                        if (inputFile != null)
+                        {
+                            //extension = Path.GetExtension(inputFile.FileName);
+                            //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
+                            //inputFile.SaveAs(path);
+
+                            Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                            Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200,200));
+
+                            imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"),idAccount.ToString()+".jpg"));
+
+                            teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/"+idAccount.ToString()+".jpg";
+                        }
+                        else
+                        {
+                            teacher.urlImageProfile = "/Content/images/noPhoto.png";
+                        }
+            
+                        TeachersRepository.Create(teacher);
+
+                        dynamic user = AccountsRepository.GetUserData(form["inputEmailT"].ToLower());
+
+                        CreateCookieInfoUser(user);
+                        FormsAuthentication.SetAuthCookie(form["inputEmailT"].ToLower(), false);
+
+                        // Return Sucess
+                        objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                     }
                     else
                     {
-                        teacher.urlImageProfile = "/Content/images/noPhoto.png";
+                        objectToSerializeSuc = new ReturnJson { success = false, message = "Formato de imagem não permitido, tente novamente.", returnUrl = "", location = "" };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                     }
-
-                
-
-                    TeachersRepository.Create(teacher);
-
-                    dynamic user = AccountsRepository.GetUserData(form["inputEmailT"].ToLower());
-
-                    CreateCookieInfoUser(user);
-                    FormsAuthentication.SetAuthCookie(form["inputEmailT"].ToLower(), false);
-
-                    // Return Sucess
-                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
-                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                 }
                 else
                 {
@@ -200,7 +210,7 @@ namespace PDS.Controllers
             catch (Exception)
             {
                 // Return Error
-                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente.", returnUrl = "", location = "" };
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, verifique os campos e tente novamente.", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
             }
             
@@ -218,67 +228,76 @@ namespace PDS.Controllers
             {
                 if (AccountsRepository.GetEmail(form["inputEmail"].ToLower()) == false)
                 {
-                    // Insert Account
+                    // get type file
+                    string type = Path.GetExtension(inputFile.FileName);
 
-                    Accounts account = new Accounts();
-                    account.email = form["inputEmail"];
-                    account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
-                    account.acessToken = form["inputAcessToken"];
-
-                    Int64 idAccount = AccountsRepository.Create(account);
-
-                    // Insert Teacher
-
-                    Students student = new Students();
-                    student.Account = new Accounts();
-                    student.Account.idAccount = idAccount;
-                    student.firstName = form["inputFirstName"];
-                    student.lastName = form["inputLastName"];
-                    student.gender = Convert.ToChar(form["inputGender"]);
-
-                    DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
-                    string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
-                    DateTime dateValue = DateTime.Parse(formatForMySql);
-                    student.dateOfBirth = dateValue;
-
-
-                    student.accountType = Convert.ToChar("S");
-                    student.city = form["inputCity"];
-                    student.country = form["inputCountry"];
-
-                    if (inputFile != null)
+                    if (type == ".jpg" || type == ".png")
                     {
-                        //string extension = Path.GetExtension(inputFile.FileName);
-                        //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
-                        //inputFile.SaveAs(path);
+                        // Insert Account
 
-                        //student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
+                        Accounts account = new Accounts();
+                        account.email = form["inputEmail"];
+                        account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                        account.acessToken = form["inputAcessToken"];
 
-                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+                        Int64 idAccount = AccountsRepository.Create(account);
 
-                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+                        // Insert Teacher
 
-                        imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg"));
+                        Students student = new Students();
+                        student.Account = new Accounts();
+                        student.Account.idAccount = idAccount;
+                        student.firstName = form["inputFirstName"];
+                        student.lastName = form["inputLastName"];
+                        student.gender = Convert.ToChar(form["inputGender"]);
 
-                        student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + ".jpg";
+                        DateTime dataOrg = Convert.ToDateTime(form["inputBirthday"]);
+                        string formatForMySql = dataOrg.ToString("yyyy-MM-dd HH:mm");
+                        DateTime dateValue = DateTime.Parse(formatForMySql);
+                        student.dateOfBirth = dateValue;
 
+                        student.accountType = Convert.ToChar("S");
+                        student.city = form["inputCity"];
+                        student.country = form["inputCountry"];
+
+                        if (inputFile != null)
+                        {
+                            //string extension = Path.GetExtension(inputFile.FileName);
+                            //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
+                            //inputFile.SaveAs(path);
+
+                            //student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
+
+                            Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                            Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+
+                            imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg"));
+
+                            student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + ".jpg";
+
+                        }
+                        else
+                        {
+                            student.urlImageProfile = "/Content/images/noPhoto.png";
+                        }
+
+                        StudentsRepository.Create(student);
+
+                        dynamic user = AccountsRepository.GetUserData(form["inputEmail"].ToLower());
+
+                        CreateCookieInfoUser(user);
+                        FormsAuthentication.SetAuthCookie(form["inputEmail"].ToLower(), false);
+
+                        // Return Sucess
+                        objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                     }
                     else
                     {
-                        student.urlImageProfile = "/Content/images/noPhoto.png";
+                        objectToSerializeSuc = new ReturnJson { success = false, message = "Formato de imagem não permitido, tente novamente.", returnUrl = "", location = "" };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                     }
-
-
-                    StudentsRepository.Create(student);
-
-                    dynamic user = AccountsRepository.GetUserData(form["inputEmail"].ToLower());
-
-                    CreateCookieInfoUser(user);
-                    FormsAuthentication.SetAuthCookie(form["inputEmail"].ToLower(), false);
-
-                    // Return Sucess
-                    objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
-                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                 }
                 else
                 {
@@ -289,7 +308,7 @@ namespace PDS.Controllers
             catch (Exception)
             {
                 // Return Error
-                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, tente novamente mais tarde.", returnUrl = "", location = "" };
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Ops. Estamos com problemas, verifique os campos e tente novamente.", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
             }
 
