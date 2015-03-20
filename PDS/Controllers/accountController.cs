@@ -175,9 +175,10 @@ namespace PDS.Controllers
 
                     TeachersRepository.Create(teacher);
 
-                    dynamic user = AccountsRepository.GetUserData(teacher.Account.email);
+                    dynamic user = AccountsRepository.GetUserData(form["inputEmailT"].ToLower());
 
                     CreateCookieInfoUser(user);
+                    FormsAuthentication.SetAuthCookie(form["inputEmailT"].ToLower(), false);
 
                     // Return Sucess
                     objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
@@ -245,6 +246,7 @@ namespace PDS.Controllers
                         inputFile.SaveAs(path);
 
                         student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
+
                     }
                     else
                     {
@@ -254,9 +256,10 @@ namespace PDS.Controllers
 
                     StudentsRepository.Create(student);
 
-                    dynamic user = AccountsRepository.GetUserData(student.Account.email);
+                    dynamic user = AccountsRepository.GetUserData(form["inputEmail"].ToLower());
 
                     CreateCookieInfoUser(user);
+                    FormsAuthentication.SetAuthCookie(form["inputEmail"].ToLower(), false);
 
                     // Return Sucess
                     objectToSerializeSuc = new ReturnJson { success = true, message = "Contra criada com sucesso. Entrando...", returnUrl = "", location = "/home/index" };
@@ -694,6 +697,5 @@ namespace PDS.Controllers
             var c = new HttpCookie(key, encValue) { Expires = DateTime.Now.AddDays(7) };
             Response.Cookies.Add(c);
         }
-
     }
 }

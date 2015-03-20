@@ -74,14 +74,14 @@
         <input type="hidden" id="accountType" name="accountType" ng-model="Account.accountType" ng-init="Account.accountType='@accountType'" />
 
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.firstName.$dirty && changeDataForm.firstName.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.firstName.$invalid }">
             <label for="inputFirstName">Primeiro nome</label>
-            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primeiro nome" ng-model="Account.firstName" ng-init="Account.firstName='@first_name'" value="@first_name" required />
+            <input type="text" class="form-control" id="firstName" name="firstName" placeholder="Primeiro nome" ng-model="Account.firstName" ng-init="Account.firstName='@first_name'" value="@first_name" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" required />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.lastName.$dirty && changeDataForm.lastName.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.lastName.$invalid }">
             <label for="inputLastName">Segundo nome</label>
-            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Segundo nome" ng-model="Account.lastName" ng-init="Account.lastName='@last_name'" value="@last_name" required />
+            <input type="text" class="form-control" id="lastName" name="lastName" placeholder="Segundo nome" ng-model="Account.lastName" ng-init="Account.lastName='@last_name'" value="@last_name" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" required />
         </div>
 
 
@@ -125,14 +125,14 @@
             <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="@email" ng-model="Account.email" ng-init="Account.email='@email'" readonly />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.location.$dirty && changeDataForm.location.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.location.$invalid }">
             <label for="inputCity">Cidade</label>
-            <input type="text" class="form-control" id="location" name="location" placeholder="Cidade" value="@location" ng-model="Account.location" ng-init="Account.location='@location'" required />
+            <input type="text" class="form-control" id="location" name="location" placeholder="Cidade" value="@location" ng-model="Account.location" ng-init="Account.location='@location'" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" required />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.country.$dirty && changeDataForm.country.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': changeDataForm.country.$invalid }">
             <label for="inputCountry">País</label>
-            <input type="text" class="form-control" id="country" name="country" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" required />
+            <input type="text" class="form-control" id="country" name="country" placeholder="País" value="@country" ng-model="Account.country" ng-init="Account.country='@country'" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" required />
         </div>
 
         <div class="text-center">

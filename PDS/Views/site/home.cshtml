@@ -197,11 +197,11 @@
     <!-- jQuery -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     @Scripts.Render("~/Scripts/jquery.form.js")
-
     <script>
         
     </script>
     <script type="text/javascript">
+
         jQuery(document).ready(function () {
 
             $("#loadingTeacher").hide();
@@ -230,6 +230,7 @@
                             $("#loadingTeacher").hide();
                             $("#resultTeacher").toggleClass("bg-danger");
                             $("#resultTeacher").html(data.message);
+                            $("#submitButtonTeacher").prop("disabled", false);
                         }
                     }
                 })
@@ -260,6 +261,7 @@
                             $("#resultStudent").removeClass("bg-success");
                             $("#resultStudent").toggleClass("bg-danger");
                             $("#resultStudent").html(data.message);
+                            $("#submitButtonStudent").prop("disabled", false);
                         }
                     }
                 })

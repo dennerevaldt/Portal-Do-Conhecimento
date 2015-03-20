@@ -128,35 +128,5 @@
 </div>
 <!-- /#page-content-wrapper -->
 
- <!-- Modal Invite-Friends -->
-<div class="modal fade invite-friends" ng-controller="InviteFriendsController">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form method="post" id="inviteForm" name="inviteForm" ng-submit="submit(inviteForm)">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title-custom">Convidar amigo</h4>
-                </div>
-                <div class="modal-body">
 
-                    <div class="form-group" ng-class="{ 'has-error has-feedback': inviteForm.inputEmail.$dirty && inviteForm.inputEmail.$error.email }">
-                        <label for="inputEmail">Email</label>
-                        <input type="email" class="form-control" id="inputEmail" name="inputEmail" ng-model="Account.email" placeholder="Email" required />
-                        <p class="bg-danger" ng-show="inviteForm.inputEmail.$error.email">
-                            Email inválido.
-                        </p>
-                    </div>
-                    <div class="text-center">
-                        <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
-                    </div>
-
-                    <div ng-class="result">{{ resultMessage }}</div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Enviar convite</button>
-                </div>
-            </form>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
 

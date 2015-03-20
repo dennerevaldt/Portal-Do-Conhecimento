@@ -7,14 +7,14 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputFirstNameT.$dirty && formTeacher.inputFirstNameT.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputFirstNameT.$invalid }">
             <label for="inputFirstNameT">Primeiro nome</label>
-            <input type="text" class="form-control" name="inputFirstNameT" ng-model="inputFirstNameT" placeholder="Primeiro nome" required />
+            <input type="text" class="form-control" name="inputFirstNameT" ng-model="inputFirstNameT" placeholder="Primeiro nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputLastNameT.$dirty && formTeacher.inputLastNameT.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputLastNameT.$invalid }">
             <label for="inputLastNameT">Segundo nome</label>
-            <input type="text" class="form-control" name="inputLastNameT" ng-model="inputLastNameT" placeholder="Segundo nome" required />
+            <input type="text" class="form-control" name="inputLastNameT" ng-model="inputLastNameT" placeholder="Segundo nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" />
         </div>
 
         <div class="form-group">
@@ -57,14 +57,14 @@
             </p>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCityT.$dirty && formTeacher.inputCityT.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCityT.$invalid }">
             <label for="inputCityT">Cidade</label>
-            <input type="text" class="form-control" name="inputCityT" ng-model="inputCityT" placeholder="Cidade" required />
+            <input type="text" class="form-control" name="inputCityT" ng-model="inputCityT" placeholder="Cidade" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCountryT.$dirty && formTeacher.inputCountryT.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCountryT.$invalid }">
             <label for="inputCountryT">País</label>
-            <input type="text" class="form-control" name="inputCountryT" ng-model="inputCountryT" placeholder="País" required />
+            <input type="text" class="form-control" name="inputCountryT" ng-model="inputCountryT" placeholder="País" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" />
         </div>
 
         <div id="loadingTeacher" class="text-center loading-login">
