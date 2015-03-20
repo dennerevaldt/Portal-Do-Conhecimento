@@ -88,13 +88,15 @@ namespace PDS.Controllers
                 // get email api facebook
                 Dictionary<string, string> dataE = emailUser(accessToken);
 
+                string email = dataE["email"].ToString();
+
                 // get email db
-                bool resultEmail = AccountsRepository.GetEmail(dataE["email"].ToString());
+                bool resultEmail = AccountsRepository.GetEmail(email);
         
                 if(resultEmail)
                 {
                     //login
-                    dynamic userInfo = AccountsRepository.GetUserData(dataE["email"].ToString());
+                    dynamic userInfo = AccountsRepository.GetUserData(email);
 
                     FormsAuthentication.SetAuthCookie(userInfo.Account.email, false);
 

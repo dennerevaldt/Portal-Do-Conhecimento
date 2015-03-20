@@ -5,6 +5,7 @@ using PDS.Models.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -160,11 +161,17 @@ namespace PDS.Controllers
 
                     if (inputFile != null)
                     {
-                        extension = Path.GetExtension(inputFile.FileName);
-                        path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
-                        inputFile.SaveAs(path);
+                        //extension = Path.GetExtension(inputFile.FileName);
+                        //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
+                        //inputFile.SaveAs(path);
 
-                        teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/"+idAccount.ToString()+extension;
+                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200,200));
+
+                        imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"),idAccount.ToString()+".jpg"));
+
+                        teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/"+idAccount.ToString()+".jpg";
                     }
                     else
                     {
@@ -241,11 +248,19 @@ namespace PDS.Controllers
 
                     if (inputFile != null)
                     {
-                        string extension = Path.GetExtension(inputFile.FileName);
-                        path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
-                        inputFile.SaveAs(path);
+                        //string extension = Path.GetExtension(inputFile.FileName);
+                        //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
+                        //inputFile.SaveAs(path);
 
-                        student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
+                        //student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
+
+                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+
+                        imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg"));
+
+                        student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + ".jpg";
 
                     }
                     else
@@ -418,6 +433,17 @@ namespace PDS.Controllers
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="img"></param>
+        /// <param name="cropArea"></param>
+        /// <returns></returns>
+        private static Image cropImage(Image img, Rectangle cropArea)
+        {
+            Bitmap bmpImage = new Bitmap(img);
+            return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
+        }
 
         /// <summary>
         /// Action para retorna view com dados para confirmação de conta.
