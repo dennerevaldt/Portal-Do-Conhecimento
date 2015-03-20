@@ -16,6 +16,11 @@
     @Styles.Render("~/Content/home.css")
     @Scripts.Render("~/bundles/modernizr")
 
+    <!-- Angular JS-->
+    @Scripts.Render("~/Scripts/angular.js")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/controllers.js")
+
     @{
         HttpCookie userInfo = Request.Cookies["userInfo"];
         var fName = Server.UrlTokenDecode(userInfo["first_name"]);
@@ -80,7 +85,7 @@
                 <h4 class="sidebar-heading">@first_name @last_name</h4>
             </div>
             <ul class="sidebar-nav">
-                <p class="sidebar-heading-li">MENU</p>
+                <li class="sidebar-heading-li">MENU</li>
                 <li>
                     <a href="#"><span class="glyphicon glyphicon-user"></span> Professores</a>
                 </li>
@@ -182,9 +187,5 @@
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 
-    <!-- Angular JS-->
-    @Scripts.Render("~/Scripts/angular.js")
-    @Scripts.Render("~/Scripts/app.js")
-    @Scripts.Render("~/Scripts/controllers.js")
 </body>
 </html>

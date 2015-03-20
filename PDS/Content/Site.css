@@ -330,12 +330,16 @@ fieldset[disabled] .btn-index.active {
 	-webkit-transition: all 0.8s ease;
 	-ms-transition: all 0.8s ease;
 	-webkit-filter: brightness(0.5);
+    -moz-filter: brightness(0.5);
+    filter: brightness(0.5);
 	
 	height: 770px;
 }
 
 .teachers:hover {	
-	-webkit-filter: brightness(1);
+    -webkit-filter: brightness(1);
+    -moz-filter: brightness(1);
+    filter: brightness(1);
 }
 
 .content-teachers  h1,h2,h3,h4,h5 {
@@ -359,12 +363,16 @@ fieldset[disabled] .btn-index.active {
 	-webkit-transition: all 0.8s ease;
 	-ms-transition: all 0.8s ease;
 	-webkit-filter: brightness(0.5);
+    -moz-filter: brightness(0.5);
+    filter: brightness(0.5);
 	
 	height: 770px;
 }
 
 .students:hover {	
 	-webkit-filter: brightness(1);
+    -moz-filter: brightness(1);
+    filter: brightness(1);
 }
 
 .content-students  h1,h2,h3,h4,h5 {

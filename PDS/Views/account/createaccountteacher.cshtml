@@ -7,14 +7,14 @@
     </div>
     <div class="modal-body">
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputFirstNameT.$invalid }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputFirstNameT.$invalid && formStudent.inputFirstNameT.$dirty }">
             <label for="inputFirstNameT">Primeiro nome</label>
-            <input type="text" class="form-control" name="inputFirstNameT" ng-model="inputFirstNameT" placeholder="Primeiro nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" />
+            <input type="text" class="form-control" name="inputFirstNameT" ng-model="inputFirstNameT" placeholder="Primeiro nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" required />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputLastNameT.$invalid }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputLastNameT.$invalid && formStudent.inputLastName.$dirty }">
             <label for="inputLastNameT">Segundo nome</label>
-            <input type="text" class="form-control" name="inputLastNameT" ng-model="inputLastNameT" placeholder="Segundo nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" />
+            <input type="text" class="form-control" name="inputLastNameT" ng-model="inputLastNameT" placeholder="Segundo nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" required />
         </div>
 
         <div class="form-group">
@@ -37,9 +37,10 @@
             </div>
 
             <div class="col-md-8">
-                <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputBirthdayT.$dirty && formTeacher.inputBirthdayT.$error.required }">
+                <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputBirthdayT.$invalid && formTeacher.inputBirthdayT.$dirty }">
                     <label for="inputBirthdayT">Data Nasc.</label>
-                    <input type="date" class="form-control" name="inputBirthdayT" ng-model="inputBirthdayT" required />
+                    <input type="text" class="form-control" id="inputBirthdayT" name="inputBirthdayT" ng-model="inputBirthdayT" ng-pattern="/(?!3[2-9]|00|02-3[01]|04-31|06-31|09-31|11-31)[0-3][0-9]/(?!1[3-9]|00)[01][0-9]/(?!10|28|29)[12][089][0-9][0-9]/" ng-minlength="10" ng-maxlength="10" placeholder="dd/MM/aaaa" required />
+                    <span ng-show="formTeacher.inputBirthdayT.$error.pattern">Formato incorreto, deve seguir dd/MM/yyyy</span>
                 </div>
             </div>
         </div>
@@ -57,14 +58,14 @@
             </p>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCityT.$invalid }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCityT.$invalid && formTeacher.inputCityT.$dirty}">
             <label for="inputCityT">Cidade</label>
-            <input type="text" class="form-control" name="inputCityT" ng-model="inputCityT" placeholder="Cidade" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" />
+            <input type="text" class="form-control" name="inputCityT" ng-model="inputCityT" placeholder="Cidade" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" required />
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCountryT.$invalid }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputCountryT.$invalid && formTeacher.inputCountryT.$dirty }">
             <label for="inputCountryT">País</label>
-            <input type="text" class="form-control" name="inputCountryT" ng-model="inputCountryT" placeholder="País" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" />
+            <input type="text" class="form-control" name="inputCountryT" ng-model="inputCountryT" placeholder="País" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" required />
         </div>
 
         <div id="loadingTeacher" class="text-center loading-login">
