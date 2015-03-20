@@ -434,18 +434,6 @@ namespace PDS.Controllers
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="img"></param>
-        /// <param name="cropArea"></param>
-        /// <returns></returns>
-        private static Image cropImage(Image img, Rectangle cropArea)
-        {
-            Bitmap bmpImage = new Bitmap(img);
-            return bmpImage.Clone(cropArea, bmpImage.PixelFormat);
-        }
-
-        /// <summary>
         /// Action para retorna view com dados para confirmação de conta.
         /// </summary>
         /// <returns>View ConfirmAccount.</returns>
