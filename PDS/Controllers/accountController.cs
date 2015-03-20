@@ -25,6 +25,7 @@ namespace PDS.Controllers
         private static string extension = string.Empty;
         private static dynamic person;
 
+        [Authorize]
         /// <summary>
         /// Action para retornar painel de gerenciamento da conta de usuário.
         /// </summary>
@@ -34,6 +35,7 @@ namespace PDS.Controllers
             return View("manage");
         }
 
+        [Authorize]
         /// <summary>
         /// Action para alterar dados cadastrais do usuário.
         /// </summary>
@@ -98,6 +100,7 @@ namespace PDS.Controllers
             }
         }
 
+        [Authorize]
         /// <summary>
         /// Action para deletar conta de usuário.
         /// </summary>
@@ -692,6 +695,7 @@ namespace PDS.Controllers
             }
         }
 
+        [Authorize]
         /// <summary>
         /// Método para deslogar usuário e destruir cookies existentes.
         /// </summary>
