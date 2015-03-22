@@ -225,6 +225,7 @@
 
                         if (data.success == true) {
                             $("#loadingTeacher").hide();
+                            $("#resultPhoto").removeClass("bg-danger");
                             $("#resultTeacher").toggleClass("bg-success");
                             $("#resultTeacher").html(data.message);
                             $("#submitButtonTeacher").prop("disabled", true);
@@ -232,6 +233,7 @@
                         }
                         else {
                             $("#loadingTeacher").hide();
+                            $("#resultPhoto").removeClass("bg-success");
                             $("#resultTeacher").toggleClass("bg-danger");
                             $("#resultTeacher").html(data.message);
                             $("#submitButtonTeacher").prop("disabled", false);

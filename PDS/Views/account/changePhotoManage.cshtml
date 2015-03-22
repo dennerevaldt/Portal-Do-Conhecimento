@@ -1,0 +1,28 @@
+﻿<form id="formChangePhoto" name="formChangePhoto" class="form" method="post" enctype="multipart/form-data">
+    
+    <div class="panel-heading">
+        <h1 class="panel-title">Alterar Imagem</h1>
+    </div>
+
+    <div class="panel-body">
+
+        <div class="form-group">
+            <label for="inputImage">Imagem Perfil</label>
+            <input type="file" id="inputFile" name="inputFile" required />
+        </div>
+
+        <div id="loadingChangePhoto" class="text-center loading-login">
+            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" />
+        </div>
+
+        <div id="resultPhoto" class="result"></div>
+    
+    </div>
+
+    <div class="panel-footer clearfix">
+        <div class="pull-right">
+            <button type="submit" id="submitButtonPh" class="btn btn-success">Alterar Imagem</button>
+        </div>
+    </div>
+</form>
+

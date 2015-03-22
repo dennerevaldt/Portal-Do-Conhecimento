@@ -9,6 +9,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
@@ -25,21 +26,21 @@ namespace PDS.Controllers
         private static string extension = string.Empty;
         private static dynamic person;
 
-        [Authorize]
         /// <summary>
         /// Action para retornar painel de gerenciamento da conta de usuário.
         /// </summary>
         /// <returns>View manage.</returns>
+        [Authorize]
         public ActionResult manage()
         {
             return View("manage");
         }
 
-        [Authorize]
         /// <summary>
         /// Action para alterar dados cadastrais do usuário.
         /// </summary>
         /// <param name="form">FormCollection form.</param>
+        [Authorize]
         public void changedata(FormCollection form)
         {
             try
@@ -100,11 +101,71 @@ namespace PDS.Controllers
             }
         }
 
+        /// <summary>
+        /// Método para altera a imagem do perfil.
+        /// </summary>
+        /// <param name="inputFile">HttpostedFileBase inputFile.</param>
         [Authorize]
+        [HttpPost]
+        public void changephoto(HttpPostedFileBase inputFile)
+        {
+            try
+            {
+                HttpCookie cookie_image = Request.Cookies["userImage"];
+                var decValueImage = Server.UrlTokenDecode(cookie_image.Value);
+                string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValueImage);
+
+                HttpCookie cookie_userInfo = Request.Cookies["userInfo"];
+                var decValueUser = Server.UrlTokenDecode(cookie_userInfo["account_type"]);
+                string typeAccount = System.Text.UTF8Encoding.UTF8.GetString(decValueUser);
+
+                if (typeAccount == "T")
+                {
+                    string fullPath = Request.MapPath(url_image);
+
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+
+                    Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                    Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+
+                    imgNew.Save(Path.Combine(Server.MapPath(url_image)));
+                }
+                else
+                {
+                    string fullPath = Request.MapPath(url_image);
+
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        System.IO.File.Delete(fullPath);
+                    }
+
+                    Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                    Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+
+                    imgNew.Save(Path.Combine(Server.MapPath(url_image)));
+                }
+
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Imagem alterada com sucesso.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            catch (Exception)
+            {
+                objectToSerializeSuc = new ReturnJson { success = false, message = "Estamos com problemas, verifique a imagem escolhida e tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            
+        }
+
         /// <summary>
         /// Action para deletar conta de usuário.
         /// </summary>
         /// <param name="form">FormCollection form.</param>
+        [Authorize]
         [HttpPost]
         public void deleteaccount(FormCollection form)
         {
@@ -352,8 +413,14 @@ namespace PDS.Controllers
                 teacher.accountType = Convert.ToChar("T");
                 teacher.city = form["location"];
                 teacher.country = form["country"];
-                teacher.urlImageProfile = form["urlImageProfile"];
                 teacher.Account.acessToken = form["acessToken"];
+
+                teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/" + idAccount.ToString() + ".jpg";
+                string url = (form["urlImageProfile"].ToString());
+                string localSave = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString() + ".jpg");
+
+                WebClient client = new WebClient();
+                client.DownloadFile(url, localSave);
 
                 TeachersRepository.Create(teacher);
 
@@ -372,6 +439,7 @@ namespace PDS.Controllers
                 Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
                 Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
 
+                setcookie("userImage", userInfo.urlImageProfile);
 
                 // Return Sucess
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = null, location = "/home/index" };
@@ -422,8 +490,14 @@ namespace PDS.Controllers
                 student.accountType = Convert.ToChar("S");
                 student.city = form["location"];
                 student.country = form["country"];
-                student.urlImageProfile = form["urlImageProfile"];
 
+                student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + ".jpg" ;
+                string url = (form["urlImageProfile"].ToString());
+                string localSave = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg");
+
+                WebClient client = new WebClient();
+                client.DownloadFile(url, localSave);
+                
                 StudentsRepository.Create(student);
 
                 dynamic userInfo = AccountsRepository.GetUserData(account.email);
@@ -440,6 +514,8 @@ namespace PDS.Controllers
                 Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
                 Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
                 Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+
+                setcookie("userImage", userInfo.urlImageProfile);
 
                 // Return Sucess
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Conta criada com sucesso! Você está sendo redirecionado...", returnUrl = null, location = "/home/index" };
@@ -695,11 +771,11 @@ namespace PDS.Controllers
             }
         }
 
-        [Authorize]
         /// <summary>
         /// Método para deslogar usuário e destruir cookies existentes.
         /// </summary>
         /// <returns>Redirect to Home.</returns>
+        [Authorize]
         public ActionResult logoff()
         {
             // Rotina para remover autenticação do usuário

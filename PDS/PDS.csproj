@@ -990,6 +990,7 @@
     <Content Include="Views\account\changeKeyManage.cshtml" />
     <Content Include="Views\account\changeDataManage.cshtml" />
     <Content Include="Views\account\deleteAccountManage.cshtml" />
+    <Content Include="Views\account\changePhotoManage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

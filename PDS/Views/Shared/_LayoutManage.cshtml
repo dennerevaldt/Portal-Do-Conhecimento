@@ -24,6 +24,8 @@
 
     <!-- jQuery -->
     <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
+    @Scripts.Render("~/Scripts/jquery.form.js")
+
 
     @{
         HttpCookie userInfo = Request.Cookies["userInfo"];

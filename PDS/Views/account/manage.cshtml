@@ -13,7 +13,7 @@
             <a class="btn btn-default btn-block" ng-click="changeDt()" ng-class="cDt">Alterar dados cadastrais</a>
             <a class="btn btn-default btn-block" ng-click="changeK()" ng-class="cK">Alterar senha</a>
             <a class="btn btn-default btn-block" ng-click="deleteAc()" ng-class="dAc">Excluir conta</a>
-            <a class="btn btn-default btn-block" href="#">Alterar Imagem</a>
+            <a class="btn btn-default btn-block" ng-click="changePh()" ng-class="cPh">Alterar Imagem</a>
         </div>
     </div>
 
@@ -55,6 +55,14 @@
             </div>
         </div>
 
+        <div class="panel" ng-show="changePhoto">
+            <div class="panel panel-default">
+
+                @Html.Partial("~/Views/account/changePhotoManage.cshtml")
+
+            </div>
+        </div>
+
         <!-- Modal delete account -->
         <div class="modal fade delete-account" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -66,3 +74,42 @@
 
     </div>
 </div>
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+
+        $("#loadingChangePhoto").hide();
+
+        $('#formChangePhoto').on('submit', function (e) {
+            e.preventDefault();
+            $("#loadingChangePhoto").show();
+            $("#submitButtonPh").prop("disabled", true);
+            $(this).ajaxSubmit({
+                url: '/account/changephoto',
+                type: 'post',
+                success: function (returnData) {
+                    console.log(returnData);
+
+                    var data = JSON.parse(returnData);
+
+                    if (data.success == true) {
+                        $("#loadingChangePhoto").hide();
+                        $("#resultPhoto").removeClass("bg-danger");
+                        $("#resultPhoto").toggleClass("bg-success");
+                        $("#resultPhoto").html(data.message);
+                        $("#submitButtonPh").prop("disabled", true);
+                    }
+                    else {
+                        $("#loadingChangePhoto").hide();
+                        $("#resultPhoto").removeClass("bg-success");
+                        $("#resultPhoto").toggleClass("bg-danger");
+                        $("#resultPhoto").html(data.message);
+                        $("#submitButtonPh").prop("disabled", false);
+                    }
+                }
+            })
+        });
+
+    });
+</script>

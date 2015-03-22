@@ -237,9 +237,11 @@ manageModule.controller('ManageController', function ($scope, $http, $timeout) {
     $scope.changeData = true;
     $scope.changeKey = false;
     $scope.deleteAccount = false;
+    $scope.changePhoto = false;
     $scope.cK = "";
     $scope.cDt = "active";
     $scope.dAc = "";
+    $scope.cPh = "";
     $scope.resultShow = false;
 ;
 
@@ -248,30 +250,48 @@ manageModule.controller('ManageController', function ($scope, $http, $timeout) {
         $scope.changeData = true;
         $scope.changeKey = false;
         $scope.deleteAccount = false;
+        $scope.changePhoto = false;
 
         $scope.cK = "";
         $scope.cDt = "active";
         $scope.dAc = "";
+        $scope.cPh = "";
     }
 
     $scope.changeK = function () {
         $scope.changeData = false;
         $scope.changeKey = true;
         $scope.deleteAccount = false;
+        $scope.changePhoto = false;
 
         $scope.cK = "active";
         $scope.cDt = "";
         $scope.dAc = "";
+        $scope.cPh = "";
     }
 
     $scope.deleteAc = function () {
         $scope.changeData = false;
         $scope.changeKey = false;
         $scope.deleteAccount = true;
+        $scope.changePhoto = false;
 
         $scope.cK = "";
         $scope.cDt = "";
         $scope.dAc = "active";
+        $scope.cPh = "";
+    }
+
+    $scope.changePh = function () {
+        $scope.changeData = false;
+        $scope.changeKey = false;
+        $scope.deleteAccount = false;
+        $scope.changePhoto = true;
+
+        $scope.cK = "";
+        $scope.cDt = "";
+        $scope.dAc = "";
+        $scope.cPh = "active";
     }
 
     //submit key
