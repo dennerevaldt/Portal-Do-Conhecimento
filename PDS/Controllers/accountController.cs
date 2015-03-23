@@ -563,7 +563,7 @@ namespace PDS.Controllers
 
                     account = AccountsRepository.GetDataAccount(inputEmail);
 
-                    if (account != null)
+                    if (account.email != null && account.password != null && account.password != string.Empty)
                     {
                         if (AccountsRepository.CheckPassword(inputPassword,account.password))
                         {
@@ -589,11 +589,16 @@ namespace PDS.Controllers
                             Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
                         }
                     }
+                    else
+                    {
+                        objectToSerializeErr = new ReturnJson { success = false, message = "Nenhuma senha cadastrada para este email, tente fazer login com Facebook." };
+                        Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+                    }
                     
                 }
                 else
                 {
-                    objectToSerializeErr = new ReturnJson { success = false, message = "os campos são obrigatórios." };
+                    objectToSerializeErr = new ReturnJson { success = false, message = "Os campos são obrigatórios." };
                     Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
                 }
             }
