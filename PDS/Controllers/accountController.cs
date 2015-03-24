@@ -185,6 +185,8 @@ namespace PDS.Controllers
                         imgNew.Save(Path.Combine(Server.MapPath(path)));
 
                         AccountsRepository.UpdateUrlImage(path, Convert.ToInt64(idAccount));
+
+                        setcookie("userImage", path);
                     }
                 }
 
@@ -211,6 +213,25 @@ namespace PDS.Controllers
             {
                 string email = form["email"];
                 AccountsRepository.Delete(email);
+
+                HttpCookie cookie_userInfo = Request.Cookies["userInfo"];
+                var decId = Server.UrlTokenDecode(cookie_userInfo["id_account"]);
+                string idAccount = System.Text.UTF8Encoding.UTF8.GetString(decId);
+
+                var decValueUser = Server.UrlTokenDecode(cookie_userInfo["account_type"]);
+                string typeAccount = System.Text.UTF8Encoding.UTF8.GetString(decValueUser);
+
+                HttpCookie cookie_image = Request.Cookies["userImage"];
+                var decValueImage = Server.UrlTokenDecode(cookie_image.Value);
+                string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValueImage);
+
+                string fullPath = Request.MapPath(url_image);
+
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+                
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = null, returnUrl = null, location = "/site/home" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
