@@ -113,6 +113,20 @@ namespace PDS.Controllers
         {
             try
             {
+                if (inputFile != null)
+                {
+                    // get type file
+                    type = Path.GetExtension(inputFile.FileName);
+                }
+                else
+                {
+                    type = "notImage";
+                }
+
+                if (type == ".jpg" || type == ".png" || type == "notImage")
+                {
+                    #region Update Image
+                
                 HttpCookie cookie_image = Request.Cookies["userImage"];
                 var decValueImage = Server.UrlTokenDecode(cookie_image.Value);
                 string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValueImage);
@@ -190,8 +204,17 @@ namespace PDS.Controllers
                     }
                 }
 
-                objectToSerializeSuc = new ReturnJson { success = true, message = "Imagem alterada com sucesso.", returnUrl = "", location = "" };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                #endregion
+
+                    objectToSerializeSuc = new ReturnJson { success = true, message = "Imagem alterada com sucesso.", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                }
+                else
+                {
+                    objectToSerializeSuc = new ReturnJson { success = false, message = "Formato de imagem não permitido, tente novamente.", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                }
+
             }
             catch (Exception)
             {
