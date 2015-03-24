@@ -302,5 +302,26 @@ namespace PDS.Models.Repository
         {
             return Crypter.CheckPassword(password, hash);
         }
+
+        /// <summary>
+        /// Método para alterar caminho da imagem no DB.
+        /// </summary>
+        /// <param name="urlImage">String url.</param>
+        /// <param name="idAccount">Int64 idAccount.</param>
+        public static void UpdateUrlImage(string urlImage, Int64 idAccount)
+        {
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.Add("@url", urlImage);
+            cmm.Parameters.Add("@idAccount", idAccount);
+
+            sql.Append("CALL updateUrlImage(@url,@idAccount)");
+
+            cmm.CommandText = sql.ToString();
+
+            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+        }
+
     }
 }

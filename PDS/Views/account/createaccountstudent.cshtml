@@ -10,11 +10,16 @@
         <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputFirstName.$invalid && formStudent.inputFirstName.$dirty }">
             <label for="inputFirstName">Primeiro nome</label>
             <input type="text" class="form-control" name="inputFirstName" ng-model="inputFirstName" placeholder="Primeiro nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" required />
+            <span class="text-danger" ng-show="formStudent.inputFirstName.$error.pattern">É permitido somente Letras neste campo, sem espaço entre as mesmas.</span>
+            <span class="text-danger" ng-show="formStudent.inputFirstName.$error.minlength">O nome deve conter no mínimo 3 caracteres.</span>
         </div>
 
         <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputLastName.$invalid && formStudent.inputLastName.$dirty }">
             <label for="inputLastName">Segundo nome</label>
             <input type="text" class="form-control" name="inputLastName" ng-model="inputLastName" placeholder="Segundo nome" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ]+$/" ng-minlength="3" maxlength="25" required />
+            <span class="text-danger" ng-show="formStudent.inputLastName.$error.pattern">É permitido somente Letras neste campo, sem espaço entre as mesmas.</span>
+            <span class="text-danger" ng-show="formStudent.inputLastName.$error.minlength">O nome deve conter no mínimo 3 caracteres.</span>
+
         </div>
 
         <div class="form-group">
@@ -39,9 +44,8 @@
             <div class="col-md-8">
                 <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputBirthday.$dirty && formStudent.inputBirthday.$invalid }">
                     <label for="inputBirthday">Data Nasc.</label>
-                    @*<input type="date" class="form-control" name="inputBirthday" ng-model="inputBirthday" required />*@
                     <input type="text" class="form-control" id="inputBirthday" name="inputBirthday" ng-model="inputBirthday" ng-pattern="/(?!3[2-9]|00|02-3[01]|04-31|06-31|09-31|11-31)[0-3][0-9]/(?!1[3-9]|00)[01][0-9]/(?!10|28|29)[12][089][0-9][0-9]/" ng-minlength="10" ng-maxlength="10" placeholder="dd/MM/aaaa" required />
-                    <span ng-show="formStudent.inputBirthday.$error.pattern">Formato incorreto, deve seguir dd/MM/yyyy</span>
+                    <span class="text-danger" ng-show="formStudent.inputBirthday.$error.pattern">Formato incorreto, deve seguir dd/MM/yyyy</span>
                 </div>
             </div>
         </div>
@@ -49,12 +53,13 @@
         <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputEmail.$dirty && formStudent.inputEmail.$error.email }">
             <label for="inputEmail">Email</label>
             <input type="email" class="form-control" name="inputEmail" ng-model="inputEmail" placeholder="Email" required />
+            <span class="text-danger" ng-show="formStudent.inputEmail.$error.email">Email inválido.</span>
         </div>
 
-        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputPassword.$dirty && formStudent.inputPassword.$error.required }">
+        <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputPassword.$dirty && formStudent.inputPassword.$invalid }">
             <label for="inputPassword">Senha</label>
             <input type="password" class="form-control" name="inputPassword" ng-model="inputPassword" placeholder="Senha" ng-minlength="6" required />
-            <p class="bg-danger" ng-show="formStudent.inputPassword.$error.minlength">
+            <p class="text-danger" ng-show="formStudent.inputPassword.$error.minlength">
                 A senha deve conter no mínimo 6 caracteres.
             </p>
         </div>
@@ -62,11 +67,16 @@
         <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputCity.$invalid && formStudent.inputCity.$dirty }">
             <label for="inputCity">Cidade</label>
             <input type="text" class="form-control" name="inputCity" ng-model="inputCity" placeholder="Cidade" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" required />
+            <span class="text-danger" ng-show="formStudent.inputCity.$error.pattern">É permitido somente Letras neste campo.</span>
+            <span class="text-danger" ng-show="formStudent.inputCity.$error.minlength">A Cidade deve conter no mínimo 3 caracteres.</span>
         </div>
 
         <div class="form-group" ng-class="{ 'has-error has-feedback': formStudent.inputCountry.$invalid && formStudent.inputCountry.$dirty }">
             <label for="inputCountry">País</label>
             <input type="text" class="form-control" name="inputCountry" ng-model="inputCountry" placeholder="País" ng-pattern="/^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$/" ng-minlength="3" maxlength="35" required />
+            <span class="text-danger" ng-show="formStudent.inputCountry.$error.pattern">É permitido somente Letras neste campo.</span>
+            <span class="text-danger" ng-show="formStudent.inputCountry.$error.minlength">O País deve conter no mínimo 3 caracteres.</span>
+
         </div>
 
         <div id="loadingStudent" class="text-center loading-login">

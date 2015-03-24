@@ -25,6 +25,8 @@ namespace PDS.Controllers
         private static string path = string.Empty;
         private static string extension = string.Empty;
         private static dynamic person;
+        private static string type;
+
 
         /// <summary>
         /// Action para retornar painel de gerenciamento da conta de usuário.
@@ -119,35 +121,71 @@ namespace PDS.Controllers
                 var decValueUser = Server.UrlTokenDecode(cookie_userInfo["account_type"]);
                 string typeAccount = System.Text.UTF8Encoding.UTF8.GetString(decValueUser);
 
+                var decId = Server.UrlTokenDecode(cookie_userInfo["id_account"]);
+                string idAccount = System.Text.UTF8Encoding.UTF8.GetString(decId);
+
                 if (typeAccount == "T")
                 {
-                    string fullPath = Request.MapPath(url_image);
+                    if (url_image != "/Content/images/noPhoto.png")
+                    {                                     
+                        string fullPath = Request.MapPath(url_image);
 
-                    if (System.IO.File.Exists(fullPath))
-                    {
-                        System.IO.File.Delete(fullPath);
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+
+                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+
+                        imgNew.Save(Path.Combine(Server.MapPath(url_image)));
+
                     }
+                    else
+                    {
+                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
 
-                    Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
 
-                    Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+                        string path = "/Content/Uploads/ImagesProfile/Teachers/" + idAccount + ".jpg";
 
-                    imgNew.Save(Path.Combine(Server.MapPath(url_image)));
+                        imgNew.Save(Path.Combine(Server.MapPath(path)));
+
+                        AccountsRepository.UpdateUrlImage(path, Convert.ToInt64(idAccount));
+
+                        setcookie("userImage", path);
+                    }
                 }
                 else
                 {
-                    string fullPath = Request.MapPath(url_image);
-
-                    if (System.IO.File.Exists(fullPath))
+                    if (url_image != "/Content/images/noPhoto.png")
                     {
-                        System.IO.File.Delete(fullPath);
+                        string fullPath = Request.MapPath(url_image);
+
+                        if (System.IO.File.Exists(fullPath))
+                        {
+                            System.IO.File.Delete(fullPath);
+                        }
+
+                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+
+                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+
+                        imgNew.Save(Path.Combine(Server.MapPath(url_image)));
                     }
+                    else
+                    {
+                        Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
 
-                    Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
+                        Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
 
-                    Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
+                        string path = "/Content/Uploads/ImagesProfile/Students/" + idAccount + ".jpg";
 
-                    imgNew.Save(Path.Combine(Server.MapPath(url_image)));
+                        imgNew.Save(Path.Combine(Server.MapPath(path)));
+
+                        AccountsRepository.UpdateUrlImage(path, Convert.ToInt64(idAccount));
+                    }
                 }
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Imagem alterada com sucesso.", returnUrl = "", location = "" };
@@ -197,10 +235,17 @@ namespace PDS.Controllers
             {
                 if (AccountsRepository.GetEmail(form["inputEmailT"].ToLower()) == false)
                 {
-                    // get type file
-                    string type = Path.GetExtension(inputFile.FileName);
+                    if (inputFile != null)
+                    {
+                        // get type file
+                        type = Path.GetExtension(inputFile.FileName);
+                    }
+                    else
+                    {
+                        type = "notImage";
+                    }
 
-                    if(type == ".jpg" || type == ".png")
+                    if(type == ".jpg" || type == ".png" || type == "notImage")
                     {
                         // Insert Account
 
@@ -231,10 +276,6 @@ namespace PDS.Controllers
 
                         if (inputFile != null)
                         {
-                            //extension = Path.GetExtension(inputFile.FileName);
-                            //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString()+extension);
-                            //inputFile.SaveAs(path);
-
                             Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
 
                             Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200,200));
@@ -292,10 +333,16 @@ namespace PDS.Controllers
             {
                 if (AccountsRepository.GetEmail(form["inputEmail"].ToLower()) == false)
                 {
-                    // get type file
-                    string type = Path.GetExtension(inputFile.FileName);
+                    if(inputFile != null){
+                        // get type file
+                        type = Path.GetExtension(inputFile.FileName);
+                    }
+                    else
+                    {
+                        type = "notImage";
+                    }
 
-                    if (type == ".jpg" || type == ".png")
+                    if (type == ".jpg" || type == ".png" || type == "notImage")
                     {
                         // Insert Account
 
@@ -326,12 +373,6 @@ namespace PDS.Controllers
 
                         if (inputFile != null)
                         {
-                            //string extension = Path.GetExtension(inputFile.FileName);
-                            //path = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + extension);
-                            //inputFile.SaveAs(path);
-
-                            //student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + extension;
-
                             Image image = System.Drawing.Image.FromStream(inputFile.InputStream);
 
                             Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
