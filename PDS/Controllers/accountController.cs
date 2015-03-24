@@ -20,12 +20,16 @@ namespace PDS.Controllers
 {
     public class accountController : Controller
     {
+        #region Atributos Staticos
+        
         private static ReturnJson objectToSerializeErr;
         private static ReturnJson objectToSerializeSuc;
         private static string path = string.Empty;
         private static string extension = string.Empty;
         private static dynamic person;
         private static string type;
+
+        #endregion
 
 
         /// <summary>

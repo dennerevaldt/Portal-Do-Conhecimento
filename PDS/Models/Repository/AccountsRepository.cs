@@ -11,8 +11,12 @@ namespace PDS.Models.Repository
 {
     public class AccountsRepository
     {
+        #region Atributos Staticos
+        
         public static MySqlDataReader dr;
         public static object objeto;
+
+        #endregion
 
         /// <summary>
         /// Método para criar conta de usuário.
