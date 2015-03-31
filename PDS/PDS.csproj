@@ -126,16 +126,27 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\accountController.cs" />
+    <Compile Include="Controllers\disciplinesController.cs" />
     <Compile Include="Controllers\homeController.cs" />
     <Compile Include="Controllers\siteController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Entities\Accounts.cs" />
+    <Compile Include="Models\Entities\Attachments.cs" />
+    <Compile Include="Models\Entities\Classes.cs" />
+    <Compile Include="Models\Entities\ClassesPublicationsTeachers.cs" />
+    <Compile Include="Models\Entities\ClassesStudents.cs" />
+    <Compile Include="Models\Entities\Disciplines.cs" />
+    <Compile Include="Models\Entities\Followers.cs" />
     <Compile Include="Models\Entities\Persons.cs" />
+    <Compile Include="Models\Entities\PublicationsTeachers.cs" />
+    <Compile Include="Models\Entities\PublicationsTeachersClasses.cs" />
     <Compile Include="Models\Entities\Students.cs" />
+    <Compile Include="Models\Entities\StudentsClasses.cs" />
     <Compile Include="Models\Entities\Teachers.cs" />
     <Compile Include="Models\Repository\AccountsRepository.cs" />
+    <Compile Include="Models\Repository\DisciplinesRepository.cs" />
     <Compile Include="Models\Repository\StudentsRepository.cs" />
     <Compile Include="Models\Repository\TeachersRepository.cs" />
     <Compile Include="Models\Utilities\ReturnJson.cs" />
@@ -990,6 +1001,11 @@
     <Content Include="Views\account\changeDataManage.cshtml" />
     <Content Include="Views\account\deleteAccountManage.cshtml" />
     <Content Include="Views\account\changePhotoManage.cshtml" />
+    <Content Include="Views\Shared\_LayoutNav.cshtml" />
+    <Content Include="Views\disciplines\create.cshtml" />
+    <Content Include="Views\disciplines\mydisciplines.cshtml" />
+    <Content Include="Views\disciplines\delete.cshtml" />
+    <Content Include="Views\disciplines\edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

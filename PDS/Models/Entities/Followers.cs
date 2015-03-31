@@ -5,9 +5,9 @@ using System.Web;
 
 namespace PDS.Models.Entities
 {
-    public class Teachers :Persons
+    public class Followers
     {
-        public Int64 idTeacher { get; set; }
-        List<Followers> followers { get; set; }
+        public Int64 idFollower { get; set; }
+        public Int64 idFollowing { get; set; }
     }
 }

@@ -132,13 +132,13 @@ namespace PDS.Models.Repository
                     }
                 }
 
-                dr.Close();
+                dr.Dispose();
 
                 ADOMySQL.MySQL.Desconectar();
             }
             catch (Exception)
             {
-                dr.Close();
+                dr.Dispose();
                 ADOMySQL.MySQL.Desconectar();
                 throw;
             }
@@ -180,13 +180,13 @@ namespace PDS.Models.Repository
                     
                 }
 
-                dr.Close();
+                dr.Dispose();
 
                 ADOMySQL.MySQL.Desconectar();
             }
             catch (Exception)
             {
-                dr.Close();
+                dr.Dispose();
                 ADOMySQL.MySQL.Desconectar();
                 throw;
             }

@@ -20,6 +20,9 @@ body {
   text-align: center;
 }
 
+.margin-rght {
+    margin-right: 5px;
+}
 
 /* Panel post ------------------------------------------ */
 
@@ -201,10 +204,10 @@ body {
 	font-weight: 300;
 }
 
-.nav li {
-	border-left: 1px solid #e2e9e6;
-	border-right: 1px solid #e2e9e6;
+.nav-tabs > li > a {
+  border-radius: 0 0 0 0;
 }
+
 
 .navbar-nav > li > a {
 	padding-top: 10px; 

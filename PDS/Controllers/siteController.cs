@@ -71,101 +71,109 @@ namespace PDS.Controllers
             FacebookOAuthResult oauthResult;
 
             _fb.TryParseOAuthCallbackUrl(Request.Url, out oauthResult);
-
-            if (oauthResult.IsSuccess)
+            try
             {
-                //Pega o Access Token "permanente"
-                dynamic parameters = new ExpandoObject();
-                parameters.client_id = "860133764025276";
-                parameters.redirect_uri = host +"/site/returnfb";
-                parameters.client_secret = "317c89ff3be71b66261db0d4275b6425";
-                parameters.code = oauthResult.Code;
 
-                dynamic result = _fb.Get("/oauth/access_token", parameters);
-
-                var accessToken = result.access_token;
-
-                // get email api facebook
-                Dictionary<string, string> dataE = emailUser(accessToken);
-
-                string email = dataE["email"].ToString();
-
-                // get email db
-                bool resultEmail = AccountsRepository.GetEmail(email);
-        
-                if(resultEmail)
+                if (oauthResult.IsSuccess)
                 {
-                    //login
-                    dynamic userInfo = AccountsRepository.GetUserData(email);
+                    //Pega o Access Token "permanente"
+                    dynamic parameters = new ExpandoObject();
+                    parameters.client_id = "860133764025276";
+                    parameters.redirect_uri = host + "/site/returnfb";
+                    parameters.client_secret = "317c89ff3be71b66261db0d4275b6425";
+                    parameters.code = oauthResult.Code;
 
-                    FormsAuthentication.SetAuthCookie(userInfo.Account.email, false);
 
-                    if (userInfo.accountType.ToString() == "T")
+                    dynamic result = _fb.Get("/oauth/access_token", parameters);
+
+                    var accessToken = result.access_token;
+
+                    // get email api facebook
+                    Dictionary<string, string> dataE = emailUser(accessToken);
+
+                    string email = dataE["email"].ToString();
+
+                    // get email db
+                    bool resultEmail = AccountsRepository.GetEmail(email);
+
+                    if (resultEmail)
                     {
-                        Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
-                        Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
-                        Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
-                        Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
-                        Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D1"));
-                        Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
-                        Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
-                        Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
-                        Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
-                        Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
-                        Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
-                        Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+                        //login
+                        dynamic userInfo = AccountsRepository.GetUserData(email);
 
-                        setcookie("userImage", userInfo.urlImageProfile);
+                        FormsAuthentication.SetAuthCookie(userInfo.Account.email, false);
+
+                        if (userInfo.accountType.ToString() == "T")
+                        {
+                            Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
+                            Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+                            Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+                            Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
+                            Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idTeacher.ToString("D1"));
+                            Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+                            Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+                            Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+                            Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+                            Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+                            Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+                            Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+
+                            setcookie("userImage", userInfo.urlImageProfile);
+                        }
+                        else
+                        {
+                            Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
+                            Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
+                            Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
+                            Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
+                            Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D1"));
+                            Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
+                            Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
+                            Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
+                            Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
+                            Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
+                            Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
+                            Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+
+                            setcookie("userImage", userInfo.urlImageProfile);
+                        }
+
+                        return Redirect("/home/index");
                     }
                     else
                     {
-                        Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
-                        Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
-                        Response.Cookies["userInfo"]["acessToken"] = encrypt(userInfo.Account.acessToken);
-                        Response.Cookies["userInfo"]["id_person"] = encrypt(userInfo.idPerson.ToString("D1"));
-                        Response.Cookies["userInfo"]["id_type_account"] = encrypt(userInfo.idStudent.ToString("D1"));
-                        Response.Cookies["userInfo"]["first_name"] = encrypt(userInfo.firstName);
-                        Response.Cookies["userInfo"]["last_name"] = encrypt(userInfo.lastName);
-                        Response.Cookies["userInfo"]["account_type"] = encrypt(userInfo.accountType.ToString());
-                        Response.Cookies["userInfo"]["birthday"] = encrypt(userInfo.dateOfBirth.ToString("dd/MM/yyyy"));
-                        Response.Cookies["userInfo"]["gender"] = encrypt(userInfo.gender.ToString());
-                        Response.Cookies["userInfo"]["location"] = encrypt(userInfo.city);
-                        Response.Cookies["userInfo"]["locale"] = encrypt(userInfo.country);
+                        Dictionary<string, string> data = detailsofuser(accessToken);
 
-                        setcookie("userImage", userInfo.urlImageProfile);
+                        FormsAuthentication.SetAuthCookie(data["id"], false);
+
+                        Response.Cookies["userInfo"]["id"] = encrypt(data["id"]);
+                        Response.Cookies["userInfo"]["first_name"] = encrypt(data["first_name"]);
+                        Response.Cookies["userInfo"]["middle_name"] = encrypt(data["middle_name"]);
+                        Response.Cookies["userInfo"]["last_name"] = encrypt(data["last_name"]);
+                        Response.Cookies["userInfo"]["email"] = encrypt(data["email"]);
+                        Response.Cookies["userInfo"]["birthday"] = encrypt(data["birthday"]);
+                        Response.Cookies["userInfo"]["gender"] = encrypt(data["gender"]);
+                        Response.Cookies["userInfo"]["location"] = encrypt(data["location"]);
+                        Response.Cookies["userInfo"]["locale"] = encrypt(data["locale"]);
+                        Response.Cookies["userInfo"]["acessToken"] = encrypt(accessToken);
+
+                        setcookie("userImage", data["picture_url"]);
+
+                        return Redirect("/account/confirmaccount");
                     }
 
-                    return Redirect("/home/index");
                 }
                 else
                 {
-                    Dictionary<string, string> data = detailsofuser(accessToken);
-
-                    FormsAuthentication.SetAuthCookie(data["id"], false);
-
-                    Response.Cookies["userInfo"]["id"] = encrypt(data["id"]);
-                    Response.Cookies["userInfo"]["first_name"] = encrypt(data["first_name"]);
-                    Response.Cookies["userInfo"]["middle_name"] = encrypt(data["middle_name"]);
-                    Response.Cookies["userInfo"]["last_name"] = encrypt(data["last_name"]);
-                    Response.Cookies["userInfo"]["email"] = encrypt(data["email"]);
-                    Response.Cookies["userInfo"]["birthday"] = encrypt(data["birthday"]);
-                    Response.Cookies["userInfo"]["gender"] = encrypt(data["gender"]);
-                    Response.Cookies["userInfo"]["location"] = encrypt(data["location"]);
-                    Response.Cookies["userInfo"]["locale"] = encrypt(data["locale"]);
-                    Response.Cookies["userInfo"]["acessToken"] = encrypt(accessToken);
-
-                    setcookie("userImage", data["picture_url"]);
-
-                    return Redirect("/account/confirmaccount");
+                    // tratar
+                    return View("home");
                 }
-                
-            }
-            else
-            {
-                // tratar
-                return View("home");
-            }
 
+            }
+            catch (Exception)
+            {
+                return View("Error");
+            }
             
         }
 

@@ -1,0 +1,28 @@
+﻿<div class="row" style="margin-left:15px; margin-right:15px; margin-top:10px;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Deletar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="disciplina in disciplinas">
+                <td>{{disciplina.name}}</td>
+                <td><a class="btn btn-sm btn-danger" ng-click="submitDelete(disciplina.idDiscipline)"><span class="glyphicon glyphicon-remove"></span></a></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="text-center">
+        <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingDel" />
+    </div>
+
+    <div ng-class="resultDel" ng-show="resultShow">{{ resultMessageDel }}</div>
+</div>
+
+@*<button type="button" class="btn btn-lg btn-danger"
+        data-toggle="popover" title="Popover title"
+        data-content="And here's some amazing content. It's very engaging. Right?">
+    Click to toggle popover
+</button>*@

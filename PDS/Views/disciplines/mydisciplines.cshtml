@@ -1,0 +1,14 @@
+﻿<div class="row" style="margin-left:15px; margin-right:15px; margin-top:10px;" data-ng-init="getall()">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="disciplina in disciplinas">
+                <td>{{disciplina.name}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

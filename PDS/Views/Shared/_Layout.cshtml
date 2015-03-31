@@ -29,6 +29,9 @@
         var lName = Server.UrlTokenDecode(userInfo["last_name"]);
         string last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
         
+        var accTp = Server.UrlTokenDecode(userInfo["account_type"]);
+        string account_type = System.Text.UTF8Encoding.UTF8.GetString(accTp);
+        
         HttpCookie cookie_image = Request.Cookies["userImage"];
         var decValue = Server.UrlTokenDecode(cookie_image.Value);
         string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValue);
@@ -59,7 +62,7 @@
             </div>
             <div id="navbar" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown">
+                    <li class="dropdown" style="border-left: 1px solid #e2e9e6; border-right: 1px solid #e2e9e6;">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <img src="@url_image" alt="Image" class="img-navbar" /> @first_name <span class="caret"></span>
                         </a>
@@ -86,18 +89,35 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-heading-li">MENU</li>
+                
+                @if (account_type != "T")
+                {
+                    <li>
+                        <a href="#"><span class="glyphicon glyphicon-user margin-rght"></span> Professores</a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="glyphicon glyphicon-duplicate margin-rght"></span> Atividades <span class="badge">0</span></a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens <span class="badge">0</span></a>
+                    </li>
+                }
                 <li>
-                    <a href="#"><span class="glyphicon glyphicon-user"></span> Professores</a>
+                    <a href="#"><span class="glyphicon glyphicon-star margin-rght"></span> Estrelinhas</a>
                 </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-duplicate"></span> Atividades <span class="badge">0</span></a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-star"></span> Estrelinhas</a>
-                </li>
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-envelope"></span> Mensagens <span class="badge">0</span></a>
-                </li>
+                
+                @if (account_type == "T")
+                {
+                    <li>
+                        <a href="#" data-toggle="modal" data-target=".disciplines"><span class="glyphicon glyphicon-book margin-rght"></span> Disciplinas</a>
+                    </li>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target=".classes"><span class="glyphicon glyphicon-folder-open margin-rght"></span> Turmas</a>
+                    </li>
+                    <li>
+                        <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
+                    </li>
+                }
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -157,16 +177,108 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
+        <!-- Modal Disciplines -->
+        <div class="modal fade disciplines" ng-controller="DisciplinesController">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                   
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title-custom">Disciplinas</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div role="tabpanel" style="margin-right:15px;margin-left:15px;">
+
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#cadastrar" aria-controls="home" role="tab" data-toggle="tab">Cadastrar</a></li>
+                                        <li role="presentation"><a href="#editar" aria-controls="profile" role="tab" data-toggle="tab">Editar</a></li>
+                                        <li role="presentation"><a href="#excluir" aria-controls="messages" role="tab" data-toggle="tab">Excluir</a></li>
+                                        <li role="presentation"><a href="#minhasdisciplinas" aria-controls="messages" role="tab" data-toggle="tab">Minhas Disciplinas</a></li>
+                                    </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="cadastrar">
+                                            
+                                            @Html.Partial("~/Views/disciplines/create.cshtml")                                           
+
+                                        </div>
+
+                                        <div role="tabpanel" class="tab-pane" id="editar">
+
+                                            @Html.Partial("~/Views/disciplines/edit.cshtml")
+
+                                        </div>
+
+                                        <div role="tabpanel" class="tab-pane" id="excluir">
+
+                                            @Html.Partial("~/Views/disciplines/delete.cshtml")
+
+                                        </div>
+
+                                        <div role="tabpanel" class="tab-pane" id="minhasdisciplinas">
+
+                                            @Html.Partial("~/Views/disciplines/mydisciplines.cshtml")
+                                            
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- Modal Classes -->
+        @*<div class="modal fade classes" ng-controller="">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <form method="post" id="" name="" ng-submit="">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title-custom">Turmas</h4>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div role="tabpanel" style="margin-right:15px;margin-left:15px;">
+
+                                    <!-- Nav tabs -->
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li role="presentation" class="active"><a href="#cadastrar" aria-controls="home" role="tab" data-toggle="tab">Cadastrar</a></li>
+                                        <li role="presentation"><a href="#editar" aria-controls="profile" role="tab" data-toggle="tab">Editar</a></li>
+                                        <li role="presentation"><a href="#excluir" aria-controls="messages" role="tab" data-toggle="tab">Excluir</a></li>
+                                        <li role="presentation"><a href="#minhasturmas" aria-controls="messages" role="tab" data-toggle="tab">Minhas turmas</a></li>
+                                     </ul>
+
+                                    <!-- Tab panes -->
+                                    <div class="tab-content">
+                                        <div role="tabpanel" class="tab-pane active" id="cadastrar">...</div>
+                                        <div role="tabpanel" class="tab-pane" id="editar">...</div>
+                                        <div role="tabpanel" class="tab-pane" id="excluir">...</div>
+                                        <div role="tabpanel" class="tab-pane" id="minhasturmas">...</div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->*@
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
     <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
-    <script src="@Scripts.Url("~/Scripts/jquery.resizecrop-1.0.2.js")"></script>
-
 
     <!-- Menu Toggle Script -->
     <script>
         $(document).ready(function () {
+
+            $("[data-toggle=popover]").popover();
 
         if (screen.width < 768){
           $("#menu-toggle").toggleClass("visibility-visible");

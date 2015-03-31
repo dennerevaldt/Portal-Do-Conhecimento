@@ -117,6 +117,209 @@ homeSite.controller('ChangeKeyController', function ($scope, $http) {
 
 });
 
+homePortal.controller('InviteFriendsController', function ($scope, $http) {
+    $scope.submitButton = false;
+    $scope.loading = false;
+
+    $scope.submit = function (inviteForm) {
+        $scope.submitButton = true;
+        if (inviteForm.$valid) {
+            $scope.loading = true;
+            $http({
+                method: 'POST',
+                url: '/home/invitefriend',
+                data: $.param($scope.Account),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButton = true;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-success';
+                    $scope.loading = false;
+
+                } else {
+                    $scope.submitButton = false;
+                    $scope.resultMessage = data.message;
+                    $scope.result = 'bg-danger';
+                    $scope.loading = false;
+                }
+            });
+        } else {
+            $scope.submitButton = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.result = 'bg-danger';
+            $scope.loading = false;
+        }
+    }
+
+
+});
+
+homePortal.controller('DisciplinesController', function ($scope, $http, $timeout) {
+    $scope.submitButton = false;
+    $scope.loadingCad = false;
+    $scope.submitButtonDel = false;
+    $scope.resultShowCreate = false;
+    $scope.resultShow = false;
+    $scope.editorEnabled = [];
+    $scope.Disciplina = [];
+    $scope.resultShowEdit = false;
+
+    $scope.enableEditor = function (id) {
+        $scope.editorEnabled[id] = true;
+    };
+
+    $scope.disableEditor = function (id) {
+        $scope.editorEnabled[id] = false;
+    };
+
+    $scope.save = function (id,idDiscipline) {
+        $scope.editorEnabled[id] = false;
+
+        var data = {
+            idDiscipline: idDiscipline,
+            name : $scope.Disciplina[id]
+        }
+
+        if (data.name != null && data.idDiscipline) {
+            $http({
+                method: 'POST',
+                url: '/disciplines/update',
+                data: $.param(data),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.getall();
+                } else {
+                    $scope.resultMessageEdit = data.message;
+                    $scope.resultEdit = 'bg-danger';
+                    $scope.resultShowEdit = true;
+                    $timeout(function () {
+                        $scope.resultShowEdit = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.resultMessageEdit = "Estamos com problemas. Tente novamente.";
+            $scope.resultEdit = 'bg-danger';
+            $scope.resultShowEdit = true;
+            $timeout(function () {
+                $scope.resultShowEdit = false;
+            }, 1500);
+        }
+
+    };
+
+
+    $scope.getall = function () {
+        $http({
+            method: 'POST',
+            url: '/disciplines/getall',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        }).success(function (data) {
+            console.log(data);
+            if (data != null) { //success comes from the return json object
+                $scope.disciplinas = data;
+            } else {
+                Console.log('erro.');
+            }
+        });
+    }
+
+    $scope.submitCreateDiscipline = function (formCreateDiscipline) {
+        $scope.submitButtonCad = true;
+        if (formCreateDiscipline.$valid) {
+            $scope.loadingCad = true;
+            $http({
+                method: 'POST',
+                url: '/disciplines/create',
+                data: $.param($scope.Discipline),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButtonCad = true;
+                    $scope.resultMessageCad = data.message;
+                    $scope.resultCad = 'bg-success';
+                    $scope.loadingCad = false;
+                    $scope.Discipline.name = "";
+                    $scope.getall();
+                    $scope.resultShowCreate = true;
+                    $timeout(function () {
+                        $scope.resultShowCreate = false;
+                    }, 1500);
+
+                } else {
+                    $scope.submitButtonCad = false;
+                    $scope.resultMessageCad = data.message;
+                    $scope.resultCad = 'bg-danger';
+                    $scope.loadingCad = false;
+                    $scope.resultShowCreate = true;
+                    $timeout(function () {
+                        $scope.resultShowCreate = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.submitButtonCad = false;
+            $scope.resultMessageCad = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.resultCad = 'bg-danger';
+            $scope.loadingCad = false;
+            $scope.resultShowCreate = true;
+            $timeout(function () {
+                $scope.resultShowCreate = false;
+            }, 1500);
+        }
+    }
+
+    $scope.submitDelete = function (id) {
+        $scope.submitButtonDel = true;
+        if (id != null) {
+            $scope.loadingDel = true;
+            $http({
+                method: 'GET',
+                url: '/disciplines/delete/'+id,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButtonDel = true;
+                    $scope.resultMessageDel = data.message;
+                    $scope.resultDel = 'bg-success';
+                    $scope.loadingDel = false;
+                    $scope.getall();
+                    $scope.resultShow = true;
+                    $timeout(function () {
+                        $scope.resultShow = false;
+                    }, 1500);
+                } else {
+                    $scope.submitButtonDel = false;
+                    $scope.resultMessageDel = data.message;
+                    $scope.resultDel = 'bg-danger';
+                    $scope.loadingDel = false;
+                    $scope.resultShow = true;
+                    $timeout(function () {
+                        $scope.resultShow = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.submitButtonDel = false;
+            $scope.resultMessageDel = 'Estamos com problemas, tente novamente.';
+            $scope.resultDel = 'bg-danger';
+            $scope.loadingDel = false;
+            $scope.resultShow = true;
+            $timeout(function () {
+                $scope.resultShow = false;
+            }, 1500);
+        }
+    }
+
+
+});
+
 accountModule.controller('ConfirmAccountController', function ($scope, $http) {
     $scope.submitConfirmButton = false;
     $scope.loading = false;
@@ -401,41 +604,3 @@ manageModule.controller('ManageController', function ($scope, $http, $timeout) {
 
 })
 
-homePortal.controller('InviteFriendsController', function ($scope, $http) {
-    $scope.submitButton = false;
-    $scope.loading = false;
-
-    $scope.submit = function (inviteForm) {
-        $scope.submitButton = true;
-        if (inviteForm.$valid) {
-            $scope.loading = true;
-            $http({
-                method: 'POST',
-                url: '/home/invitefriend',
-                data: $.param($scope.Account),  //param method from jQuery
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
-            }).success(function (data) {
-                console.log(data);
-                if (data.success) { //success comes from the return json object
-                    $scope.submitButton = true;
-                    $scope.resultMessage = data.message;
-                    $scope.result = 'bg-success';
-                    $scope.loading = false;
-
-                } else {
-                    $scope.submitButton = false;
-                    $scope.resultMessage = data.message;
-                    $scope.result = 'bg-danger';
-                    $scope.loading = false;
-                }
-            });
-        } else {
-            $scope.submitButton = false;
-            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
-            $scope.result = 'bg-danger';
-            $scope.loading = false;
-        }
-    }
-
-
-})

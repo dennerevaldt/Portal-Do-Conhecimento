@@ -8,6 +8,6 @@ namespace PDS.Models.Entities
     public class Students : Persons
     {
         public Int64 idStudent { get; set; }
-
+        List<StudentsClasses> studentsClasses { get; set; }
     }
 }
