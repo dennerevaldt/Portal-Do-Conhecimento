@@ -1,4 +1,25 @@
-﻿homeSite.controller('ContactController', function ($scope, $http) {
+﻿homePortal.run(function ($rootScope, $http) {
+
+    $rootScope.getall = function () {
+        $http({
+            method: 'POST',
+            url: '/disciplines/getall',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        }).success(function (data) {
+            console.log(data);
+            if (data != null) { //success comes from the return json object
+                $rootScope.listDisciplinesClasses = data;
+                $rootScope.disciplinas = data;
+            } else {
+                Console.log('erro.');
+            }
+        });
+    }
+
+    $rootScope.getall();
+});
+
+homeSite.controller('ContactController', function ($scope, $http) {
     $scope.resultMessage;
     $scope.formData; //formData is an object holding the name, email and message
     $scope.submitButtonDisabled = false;
@@ -156,7 +177,7 @@ homePortal.controller('InviteFriendsController', function ($scope, $http) {
 
 });
 
-homePortal.controller('DisciplinesController', function ($scope, $http, $timeout) {
+homePortal.controller('DisciplinesController', function ($scope, $http, $timeout, $rootScope) {
     $scope.submitButton = false;
     $scope.loadingCad = false;
     $scope.submitButtonDel = false;
@@ -165,6 +186,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     $scope.editorEnabled = [];
     $scope.Disciplina = [];
     $scope.resultShowEdit = false;
+
 
     $scope.enableEditor = function (id) {
         $scope.editorEnabled[id] = true;
@@ -191,7 +213,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
             }).success(function (data) {
                 console.log(data);
                 if (data.success) { //success comes from the return json object
-                    $scope.getall();
+                    $rootScope.getall();
                 } else {
                     $scope.resultMessageEdit = data.message;
                     $scope.resultEdit = 'bg-danger';
@@ -212,22 +234,6 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
 
     };
 
-
-    $scope.getall = function () {
-        $http({
-            method: 'POST',
-            url: '/disciplines/getall',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
-        }).success(function (data) {
-            console.log(data);
-            if (data != null) { //success comes from the return json object
-                $scope.disciplinas = data;
-            } else {
-                Console.log('erro.');
-            }
-        });
-    }
-
     $scope.submitCreateDiscipline = function (formCreateDiscipline) {
         $scope.submitButtonCad = true;
         if (formCreateDiscipline.$valid) {
@@ -245,7 +251,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
                     $scope.resultCad = 'bg-success';
                     $scope.loadingCad = false;
                     $scope.Discipline.name = "";
-                    $scope.getall();
+                    $rootScope.getall();
                     $scope.resultShowCreate = true;
                     $timeout(function () {
                         $scope.resultShowCreate = false;
@@ -289,7 +295,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
                     $scope.resultMessageDel = data.message;
                     $scope.resultDel = 'bg-success';
                     $scope.loadingDel = false;
-                    $scope.getall();
+                    $rootScope.getall();
                     $scope.resultShow = true;
                     $timeout(function () {
                         $scope.resultShow = false;
@@ -317,8 +323,19 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
         }
     }
 
+});
+
+homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope) {
+    $scope.resultShowCreateClass = false;
+    $scope.loadingCadClass = false;
+
+    $scope.submitCreateClass = function () {
+        alert('teste');
+    }
 
 });
+
+
 
 accountModule.controller('ConfirmAccountController', function ($scope, $http) {
     $scope.submitConfirmButton = false;

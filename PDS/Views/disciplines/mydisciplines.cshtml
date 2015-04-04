@@ -1,14 +1,34 @@
-﻿<div class="row" style="margin-left:15px; margin-right:15px; margin-top:10px;" data-ng-init="getall()">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nome</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="disciplina in disciplinas">
-                <td>{{disciplina.name}}</td>
-            </tr>
-        </tbody>
-    </table>
+﻿<div class="row" style="margin-left:15px; margin-right:15px; margin-top:10px;">
+
+    <div><label>Nome da disciplina</label></div>
+ 
+    <div ng-repeat="disciplina in disciplinas" style="margin-top: 8px;">
+        
+        <div class="input-group col-md-12" ng-hide="editorEnabled[{{$index+1}}]">
+            <input class="form-control" value="disciplina.name" ng-model="displayname" ng-init="displayname=disciplina.name" ng-disabled="true">
+            <span class="input-group-btn">
+                <a class="btn btn-default" ng-click="enableEditor($index+1)"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-danger" ng-click="submitDelete(disciplina.idDiscipline)"><span class="glyphicon glyphicon-trash"></span></a>
+            </span>
+        </div>
+        
+        <div class="input-group col-md-12" ng-show="editorEnabled[{{$index+1}}]">
+            <input class="form-control" value="disciplina.name" ng-model="Disciplina[$index+1]" ng-init="Disciplina[$index+1]=disciplina.name" ng-disabled="false" />
+            <span class="input-group-btn">
+                <a class="btn btn-success" ng-click="save($index+1,disciplina.idDiscipline)"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+                <a class="btn btn-default" ng-click="disableEditor($index+1)"><span class="glyphicon glyphicon-remove"></span></a>
+            </span>
+        </div>
+
+    </div>
+
+    <div ng-class="resultEdit" ng-show="resultShowEdit">{{ resultMessageEdit }}</div>
+
+    <div class="text-center">
+        <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingDel" />
+    </div>
+
+    <div ng-class="resultDel" ng-show="resultShow">{{ resultMessageDel }}</div>
+
+
 </div>

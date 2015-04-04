@@ -1004,8 +1004,7 @@
     <Content Include="Views\Shared\_LayoutNav.cshtml" />
     <Content Include="Views\disciplines\create.cshtml" />
     <Content Include="Views\disciplines\mydisciplines.cshtml" />
-    <Content Include="Views\disciplines\delete.cshtml" />
-    <Content Include="Views\disciplines\edit.cshtml" />
+    <Content Include="Views\classes\create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

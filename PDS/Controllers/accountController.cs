@@ -55,7 +55,8 @@ namespace PDS.Controllers
                 account.email = form["email"];
                 account.idAccount = Convert.ToInt64(form["idAccount"]);
 
-                AccountsRepository.UpdateAccount(account);
+                AccountsRepository repAccount = new AccountsRepository();
+                repAccount.UpdateAccount(account);
 
                 if (form["accountType"] == "T")
                 {
@@ -74,7 +75,7 @@ namespace PDS.Controllers
                     teacher.city = form["location"];
                     teacher.country = form["country"];
 
-                    AccountsRepository.UpdatePerson(teacher);
+                    repAccount.UpdatePerson(teacher);
                 }
                 else
                 {
@@ -93,7 +94,7 @@ namespace PDS.Controllers
                     student.city = form["location"];
                     student.country = form["country"];
 
-                    AccountsRepository.UpdatePerson(student);
+                    repAccount.UpdatePerson(student);
                 }
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Dados atualizados com sucesso.", returnUrl = null, location = "" };
@@ -127,7 +128,7 @@ namespace PDS.Controllers
                     type = "notImage";
                 }
 
-                if (type == ".jpg" || type == ".png" || type == "notImage")
+                if (type == ".jpg" || type == ".png" || type == "notImage" || type == ".PNG" || type == ".JPG" || type == ".jpeg" || type == ".JPEG")
                 {
                     #region Update Image
                 
@@ -170,7 +171,8 @@ namespace PDS.Controllers
 
                         imgNew.Save(Path.Combine(Server.MapPath(path)));
 
-                        AccountsRepository.UpdateUrlImage(path, Convert.ToInt64(idAccount));
+                        AccountsRepository repAccount = new AccountsRepository();
+                        repAccount.UpdateUrlImage(path, Convert.ToInt64(idAccount));
 
                         setcookie("userImage", path);
                     }
@@ -202,7 +204,8 @@ namespace PDS.Controllers
 
                         imgNew.Save(Path.Combine(Server.MapPath(path)));
 
-                        AccountsRepository.UpdateUrlImage(path, Convert.ToInt64(idAccount));
+                        AccountsRepository repAccount = new AccountsRepository();
+                        repAccount.UpdateUrlImage(path, Convert.ToInt64(idAccount));
 
                         setcookie("userImage", path);
                     }
@@ -239,7 +242,9 @@ namespace PDS.Controllers
             try
             {
                 string email = form["email"];
-                AccountsRepository.Delete(email);
+
+                AccountsRepository repAccount = new AccountsRepository();
+                repAccount.Delete(email);
 
                 HttpCookie cookie_userInfo = Request.Cookies["userInfo"];
                 var decId = Server.UrlTokenDecode(cookie_userInfo["id_account"]);
@@ -281,7 +286,8 @@ namespace PDS.Controllers
         {
             try
             {
-                if (AccountsRepository.GetEmail(form["inputEmailT"].ToLower()) == false)
+                AccountsRepository repAccount = new AccountsRepository();
+                if (repAccount.GetEmail(form["inputEmailT"].ToLower()) == false)
                 {
                     if (inputFile != null)
                     {
@@ -293,22 +299,19 @@ namespace PDS.Controllers
                         type = "notImage";
                     }
 
-                    if(type == ".jpg" || type == ".png" || type == "notImage")
+                    if(type == ".jpg" || type == ".png" || type == "notImage" || type == ".PNG" || type == ".JPG" || type == ".jpeg" || type ==".JPEG")
                     {
-                        // Insert Account
+                        // Account
 
                         Accounts account = new Accounts();
                         account.email = form["inputEmailT"];
-                        account.password = AccountsRepository.EncryptPassword(form["inputPasswordT"]);
+                        account.password = repAccount.EncryptPassword(form["inputPasswordT"]);
                         account.acessToken = form["inputAcessToken"];
 
-                        Int64 idAccount = AccountsRepository.Create(account);
-
-                        // Insert Teacher
+                        // Teacher
 
                         Teachers teacher = new Teachers();
                         teacher.Account = new Accounts();
-                        teacher.Account.idAccount = idAccount;
                         teacher.firstName = form["inputFirstNameT"];
                         teacher.lastName = form["inputLastNameT"];
                         teacher.gender = Convert.ToChar(form["inputGender"]);
@@ -321,6 +324,8 @@ namespace PDS.Controllers
                         teacher.accountType = Convert.ToChar("T");
                         teacher.city = form["inputCityT"];
                         teacher.country = form["inputCountryT"];
+
+                        Int64 idAccount = repAccount.CreateTeacher(account, teacher);
 
                         if (inputFile != null)
                         {
@@ -337,9 +342,10 @@ namespace PDS.Controllers
                             teacher.urlImageProfile = "/Content/images/noPhoto.png";
                         }
             
-                        TeachersRepository.Create(teacher);
+                        //update Url Image
+                        repAccount.UpdateUrlImage(teacher.urlImageProfile, idAccount);
 
-                        dynamic user = AccountsRepository.GetUserData(form["inputEmailT"].ToLower());
+                        dynamic user = repAccount.GetUserData(form["inputEmailT"].ToLower());
 
                         CreateCookieInfoUser(user);
                         FormsAuthentication.SetAuthCookie(form["inputEmailT"].ToLower(), false);
@@ -379,7 +385,9 @@ namespace PDS.Controllers
         {
             try
             {
-                if (AccountsRepository.GetEmail(form["inputEmail"].ToLower()) == false)
+                AccountsRepository repAccount = new AccountsRepository();
+
+                if (repAccount.GetEmail(form["inputEmail"].ToLower()) == false)
                 {
                     if(inputFile != null){
                         // get type file
@@ -390,22 +398,19 @@ namespace PDS.Controllers
                         type = "notImage";
                     }
 
-                    if (type == ".jpg" || type == ".png" || type == "notImage")
+                    if (type == ".jpg" || type == ".png" || type == "notImage" || type == ".PNG" || type == ".JPG" || type == ".jpeg" || type == ".JPEG")
                     {
                         // Insert Account
 
                         Accounts account = new Accounts();
                         account.email = form["inputEmail"];
-                        account.password = AccountsRepository.EncryptPassword(form["inputPassword"]);
+                        account.password = repAccount.EncryptPassword(form["inputPassword"]);
                         account.acessToken = form["inputAcessToken"];
-
-                        Int64 idAccount = AccountsRepository.Create(account);
 
                         // Insert Teacher
 
                         Students student = new Students();
                         student.Account = new Accounts();
-                        student.Account.idAccount = idAccount;
                         student.firstName = form["inputFirstName"];
                         student.lastName = form["inputLastName"];
                         student.gender = Convert.ToChar(form["inputGender"]);
@@ -418,6 +423,8 @@ namespace PDS.Controllers
                         student.accountType = Convert.ToChar("S");
                         student.city = form["inputCity"];
                         student.country = form["inputCountry"];
+
+                        Int64 idAccount = repAccount.CreateStudent(account, student);
 
                         if (inputFile != null)
                         {
@@ -435,9 +442,10 @@ namespace PDS.Controllers
                             student.urlImageProfile = "/Content/images/noPhoto.png";
                         }
 
-                        StudentsRepository.Create(student);
+                        //Update Url Image
+                        repAccount.UpdateUrlImage(student.urlImageProfile, idAccount);
 
-                        dynamic user = AccountsRepository.GetUserData(form["inputEmail"].ToLower());
+                        dynamic user = repAccount.GetUserData(form["inputEmail"].ToLower());
 
                         CreateCookieInfoUser(user);
                         FormsAuthentication.SetAuthCookie(form["inputEmail"].ToLower(), false);
@@ -483,13 +491,10 @@ namespace PDS.Controllers
                 account.password = "";
                 account.acessToken = form["acessToken"];
 
-                Int64 idAccount = AccountsRepository.Create(account);
-
                 // Insert Teacher
 
                 Teachers teacher = new Teachers();
                 teacher.Account = new Accounts();
-                teacher.Account.idAccount = idAccount;
                 teacher.firstName = form["firstName"];
                 teacher.lastName = form["lastName"];
                 teacher.gender = Convert.ToChar(form["gender"]);
@@ -504,6 +509,10 @@ namespace PDS.Controllers
                 teacher.country = form["country"];
                 teacher.Account.acessToken = form["acessToken"];
 
+                AccountsRepository repAccount = new AccountsRepository();
+
+                Int64 idAccount = repAccount.CreateTeacher(account,teacher);
+
                 teacher.urlImageProfile = "/Content/Uploads/ImagesProfile/Teachers/" + idAccount.ToString() + ".jpg";
                 string url = (form["urlImageProfile"].ToString());
                 string localSave = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Teachers"), idAccount.ToString() + ".jpg");
@@ -511,9 +520,10 @@ namespace PDS.Controllers
                 WebClient client = new WebClient();
                 client.DownloadFile(url, localSave);
 
-                TeachersRepository.Create(teacher);
+                //Update Url Image
+                repAccount.UpdateUrlImage(teacher.urlImageProfile, idAccount);
 
-                dynamic userInfo = AccountsRepository.GetUserData(account.email);
+                dynamic userInfo = repAccount.GetUserData(account.email);
 
                 Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
                 Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
@@ -560,13 +570,10 @@ namespace PDS.Controllers
                 account.password = "";
                 account.acessToken = form["acessToken"];
 
-                Int64 idAccount = AccountsRepository.Create(account);
-
                 // Insert Teacher
 
                 Students student = new Students();
                 student.Account = new Accounts();
-                student.Account.idAccount = idAccount;
                 student.firstName = form["firstName"];
                 student.lastName = form["lastName"];
                 student.gender = Convert.ToChar(form["gender"]);
@@ -580,6 +587,10 @@ namespace PDS.Controllers
                 student.city = form["location"];
                 student.country = form["country"];
 
+                AccountsRepository repAccount = new AccountsRepository();
+
+                Int64 idAccount = repAccount.CreateStudent(account,student);
+
                 student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + ".jpg" ;
                 string url = (form["urlImageProfile"].ToString());
                 string localSave = Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg");
@@ -587,9 +598,10 @@ namespace PDS.Controllers
                 WebClient client = new WebClient();
                 client.DownloadFile(url, localSave);
                 
-                StudentsRepository.Create(student);
+                //Update Url Image
+                repAccount.UpdateUrlImage(student.urlImageProfile, idAccount);
 
-                dynamic userInfo = AccountsRepository.GetUserData(account.email);
+                dynamic userInfo = repAccount.GetUserData(account.email);
 
                 Response.Cookies["userInfo"]["id_account"] = encrypt(userInfo.Account.idAccount.ToString("D1"));
                 Response.Cookies["userInfo"]["email"] = encrypt(userInfo.Account.email);
@@ -649,24 +661,25 @@ namespace PDS.Controllers
                 if (inputEmail != null || inputPassword != null)
                 {
                     Accounts account = new Accounts();
+                    AccountsRepository repAccount = new AccountsRepository();
 
-                    account = AccountsRepository.GetDataAccount(inputEmail);
+                    account = repAccount.GetDataAccount(inputEmail);
 
                     if (account.email != null && account.password != null && account.password != string.Empty)
                     {
-                        if (AccountsRepository.CheckPassword(inputPassword,account.password))
+                        if (repAccount.CheckPassword(inputPassword,account.password))
                         {
                             if (inputRememberme == "true")
                             {
                                 //Autenticação do usuário, cookie indestrutível.
                                 FormsAuthentication.SetAuthCookie(account.email, true);
-                                CreateCookieInfoUser(AccountsRepository.GetUserData(account.email));
+                                CreateCookieInfoUser(repAccount.GetUserData(account.email));
                             }
                             else
                             {
                                 //Autenticação do usuário, destrói cookie ao fechar o navegador.
                                 FormsAuthentication.SetAuthCookie(account.email, false);
-                                CreateCookieInfoUser(AccountsRepository.GetUserData(account.email));
+                                CreateCookieInfoUser(repAccount.GetUserData(account.email));
                             }
 
                             objectToSerializeSuc = new ReturnJson { success = true, message = "Entrando...", returnUrl = returnUrlStr, location = "/home/index" };
@@ -706,11 +719,12 @@ namespace PDS.Controllers
         [HttpPost]
         public void changekey(FormCollection form)
         {
-            string email = form["email"].ToLower(); 
+            string email = form["email"].ToLower();
+            AccountsRepository repAccount = new AccountsRepository();
 
-            if (AccountsRepository.GetEmail(email))
+            if (repAccount.GetEmail(email))
             {
-                dynamic account = AccountsRepository.GetUserData(email);
+                dynamic account = repAccount.GetUserData(email);
 
                 if (account.Account.password != null && account.Account.password != string.Empty)
                 {
@@ -771,10 +785,11 @@ namespace PDS.Controllers
         {
             try
             {
+                AccountsRepository repAccount = new AccountsRepository();
                 var pEmail = Server.UrlTokenDecode(email);
                 string emailD = System.Text.UTF8Encoding.UTF8.GetString(pEmail);
 
-                dynamic account = AccountsRepository.GetUserData(emailD);
+                dynamic account = repAccount.GetUserData(emailD);
 
                 if (account.Account.password == password)
                 {
@@ -801,9 +816,10 @@ namespace PDS.Controllers
             try
             {
                 string email = form["email"];
-                string password = AccountsRepository.EncryptPassword(form["password"]);
+                AccountsRepository repAccount = new AccountsRepository();
+                string password = repAccount.EncryptPassword(form["password"]);
 
-                AccountsRepository.UpdateUserPassword(email, password);
+                repAccount.UpdateUserPassword(email, password);
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Senha alterada com sucesso.", returnUrl = null, location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));

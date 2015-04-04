@@ -20,6 +20,7 @@
     @Scripts.Render("~/Scripts/angular.js")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
+    @Scripts.Render("~/Scripts/factories.js")
 
     @{
         HttpCookie userInfo = Request.Cookies["userInfo"];
@@ -118,6 +119,7 @@
                         <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
                     </li>
                 }
+                
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -182,93 +184,78 @@
         <div class="modal fade disciplines" ng-controller="DisciplinesController">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                   
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title-custom">Disciplinas</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div role="tabpanel" style="margin-right:15px;margin-left:15px;">
 
-                                    <!-- Nav tabs -->
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li role="presentation" class="active"><a href="#cadastrar" aria-controls="home" role="tab" data-toggle="tab">Cadastrar</a></li>
-                                        <li role="presentation"><a href="#editar" aria-controls="profile" role="tab" data-toggle="tab">Editar</a></li>
-                                        <li role="presentation"><a href="#excluir" aria-controls="messages" role="tab" data-toggle="tab">Excluir</a></li>
-                                        <li role="presentation"><a href="#minhasdisciplinas" aria-controls="messages" role="tab" data-toggle="tab">Minhas Disciplinas</a></li>
-                                    </ul>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Disciplinas</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div role="tabpanel" style="margin-right:15px;margin-left:15px;">
 
-                                    <!-- Tab panes -->
-                                    <div class="tab-content">
-                                        <div role="tabpanel" class="tab-pane active" id="cadastrar">
-                                            
-                                            @Html.Partial("~/Views/disciplines/create.cshtml")                                           
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#cadastrar" aria-controls="home" role="tab" data-toggle="tab">Cadastrar</a></li>
+                                    <li role="presentation"><a href="#minhasdisciplinas" aria-controls="messages" role="tab" data-toggle="tab">Minhas Disciplinas</a></li>
+                                </ul>
 
-                                        </div>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="cadastrar">
 
-                                        <div role="tabpanel" class="tab-pane" id="editar">
+                                        @Html.Partial("~/Views/disciplines/create.cshtml")
 
-                                            @Html.Partial("~/Views/disciplines/edit.cshtml")
-
-                                        </div>
-
-                                        <div role="tabpanel" class="tab-pane" id="excluir">
-
-                                            @Html.Partial("~/Views/disciplines/delete.cshtml")
-
-                                        </div>
-
-                                        <div role="tabpanel" class="tab-pane" id="minhasdisciplinas">
-
-                                            @Html.Partial("~/Views/disciplines/mydisciplines.cshtml")
-                                            
-                                        </div>
                                     </div>
 
+                                    <div role="tabpanel" class="tab-pane" id="minhasdisciplinas">
+
+                                        @Html.Partial("~/Views/disciplines/mydisciplines.cshtml")
+
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
+                    </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
 
         <!-- Modal Classes -->
-        @*<div class="modal fade classes" ng-controller="">
+        <div class="modal fade classes" ng-controller="ClassesController">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <form method="post" id="" name="" ng-submit="">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title-custom">Turmas</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div role="tabpanel" style="margin-right:15px;margin-left:15px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Turmas</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div role="tabpanel" style="margin-right:15px;margin-left:15px;">
 
-                                    <!-- Nav tabs -->
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li role="presentation" class="active"><a href="#cadastrar" aria-controls="home" role="tab" data-toggle="tab">Cadastrar</a></li>
-                                        <li role="presentation"><a href="#editar" aria-controls="profile" role="tab" data-toggle="tab">Editar</a></li>
-                                        <li role="presentation"><a href="#excluir" aria-controls="messages" role="tab" data-toggle="tab">Excluir</a></li>
-                                        <li role="presentation"><a href="#minhasturmas" aria-controls="messages" role="tab" data-toggle="tab">Minhas turmas</a></li>
-                                     </ul>
+                                <!-- Nav tabs -->
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li role="presentation" class="active"><a href="#cadastrarClass" aria-controls="home" role="tab" data-toggle="tab">Cadastrar</a></li>
+                                    <li role="presentation"><a href="#minhasturmas" aria-controls="messages" role="tab" data-toggle="tab">Minhas turmas</a></li>
+                                </ul>
 
-                                    <!-- Tab panes -->
-                                    <div class="tab-content">
-                                        <div role="tabpanel" class="tab-pane active" id="cadastrar">...</div>
-                                        <div role="tabpanel" class="tab-pane" id="editar">...</div>
-                                        <div role="tabpanel" class="tab-pane" id="excluir">...</div>
-                                        <div role="tabpanel" class="tab-pane" id="minhasturmas">...</div>
+                                <!-- Tab panes -->
+                                <div class="tab-content">
+                                    <div role="tabpanel" class="tab-pane active" id="cadastrarClass">
+
+                                        @Html.Partial("~/Views/classes/create.cshtml")
+
                                     </div>
 
+                                    <div role="tabpanel" class="tab-pane" id="minhasturmas">...</div>
                                 </div>
+
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
-        </div><!-- /.modal -->*@
+        </div><!-- /.modal -->
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->

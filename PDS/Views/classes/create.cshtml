@@ -1,0 +1,39 @@
+﻿@{
+    HttpCookie userInfo = Request.Cookies["userInfo"];
+    var CidTeacher = Server.UrlTokenDecode(userInfo["id_type_account"]);
+    string id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidTeacher);
+}
+
+<div class="row" style="margin-left:0;margin-right:0;margin-top:10px;">
+    <form method="post" id="formCreateClass" name="formCreateClass" ng-submit="submitCreateClass(formCreateClass)">
+
+        <div class="form-group col-md-6">
+            <label for="inputDiscipline">Nome da Disciplina</label>
+            <input type="hidden" id="idTeacher" name="idTeacher" value="@id_teacher" ng-model="Class.idTeacher" ng-init="Class.idTeacher=@id_teacher" />
+            <select class="form-control">
+                <option ng-repeat="disc in listDisciplinesClasses" value="{{disc.idDiscipline}}">{{disc.name}}</option>
+            </select>
+        </div>
+
+        <div class="form-group col-md-6">
+            <label for="inputNomeDaTurma">Nome da Turma</label>
+            <div class="input-group">
+                <input type="text" class="form-control" id="inputClassName" name="inputClassName" ng-model="Class.name" placeholder="Nome da turma" required />
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </span>
+            </div>
+
+            <p class="bg-danger" ng-show="formCreateClass.inputClassName.$required">
+                Campo inválido.
+            </p>
+
+        </div>
+
+        <div class="text-center">
+            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingCadClass" />
+        </div>
+
+        <div ng-class="resultCadClass" ng-show="resultShowCreateClass">{{ resultMessageCadClass }}</div>
+    </form>
+</div>

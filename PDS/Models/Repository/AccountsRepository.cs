@@ -1,4 +1,5 @@
-﻿using CryptSharp;
+﻿using ADOMySQL;
+using CryptSharp;
 using MySql.Data.MySqlClient;
 using PDS.Models.Entities;
 using System;
@@ -19,12 +20,13 @@ namespace PDS.Models.Repository
         #endregion
 
         /// <summary>
-        /// Método para criar conta de usuário.
+        /// Método para criar conta de Professor.
         /// </summary>
         /// <param name="account">Objeto Account.</param>
         /// <returns>Int64 idAccount.</returns>
-        public static Int64 Create(Accounts account)
+        public Int64 CreateTeacher(Accounts account, Teachers teacher)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -36,7 +38,72 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            Int64 idAccountReturn = ADOMySQL.MySQL.ExecuteEscalar(cmm);
+            Int64 idAccountReturn = 0;
+
+            try
+            {
+                database.BeginWork();
+
+                idAccountReturn = database.ExecuteScalar(cmm);
+
+                teacher.Account.idAccount = idAccountReturn;
+
+                TeachersRepository repTeacher = new TeachersRepository();
+                repTeacher.Create(teacher, database);
+
+                database.CommitWork();
+            }
+            catch (Exception)
+            {
+                database.RollBack();
+                throw;
+            }
+
+            return idAccountReturn;
+        }
+
+        /// <summary>
+        /// Método para criar conta de Estudante.
+        /// </summary>
+        /// <param name="account">Objeto Account.</param>
+        /// <returns>Int64 idAccount.</returns>
+        public Int64 CreateStudent(Accounts account, Students student)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@email", account.email);
+            cmm.Parameters.AddWithValue("@password", account.password);
+            cmm.Parameters.AddWithValue("@acessToken", account.acessToken);
+
+            sql.Append("CALL insertAccount(@email, @password, @acessToken)");
+
+            cmm.CommandText = sql.ToString();
+
+            Int64 idAccountReturn = 0;
+
+            try
+            {
+                database.BeginWork();
+
+                idAccountReturn = database.ExecuteScalar(cmm);
+
+                student.Account.idAccount = idAccountReturn;
+
+                StudentsRepository repStudents = new StudentsRepository();
+                repStudents.Create(student, database);
+
+                database.CommitWork();
+
+            }
+            catch (Exception)
+            {
+                database.RollBack();
+                throw;
+            }
+
+            //Int64 idAccountReturn = ADOMySQL.MySQL.ExecuteEscalar(cmm);
 
             return idAccountReturn;
         }
@@ -45,8 +112,9 @@ namespace PDS.Models.Repository
         /// Método para excluir conta de usuário.
         /// </summary>
         /// <param name="email">String email.</param>
-        public static void Delete(string email)
+        public void Delete(string email)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -56,7 +124,19 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+
+                database.ExecuteNonQuery(cmm);
+
+                database.CommitWork();
+            }
+            catch (Exception)
+            {
+                database.RollBack();
+                throw;
+            }
         }
 
         /// <summary>
@@ -64,8 +144,9 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="email">String Email.</param>
         /// <returns>Objeto object.</returns>
-        public static object GetUserData(string email)
+        public object GetUserData(string email)
         {
+            MySQL database = MySQL.GetInstancia("root","123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -77,9 +158,7 @@ namespace PDS.Models.Repository
 
             try
             {
-                ADOMySQL.MySQL.Conectar();
-
-                dr = ADOMySQL.MySQL.ExecuteReader(cmm);
+                dr = database.ExecuteReader(cmm);
 
                 while (dr.Read())
                 {
@@ -132,15 +211,12 @@ namespace PDS.Models.Repository
                     }
                 }
 
-                dr.Dispose();
-
-                ADOMySQL.MySQL.Desconectar();
+                dr.Close();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                dr.Dispose();
-                ADOMySQL.MySQL.Desconectar();
-                throw;
+                dr.Close();
+                throw ex;
             }
 
             return objeto;
@@ -151,8 +227,9 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="email">String email.</param>
         /// <returns>Object Accounts.</returns>
-        public static Accounts GetDataAccount(string email)
+        public Accounts GetDataAccount(string email)
         {
+            MySQL database = MySQL.GetInstancia("root","123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Accounts account = new Accounts();
@@ -165,8 +242,7 @@ namespace PDS.Models.Repository
 
             try
             {
-                ADOMySQL.MySQL.Conectar();
-                dr = ADOMySQL.MySQL.ExecuteReader(cmm);
+                dr = database.ExecuteReader(cmm);
 
                 while (dr.Read())
                 {
@@ -180,14 +256,12 @@ namespace PDS.Models.Repository
                     
                 }
 
-                dr.Dispose();
+                dr.Close();
 
-                ADOMySQL.MySQL.Desconectar();
             }
             catch (Exception)
             {
-                dr.Dispose();
-                ADOMySQL.MySQL.Desconectar();
+                dr.Close();
                 throw;
             }
 
@@ -199,8 +273,9 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="email">String Email.</param>
         /// <returns>True or False.</returns>
-        public static bool GetEmail(string email)
+        public bool GetEmail(string email)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -210,16 +285,26 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            Int64 result = ADOMySQL.MySQL.ExecuteEscalar(cmm);
+            Int64 result = 0;
 
-            if (result == 0)
+            try
             {
-                return false;
+                 result = database.ExecuteScalar(cmm);
+
+                 if (result == 0)
+                 {
+                     return false;
+                 }
+                 else
+                 {
+                     return true;
+                 }
             }
-            else
-            {
-                return true;
+            catch (Exception ex)
+            {           
+                throw ex;
             }
+            
         }
 
         /// <summary>
@@ -227,8 +312,9 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="email">String email.</param>
         /// <param name="password">String password.</param>
-        public static void UpdateUserPassword(string email, string password)
+        public void UpdateUserPassword(string email, string password)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -239,15 +325,27 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
+            
         }
 
         /// <summary>
         /// Método para fazer update dos dados da conta.
         /// </summary>
         /// <param name="account">Accounts account.</param>
-        public static void UpdateAccount(Accounts account)
+        public void UpdateAccount(Accounts account)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -258,15 +356,26 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
         }
 
         /// <summary>
         /// Método para fazer update dos dados pessoais.
         /// </summary>
         /// <param name="person"Dynamic person.></param>
-        public static void UpdatePerson(dynamic person)
+        public void UpdatePerson(dynamic person)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -282,7 +391,17 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
             
         }
 
@@ -291,7 +410,7 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="password">String password.</param>
         /// <returns>Password encrypted.</returns>
-        public static string EncryptPassword(string password)
+        public string EncryptPassword(string password)
         {
             return Crypter.MD5.Crypt(password);
         }
@@ -302,7 +421,7 @@ namespace PDS.Models.Repository
         /// <param name="password">String password.</param>
         /// <param name="hash">String hash.</param>
         /// <returns>True or False.</returns>
-        public static bool CheckPassword(string password, string hash)
+        public bool CheckPassword(string password, string hash)
         {
             return Crypter.CheckPassword(password, hash);
         }
@@ -312,19 +431,30 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="urlImage">String url.</param>
         /// <param name="idAccount">Int64 idAccount.</param>
-        public static void UpdateUrlImage(string urlImage, Int64 idAccount)
+        public void UpdateUrlImage(string urlImage, Int64 idAccount)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
-            cmm.Parameters.Add("@url", urlImage);
-            cmm.Parameters.Add("@idAccount", idAccount);
+            cmm.Parameters.AddWithValue("@url", urlImage);
+            cmm.Parameters.AddWithValue("@idAccount", idAccount);
 
             sql.Append("CALL updateUrlImage(@url,@idAccount)");
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
         }
 
     }

@@ -33,7 +33,8 @@ namespace PDS.Controllers
 
             try
             {
-                DisciplinesRepository.Create(discipline);
+                DisciplinesRepository repDisc = new DisciplinesRepository();
+                repDisc.Create(discipline);
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Disciplina adicionada com sucesso.", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
@@ -41,7 +42,7 @@ namespace PDS.Controllers
             catch (Exception)
             {
                 objectToSerializeSuc = new ReturnJson { success = false, message = "Ops, estamos com problemas. Tente novamente.", returnUrl = "", location = "" };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
         }
 
@@ -59,7 +60,9 @@ namespace PDS.Controllers
 
                 Int64 idTeacher = Int64.Parse(id_teacher);
 
-                List<Disciplines> listDisciplines = DisciplinesRepository.GetAll(idTeacher);
+                DisciplinesRepository repDisc = new DisciplinesRepository();
+
+                List<Disciplines> listDisciplines = repDisc.GetAll(idTeacher);
 
                 Response.Write(JsonConvert.SerializeObject(listDisciplines));
             }
@@ -80,7 +83,8 @@ namespace PDS.Controllers
             try
             {
                 Int64 idDiscipline = Convert.ToInt64(id);
-                DisciplinesRepository.Delete(idDiscipline);
+                DisciplinesRepository repDisc = new DisciplinesRepository();
+                repDisc.Delete(idDiscipline);
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = "Disciplina deletada.", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
@@ -88,7 +92,7 @@ namespace PDS.Controllers
             catch (Exception)
             {
                 objectToSerializeSuc = new ReturnJson { success = false, message = "Ops, estamos com problemas. Tente novamente.", returnUrl = "", location = "" };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }       
         }
 
@@ -104,7 +108,8 @@ namespace PDS.Controllers
                 Int64 idDiscipline = Int64.Parse(form["idDiscipline"]);
                 string name = form["name"];
 
-                DisciplinesRepository.Update(idDiscipline, name);
+                DisciplinesRepository repDisc = new DisciplinesRepository();
+                repDisc.Update(idDiscipline, name);
 
                 objectToSerializeSuc = new ReturnJson { success = true, message = "", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
@@ -112,9 +117,10 @@ namespace PDS.Controllers
             catch (Exception)
             {
                 objectToSerializeSuc = new ReturnJson { success = false, message = "Ops, estamos com problemas. Tente novamente.", returnUrl = "", location = "" };
-                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
             
         }
+
     }
 }

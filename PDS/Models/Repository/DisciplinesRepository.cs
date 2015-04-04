@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using ADOMySQL;
+using MySql.Data.MySqlClient;
 using PDS.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,15 @@ namespace PDS.Models.Repository
 {
     public class DisciplinesRepository
     {
-        public static MySqlDataReader dr;
+        public MySqlDataReader dr;
 
         /// <summary>
         /// Método para adicionar uma nova disciplina ao Professor.
         /// </summary>
         /// <param name="discipline">Disciplines discipline.</param>
-        public static void Create(Disciplines discipline)
+        public void Create(Disciplines discipline)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -28,7 +30,17 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
 
         }
 
@@ -37,8 +49,9 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idTeacher">Int64 idTeacher.</param>
         /// <returns>List Disciplines.</returns>
-        public static List<Disciplines> GetAll(Int64 idTeacher)
+        public List<Disciplines> GetAll(Int64 idTeacher)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Disciplines> listDisciplines = new List<Disciplines>();
@@ -51,8 +64,7 @@ namespace PDS.Models.Repository
 
             try
             {
-                ADOMySQL.MySQL.Conectar();
-                dr = ADOMySQL.MySQL.ExecuteReader(cmm);
+                dr = database.ExecuteReader(cmm);
 
                 while (dr.Read())
                 {
@@ -70,14 +82,12 @@ namespace PDS.Models.Repository
 
                 }
 
-                dr.Dispose();
+                dr.Close();
 
-                ADOMySQL.MySQL.Desconectar();
             }
             catch (Exception ex)
             {
-                dr.Dispose();
-                ADOMySQL.MySQL.Desconectar();
+                dr.Close();
                 throw ex;
             }
 
@@ -88,8 +98,9 @@ namespace PDS.Models.Repository
         /// Método para deletar uma disciplina.
         /// </summary>
         /// <param name="idDiscipline">Int64 idDiscipline.</param>
-        public static void Delete(Int64 idDiscipline)
+        public void Delete(Int64 idDiscipline)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -99,7 +110,17 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
         }
 
         /// <summary>
@@ -107,8 +128,9 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idDiscipline">Int64 idDiscipline.</param>
         /// <param name="name">String name.</param>
-        public static void Update(Int64 idDiscipline, string name)
+        public void Update(Int64 idDiscipline, string name)
         {
+            MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -119,7 +141,17 @@ namespace PDS.Models.Repository
 
             cmm.CommandText = sql.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmm);
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception)
+            {
+                database.RollBack();
+                throw;
+            }
         }
     }
 }

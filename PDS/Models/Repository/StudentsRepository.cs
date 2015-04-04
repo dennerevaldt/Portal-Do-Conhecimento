@@ -1,4 +1,5 @@
-﻿using MySql.Data.MySqlClient;
+﻿using ADOMySQL;
+using MySql.Data.MySqlClient;
 using PDS.Models.Entities;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace PDS.Models.Repository
         /// Método para inserir novo Student no DB.
         /// </summary>
         /// <param name="student">Object student.</param>
-        public static void Create(Students student)
+        public void Create(Students student, MySQL database)
         {
             #region Insert Person
 
@@ -35,24 +36,46 @@ namespace PDS.Models.Repository
 
             cmmPerson.CommandText = sqlPerson.ToString();
 
-            Int64 idReturnPerson = ADOMySQL.MySQL.ExecuteEscalar(cmmPerson);
+            //Int64 idReturnPerson = ADOMySQL.MySQL.ExecuteEscalar(cmmPerson);
 
             #endregion
 
-            #region Insert Teacher
+            #region Insert Student
 
-            MySqlCommand cmmStudent = new MySqlCommand();
-            StringBuilder sqlStudent = new StringBuilder();
+            //MySqlCommand cmmStudent = new MySqlCommand();
+            //StringBuilder sqlStudent = new StringBuilder();
 
-            cmmStudent.Parameters.AddWithValue("@idPerson", idReturnPerson);
+            //cmmStudent.Parameters.AddWithValue("@idPerson", idReturnPerson);
 
-            sqlStudent.Append("CALL insertStudent(@idPerson)");
+            //sqlStudent.Append("CALL insertStudent(@idPerson)");
 
-            cmmStudent.CommandText = sqlStudent.ToString();
+            //cmmStudent.CommandText = sqlStudent.ToString();
 
-            ADOMySQL.MySQL.ExecuteNonQuery(cmmStudent);
+            //ADOMySQL.MySQL.ExecuteNonQuery(cmmStudent);
 
             #endregion
+
+            try
+            {
+                Int64 idReturnPerson = database.ExecuteScalar(cmmPerson);
+
+                #region Insert Student
+                MySqlCommand cmmStudent = new MySqlCommand();
+                StringBuilder sqlStudent = new StringBuilder();
+
+                cmmStudent.Parameters.AddWithValue("@idPerson", idReturnPerson);
+
+                sqlStudent.Append("CALL insertStudent(@idPerson)");
+
+                cmmStudent.CommandText = sqlStudent.ToString();
+                #endregion
+
+                database.ExecuteNonQuery(cmmStudent);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
     }

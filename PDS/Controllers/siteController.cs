@@ -94,12 +94,13 @@ namespace PDS.Controllers
                     string email = dataE["email"].ToString();
 
                     // get email db
-                    bool resultEmail = AccountsRepository.GetEmail(email);
+                    AccountsRepository repAccount = new AccountsRepository();
+                    bool resultEmail = repAccount.GetEmail(email);
 
                     if (resultEmail)
                     {
                         //login
-                        dynamic userInfo = AccountsRepository.GetUserData(email);
+                        dynamic userInfo = repAccount.GetUserData(email);
 
                         FormsAuthentication.SetAuthCookie(userInfo.Account.email, false);
 
