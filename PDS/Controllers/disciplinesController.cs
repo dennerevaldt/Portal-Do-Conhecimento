@@ -12,7 +12,7 @@ namespace PDS.Controllers
 {
     public class disciplinesController : Controller
     {
-        #region Atributos Staticos
+        #region Atributos Globais
 
         private ReturnJson objectToSerializeErr;
         private ReturnJson objectToSerializeSuc;
@@ -52,8 +52,7 @@ namespace PDS.Controllers
         [HttpPost]
         public void getall()
         {
-            try
-            {
+
                 HttpCookie userInfo = Request.Cookies["userInfo"];
                 var CidTeacher = Server.UrlTokenDecode(userInfo["id_type_account"]);
                 string id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidTeacher);
@@ -65,11 +64,7 @@ namespace PDS.Controllers
                 List<Disciplines> listDisciplines = repDisc.GetAll(idTeacher);
 
                 Response.Write(JsonConvert.SerializeObject(listDisciplines));
-            }
-            catch (Exception ex)
-            {              
-                throw ex;
-            }
+
                       
         }
 

@@ -1,0 +1,51 @@
+﻿<div class="row" style="margin-left:15px; margin-right:25px; margin-top:10px;">
+
+    <div class="col-md-4">
+        <label>Nome da Disciplina</label>
+    </div>
+
+    <div class="col-md-8">
+        <label>Nome da turma</label>
+    </div>
+
+    <div ng-repeat="class in listClasses" style="margin-top: 8px;">
+     
+        <div class="row" ng-hide="editorEnabled[{{$index+1}}]">
+            <div class="col-md-4">
+                <input class="form-control" value="class.name" ng-model="displaynamediscipline" ng-init="displaynamediscipline=class.discipline.name" ng-disabled="true" />
+            </div>
+            <div class="col-md-8 input-group">
+                
+                <input class="form-control" value="class.name" ng-model="displaynameturma" ng-init="displaynameturma=class.name" ng-disabled="true" />
+                <span class="input-group-btn">
+                    <a class="btn btn-default" ng-click="enableEditor($index+1)"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <a class="btn btn-danger" ng-click="submitDelete(class.idClass)"><span class="glyphicon glyphicon-trash"></span></a>
+                </span>
+            </div>
+        </div>
+
+        <div class="row" ng-show="editorEnabled[{{$index+1}}]">
+            <div class="col-md-4">
+                <input class="form-control" value="class.name" ng-model="displaynamediscipline" ng-init="displaynamediscipline=class.discipline.name" ng-disabled="true" />
+            </div>
+            <div class="col-md-8 input-group">
+                <input class="form-control" value="class.name" ng-model="Class[$index+1]" ng-init="Class[$index+1]=class.name" ng-disabled="false" />
+                <span class="input-group-btn">
+                    <a class="btn btn-success" ng-click="save($index+1,class.idClass)"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+                    <a class="btn btn-default" ng-click="disableEditor($index+1)"><span class="glyphicon glyphicon-remove"></span></a>
+                </span>
+            </div>
+        </div>
+
+    </div>
+
+    <div ng-class="resultEdit" ng-show="resultShowEdit">{{ resultMessageEdit }}</div>
+
+    <div class="text-center">
+        <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingDel" />
+    </div>
+
+    <div ng-class="resultDel" ng-show="resultShow">{{ resultMessageDel }}</div>
+
+
+</div>

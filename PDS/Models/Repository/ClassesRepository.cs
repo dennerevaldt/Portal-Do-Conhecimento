@@ -9,24 +9,24 @@ using System.Web;
 
 namespace PDS.Models.Repository
 {
-    public class DisciplinesRepository
+    public class ClassesRepository
     {
-        MySqlDataReader dr;
+        public MySqlDataReader dr;
 
         /// <summary>
-        /// Método para adicionar uma nova disciplina ao Professor.
+        /// Cria uma nova turma para o professor.
         /// </summary>
-        /// <param name="discipline">Disciplines discipline.</param>
-        public void Create(Disciplines discipline)
+        /// <param name="newClass">Classes newClass.</param>
+        public void Create(Classes newClass)
         {
             MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
-            cmm.Parameters.AddWithValue("name", discipline.name);
-            cmm.Parameters.AddWithValue("idTeacher", discipline.teacher.idTeacher);
+            cmm.Parameters.AddWithValue("@idDiscipline", newClass.discipline.idDiscipline);
+            cmm.Parameters.AddWithValue("@name", newClass.name);
 
-            sql.Append("CALL insertDiscipline(@name, @idTeacher)");
+            sql.Append("CALL insertClass(@idDiscipline,@name)");
 
             cmm.CommandText = sql.ToString();
 
@@ -41,24 +41,23 @@ namespace PDS.Models.Repository
                 database.RollBack();
                 throw ex;
             }
-
         }
 
         /// <summary>
-        /// Método para retornar uma lista de disciplinas, através do ID do professor(a).
+        /// Método para retornar uma lista de turmas, através do ID do professor(a).
         /// </summary>
         /// <param name="idTeacher">Int64 idTeacher.</param>
-        /// <returns>List Disciplines.</returns>
-        public List<Disciplines> GetAll(Int64 idTeacher)
+        /// <returns>List Classes.</returns>
+        public List<Classes> GetAll(Int64 idTeacher)
         {
             MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
-            List<Disciplines> listDisciplines = new List<Disciplines>();
+            List<Classes> listClasses = new List<Classes>();
 
             cmm.Parameters.AddWithValue("@idTeacher", idTeacher);
 
-            sql.Append("CALL getAllDisciplines(@idTeacher)");
+            sql.Append("CALL getAllClasses(@idTeacher)");
 
             cmm.CommandText = sql.ToString();
 
@@ -68,15 +67,14 @@ namespace PDS.Models.Repository
 
                 while (dr.Read())
                 {
-                    listDisciplines.Add(
-                        new Disciplines
+                    listClasses.Add(
+                        new Classes
                         {
-                            teacher = new Teachers {
-                                idTeacher = Convert.ToInt64(dr["idTeacher"])
-                            },
-
+                            idClass = Convert.ToInt64(dr["idClasse"]),
                             name = Convert.ToString(dr["name"]),
-                            idDiscipline = Convert.ToInt64(dr["idDiscipline"]),                   
+                            discipline = new Disciplines{
+                                name = Convert.ToString(dr["nameDiscipline"])
+                            }
                         }
                     );
 
@@ -91,22 +89,22 @@ namespace PDS.Models.Repository
                 throw ex;
             }
 
-            return listDisciplines;
+            return listClasses;
         }
 
         /// <summary>
-        /// Método para deletar uma disciplina.
+        /// Método para deletar uma turma.
         /// </summary>
-        /// <param name="idDiscipline">Int64 idDiscipline.</param>
-        public void Delete(Int64 idDiscipline)
+        /// <param name="idClass">Int64 idClass.</param>
+        public void Delete(Int64 idClass)
         {
             MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
-            cmm.Parameters.AddWithValue("@idDiscipline", idDiscipline);
+            cmm.Parameters.AddWithValue("@idClass", idClass);
 
-            sql.Append("CALL deleteDiscipline(@idDiscipline)");
+            sql.Append("CALL deleteClass(@idClass)");
 
             cmm.CommandText = sql.ToString();
 
@@ -124,20 +122,20 @@ namespace PDS.Models.Repository
         }
 
         /// <summary>
-        /// Método para fazer o update de uma disciplina.
+        /// Método para fazer o update de uma turma.
         /// </summary>
-        /// <param name="idDiscipline">Int64 idDiscipline.</param>
+        /// <param name="idClass">Int64 idClass.</param>
         /// <param name="name">String name.</param>
-        public void Update(Int64 idDiscipline, string name)
+        public void Update(Int64 idClass, string name)
         {
             MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
-            cmm.Parameters.AddWithValue("@idDiscipline", idDiscipline);
+            cmm.Parameters.AddWithValue("@idClass", idClass);
             cmm.Parameters.AddWithValue("@name", name);
 
-            sql.Append("CALL updateDiscipline(@idDiscipline, @name)");
+            sql.Append("CALL updateClass(@idClass, @name)");
 
             cmm.CommandText = sql.ToString();
 

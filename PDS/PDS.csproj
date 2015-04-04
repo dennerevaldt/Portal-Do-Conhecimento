@@ -126,6 +126,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\accountController.cs" />
+    <Compile Include="Controllers\classesController.cs" />
     <Compile Include="Controllers\disciplinesController.cs" />
     <Compile Include="Controllers\homeController.cs" />
     <Compile Include="Controllers\siteController.cs" />
@@ -146,6 +147,7 @@
     <Compile Include="Models\Entities\StudentsClasses.cs" />
     <Compile Include="Models\Entities\Teachers.cs" />
     <Compile Include="Models\Repository\AccountsRepository.cs" />
+    <Compile Include="Models\Repository\ClassesRepository.cs" />
     <Compile Include="Models\Repository\DisciplinesRepository.cs" />
     <Compile Include="Models\Repository\StudentsRepository.cs" />
     <Compile Include="Models\Repository\TeachersRepository.cs" />
@@ -1005,6 +1007,7 @@
     <Content Include="Views\disciplines\create.cshtml" />
     <Content Include="Views\disciplines\mydisciplines.cshtml" />
     <Content Include="Views\classes\create.cshtml" />
+    <Content Include="Views\classes\myclasses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

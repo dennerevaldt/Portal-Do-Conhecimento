@@ -4,36 +4,36 @@
     string id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidTeacher);
 }
 
-<div class="row" style="margin-left:0;margin-right:0;margin-top:10px;">
-    <form method="post" id="formCreateClass" name="formCreateClass" ng-submit="submitCreateClass(formCreateClass)">
+<div class="row" style="margin-left:15px;margin-right:15px;margin-top:10px;">
+    <form method="post" name="formCreateClasse" ng-submit="submitCreateClass(formCreateClasse)">
 
-        <div class="form-group col-md-6">
-            <label for="inputDiscipline">Nome da Disciplina</label>
-            <input type="hidden" id="idTeacher" name="idTeacher" value="@id_teacher" ng-model="Class.idTeacher" ng-init="Class.idTeacher=@id_teacher" />
-            <select class="form-control">
-                <option ng-repeat="disc in listDisciplinesClasses" value="{{disc.idDiscipline}}">{{disc.name}}</option>
+        <div class="form-group col-md-6" ng-class="{ 'has-error has-feedback': formCreateClasse.inputClasseDiscipline.$error.required }">
+            <label>Nome da Disciplina *</label>
+            <select class="form-control" name="inputClasseDiscipline" ng-model="Classe.idDiscipline" required>
+                <option ng-repeat="disc in listDisciplinesClasses" ng-model="Classe.idDiscipline" value="{{disc.idDiscipline}}">{{disc.name}}</option>
             </select>
         </div>
 
-        <div class="form-group col-md-6">
-            <label for="inputNomeDaTurma">Nome da Turma</label>
+        <div class="form-group col-md-6" ng-class="{ 'has-error has-feedback': formCreateClasse.inputClasseName.$dirty && formCreateClasse.inputClasseName.$error.required }">
+            <label>Nome da Turma *</label>
             <div class="input-group">
-                <input type="text" class="form-control" id="inputClassName" name="inputClassName" ng-model="Class.name" placeholder="Nome da turma" required />
+                <input type="text" class="form-control" name="inputClasseName" ng-model="Classe.name" placeholder="Nome da turma" required />
                 <span class="input-group-btn">
                     <button type="submit" class="btn btn-primary">Cadastrar</button>
                 </span>
             </div>
 
-            <p class="bg-danger" ng-show="formCreateClass.inputClassName.$required">
+            <p class="bg-danger" ng-show="formCreateClasse.inputClasseName.$dirty && formCreateClasse.inputClasseName.$error.required">
                 Campo inválido.
             </p>
-
         </div>
 
-        <div class="text-center">
-            <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingCadClass" />
-        </div>
+        <div class="col-md-12">
+            <div class="text-center">
+                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingCadClass" />
+            </div>
 
-        <div ng-class="resultCadClass" ng-show="resultShowCreateClass">{{ resultMessageCadClass }}</div>
+            <div ng-class="resultCadClass" ng-show="resultShowCreateClass">{{ resultMessageCadClass }}</div>
+        </div>
     </form>
 </div>

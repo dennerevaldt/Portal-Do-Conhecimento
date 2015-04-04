@@ -1,13 +1,16 @@
 ﻿homePortal.run(function ($rootScope, $http) {
+    
+    $rootScope.discInitial = [];
 
     $rootScope.getall = function () {
         $http({
             method: 'POST',
             url: '/disciplines/getall',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
         }).success(function (data) {
             console.log(data);
-            if (data != null) { //success comes from the return json object
+            if (data != null) { 
+                $rootScope.getallclasses();
                 $rootScope.listDisciplinesClasses = data;
                 $rootScope.disciplinas = data;
             } else {
@@ -16,7 +19,21 @@
         });
     }
 
-    $rootScope.getall();
+    $rootScope.getallclasses = function () {
+        $http({
+            method: 'POST',
+            url: '/classes/getall',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
+        }).success(function (data) {
+            console.log(data);
+            if (data != null) { 
+                $rootScope.listClasses = data;
+            } else {
+                Console.log('erro.');
+            }
+        });
+    }
+
 });
 
 homeSite.controller('ContactController', function ($scope, $http) {
@@ -250,7 +267,6 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
                     $scope.resultMessageCad = data.message;
                     $scope.resultCad = 'bg-success';
                     $scope.loadingCad = false;
-                    $scope.Discipline.name = "";
                     $rootScope.getall();
                     $scope.resultShowCreate = true;
                     $timeout(function () {
@@ -328,14 +344,144 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
 homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope) {
     $scope.resultShowCreateClass = false;
     $scope.loadingCadClass = false;
+    $scope.editorEnabled = [];
+    $scope.Class = [];
+    $rootScope.getall();
 
-    $scope.submitCreateClass = function () {
-        alert('teste');
+    $scope.submitCreateClass = function (formCreateClass) {
+        $scope.submitButtonCadClass = true;
+        if (formCreateClass.$valid) {
+            $scope.loadingCadClass = true;
+            $http({
+                method: 'POST',
+                url: '/classes/create',
+                data: $.param($scope.Classe),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButtonCadClass = true;
+                    $scope.resultMessageCadClass = data.message;
+                    $scope.resultCadClass = 'bg-success';
+                    $scope.loadingCadClass = false;
+                    $rootScope.getall();
+                    $scope.resultShowCreateClass = true;
+                    $timeout(function () {
+                        $scope.resultShowCreateClass = false;
+                    }, 1500);
+
+                } else {
+                    $scope.submitButtonCadClass = false;
+                    $scope.resultMessageCadClass = data.message;
+                    $scope.resultCadClass = 'bg-danger';
+                    $scope.loadingCadClass = false;
+                    $scope.resultShowCreateClass = true;
+                    $timeout(function () {
+                        $scope.resultShowCreateClass = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.submitButtonCadClass = false;
+            $scope.resultMessageCadClass = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.resultCadClass = 'bg-danger';
+            $scope.loadingCadClass = false;
+            $scope.resultShowCreateClass = true;
+            $timeout(function () {
+                $scope.resultShowCreateClass = false;
+            }, 1500);
+        }
+    }
+
+    $scope.enableEditor = function (id) {
+        $scope.editorEnabled[id] = true;
+    };
+
+    $scope.disableEditor = function (id) {
+        $scope.editorEnabled[id] = false;
+    };
+
+    $scope.save = function (id, idClass) {
+        $scope.editorEnabled[id] = false;
+
+        var data = {
+            idClass: idClass,
+            name: $scope.Class[id]
+        }
+
+        if (data.name != null && data.idClass) {
+            $http({
+                method: 'POST',
+                url: '/classes/update',
+                data: $.param(data),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $rootScope.getall();
+                } else {
+                    $scope.resultMessageEdit = data.message;
+                    $scope.resultEdit = 'bg-danger';
+                    $scope.resultShowEdit = true;
+                    $timeout(function () {
+                        $scope.resultShowEdit = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.resultMessageEdit = "Estamos com problemas. Tente novamente.";
+            $scope.resultEdit = 'bg-danger';
+            $scope.resultShowEdit = true;
+            $timeout(function () {
+                $scope.resultShowEdit = false;
+            }, 1500);
+        }
+
+    };
+
+    $scope.submitDelete = function (id) {
+        if (id != null) {
+            $scope.loadingDel = true;
+            $http({
+                method: 'GET',
+                url: '/classes/delete/' + id,
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButtonDel = true;
+                    $scope.resultMessageDel = data.message;
+                    $scope.resultDel = 'bg-success';
+                    $scope.loadingDel = false;
+                    $rootScope.getall();
+                    $scope.resultShow = true;
+                    $timeout(function () {
+                        $scope.resultShow = false;
+                    }, 1500);
+                } else {
+                    $scope.submitButtonDel = false;
+                    $scope.resultMessageDel = data.message;
+                    $scope.resultDel = 'bg-danger';
+                    $scope.loadingDel = false;
+                    $scope.resultShow = true;
+                    $timeout(function () {
+                        $scope.resultShow = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.submitButtonDel = false;
+            $scope.resultMessageDel = 'Estamos com problemas, tente novamente.';
+            $scope.resultDel = 'bg-danger';
+            $scope.loadingDel = false;
+            $scope.resultShow = true;
+            $timeout(function () {
+                $scope.resultShow = false;
+            }, 1500);
+        }
     }
 
 });
-
-
 
 accountModule.controller('ConfirmAccountController', function ($scope, $http) {
     $scope.submitConfirmButton = false;
