@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Manter Turma";
+    Layout = "~/Views/Shared/_LayoutManageClass.cshtml";
+}
+
+<div class="container-wrapper" ng-controller="ClassesController">
+    <div class="col-md-12">
+        <!--row-->
+        <div class="row" data-ng-init="getDataOneClass()">
+
+            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top:30px; width:750px;">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4>{{nameClass}}</h4></div>
+                    <div class="panel-body">
+                        <textarea class="form-control share-text" rows="3" placeholder="Compartilhe material com a turma..."></textarea>
+                    </div>
+                    <div class="panel-footer share-buttons">
+                        <span class="btn btn-default btn-file">
+                            <input type="file" /><i class="glyphicon glyphicon-paperclip"></i>
+                        </span>
+                        <button type="submit" class="btn btn-default btn-xs pull-right" href="#">Publicar</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!--/row-->
+    </div>
+</div>

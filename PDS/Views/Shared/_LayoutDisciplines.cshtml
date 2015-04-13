@@ -21,9 +21,6 @@
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
     @Scripts.Render("~/Scripts/factories.js")
-    @Scripts.Render("~/Scripts/diretives.js")
-
-
 
     @{
         HttpCookie userInfo = Request.Cookies["userInfo"];
@@ -35,10 +32,10 @@
 
         var lName = Server.UrlTokenDecode(userInfo["last_name"]);
         string last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
-        
+
         var accTp = Server.UrlTokenDecode(userInfo["account_type"]);
         string account_type = System.Text.UTF8Encoding.UTF8.GetString(accTp);
-        
+
         HttpCookie cookie_image = Request.Cookies["userImage"];
         var decValue = Server.UrlTokenDecode(cookie_image.Value);
         string url_image = System.Text.UTF8Encoding.UTF8.GetString(decValue);
@@ -65,33 +62,7 @@
                 <a href="#menu-toggle" class="navbar-brand" id="menu-toggle">
                     <span class="glyphicon glyphicon-indent-left"></span>
                 </a>
-                <p class="navbar-text">PORTAL DO CONHECIMENTO</p>
-
-                <div class="navbar-form navbar-left" role="search" ng-controller="AutoCompleteController">
-                    <div class="form-group">
-                        <input type="text" class="form-control" style="width: 300px;" ng-model="search" ng-keyup="pesquisar(search)" autocomplete="off" placeholder="Pesquisar professor" />
-                        <div ng-show="completing">
-                            <div class="autocomplete">
-                                <div class="message-preview" ng-repeat="dica in dicas">
-                                    <a href="/home/perfil?idperfil={{dica.Account.idAccount}}" style="text-decoration: none;">
-                                        <div class="media">
-                                            <div class="media-left">
-                                                <span class="pull-left">
-                                                    <img class="media-object img-circle" src="{{dica.urlImageProfile}}" alt="Image" style="width: 50px; height: 50px;">
-                                                </span>
-                                            </div>
-                                            <div class="media-body">
-                                                <h5 class="media-heading">{{dica.firstName}} {{dica.lastName}}</h5>
-                                                <small ng-show="{{dica.gender=='M'}}">Professor</small>
-                                                <small ng-show="{{dica.gender=='F'}}">Professora</small>
-                                            </div>
-                                        </div>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <a href="/home/index" class="navbar-text">PORTAL DO CONHECIMENTO</a>
             </div>
             <div id="navbar" class="navbar-collapse collapse">
 
@@ -143,7 +114,7 @@
                                         </div>
                                     </div>
                                 </a>
-                            </li>                        
+                            </li>
                         </ul>
                     </li>
                     <li class="dropdown" style="border-left: 1px solid #e2e9e6; border-right: 1px solid #e2e9e6;">
@@ -151,7 +122,7 @@
                             <img src="@url_image" alt="Image" class="img-navbar" /> @first_name <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
-                            <li><a href="#" data-toggle="modal" data-target=".invite-friends">Convidar amigos</a></li>
+                            <li><a href="/home/index">Home</a></li>
                             <li class="divider"></li>
                             <li class="dropdown-header">Conta</li>
                             <li><a href="/account/manage">Gerenciar</a></li>
@@ -174,7 +145,7 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-heading-li">MENU</li>
-                
+
                 @if (account_type != "T")
                 {
                     <li>
@@ -190,7 +161,7 @@
                 <li>
                     <a href="#"><span class="glyphicon glyphicon-star margin-rght"></span> Estrelinhas</a>
                 </li>
-                
+
                 @if (account_type == "T")
                 {
                     <li>
@@ -200,73 +171,59 @@
                         <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
                     </li>
                 }
-                
+
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
         <!-- Page Content -->
         @RenderBody()
         <!-- /#page-content-wrapper -->
-        <!-- Page-content-wrapper-right -->
-        <div id="wrapper-right" class="toggled">
-            <div id="sidebar-wrapper-right">
-                <div id="page-content-wrapper-right">
-                    <div class="container-wrapper-right">
-                        <div class="row">
-                            <div class="col-md-12 border-b">
-                                <h4>Notas</h4>
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <textarea class="form-control share-text" name="anottation" id="anottation" rows="4" placeholder="Digite aqui..."></textarea>
-                                    </div>
-                                </div>
-                                <button class="btn btn-block btn-default">Salvar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- /Page-content-wrapper-right -->
-
-        <!-- Modal Invite-Friends -->
-        <div class="modal fade invite-friends" ng-controller="InviteFriendsController">
+        
+        <!-- Modal Create Disciplines -->
+        <div class="modal fade create-discipline" ng-controller="DisciplinesController">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="post" id="inviteForm" name="inviteForm" ng-submit="submit(inviteForm)">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title-custom">Convidar amigo</h4>
-                        </div>
-                        <div class="modal-body">
 
-                            <div class="form-group" ng-class="{ 'has-error has-feedback': inviteForm.inputEmail.$dirty && inviteForm.inputEmail.$error.email }">
-                                <label for="inputEmail">Email</label>
-                                <input type="email" class="form-control" id="inputEmail" name="inputEmail" ng-model="Account.email" placeholder="Email" required />
-                                <p class="bg-danger" ng-show="inviteForm.inputEmail.$error.email">
-                                    Email inválido.
-                                </p>
-                            </div>
-                            <div class="text-center">
-                                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
-                            </div>
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Nova Disciplina</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">                          
 
-                            <div ng-class="result">{{ resultMessage }}</div>
+                            @Html.Partial("~/Views/disciplines/create.cshtml")
+     
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Enviar convite</button>
-                        </div>
-                    </form>
+                    </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        
+
+        <!-- Modal Edit Disciplines -->
+        <div class="modal fade edit-discipline" ng-controller="DisciplinesController">
+            <div class="modal-dialog">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Editar Disciplina</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+
+                            @Html.Partial("~/Views/disciplines/edit.cshtml")
+
+                        </div>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
     <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-
 
     <!-- Menu Toggle Script -->
     <script>
@@ -295,3 +252,5 @@
 
 </body>
 </html>
+
+

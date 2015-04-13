@@ -1,17 +1,12 @@
 ﻿homePortal.run(function ($rootScope, $http) {
-    
-    $rootScope.discInitial = [];
-
+   
     $rootScope.getall = function () {
         $http({
             method: 'POST',
             url: '/disciplines/getall',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
         }).success(function (data) {
-            console.log(data);
             if (data != null) { 
-                $rootScope.getallclasses();
-                $rootScope.listDisciplinesClasses = data;
                 $rootScope.disciplinas = data;
             } else {
                 Console.log('erro.');
@@ -19,20 +14,56 @@
         });
     }
 
-    $rootScope.getallclasses = function () {
+    $rootScope.getallclasses = function (id) {
+        $http({
+            method: 'GET',
+            url: '/classes/getall?id=' + id,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            if (data != null) {
+                $rootScope.listClasses = data;
+
+                $http({
+                    method: 'GET',
+                    url: '/disciplines/getname?idDisc='+id,
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                }).success(function (data) {
+                    if (data != null) {
+                        $rootScope.nameClasse = data;
+                    } else {
+                        Console.log('erro.');
+                    }
+                });
+
+            } else {
+                Console.log('erro ou lista vazia.');
+            }
+        });
+    }
+
+    $rootScope.getDataOneClass = function () {
+        var pIdClass = location.search.split('?id=')[1];
+        var dataParam = {
+            idClass: pIdClass
+        }
+
         $http({
             method: 'POST',
-            url: '/classes/getall',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
+            url: '/classes/getoneclass',
+            data: $.param(dataParam),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function (data) {
             console.log(data);
-            if (data != null) { 
-                $rootScope.listClasses = data;
+            if (data != null) {
+                $rootScope.classe = data;
+                $rootScope.nameClass = data[0].name;
             } else {
                 Console.log('erro.');
             }
         });
     }
+
+    $rootScope.getall();
 
 });
 
@@ -194,7 +225,7 @@ homePortal.controller('InviteFriendsController', function ($scope, $http) {
 
 });
 
-homePortal.controller('DisciplinesController', function ($scope, $http, $timeout, $rootScope) {
+homePortal.controller('DisciplinesController', function ($scope, $http, $timeout, $rootScope, $window, $location) {
     $scope.submitButton = false;
     $scope.loadingCad = false;
     $scope.submitButtonDel = false;
@@ -339,16 +370,23 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
         }
     }
 
+    $scope.seeClasse = function (idDisc) {
+        var url = '/classes/index?id=' + idDisc;
+        $window.location.href = url;
+    }
 });
 
-homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope) {
+homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window) {
     $scope.resultShowCreateClass = false;
     $scope.loadingCadClass = false;
     $scope.editorEnabled = [];
     $scope.Class = [];
-    $rootScope.getall();
 
     $scope.submitCreateClass = function (formCreateClass) {
+        $scope.Classe.idDiscipline = location.search.split('id=')[1]
+        
+        console.log($scope.Classe);
+
         $scope.submitButtonCadClass = true;
         if (formCreateClass.$valid) {
             $scope.loadingCadClass = true;
@@ -364,7 +402,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
                     $scope.resultMessageCadClass = data.message;
                     $scope.resultCadClass = 'bg-success';
                     $scope.loadingCadClass = false;
-                    $rootScope.getall();
+                    $rootScope.getallclasses($scope.Classe.idDiscipline);
                     $scope.resultShowCreateClass = true;
                     $timeout(function () {
                         $scope.resultShowCreateClass = false;
@@ -401,7 +439,8 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
         $scope.editorEnabled[id] = false;
     };
 
-    $scope.save = function (id, idClass) {
+    $scope.save = function (id, idClass, idDisc) {
+
         $scope.editorEnabled[id] = false;
 
         var data = {
@@ -419,6 +458,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
                 console.log(data);
                 if (data.success) { //success comes from the return json object
                     $rootScope.getall();
+                    $rootScope.getallclasses(idDisc);
                 } else {
                     $scope.resultMessageEdit = data.message;
                     $scope.resultEdit = 'bg-danger';
@@ -440,6 +480,9 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
     };
 
     $scope.submitDelete = function (id) {
+
+        var idDisc = location.search.split('id=')[1]
+
         if (id != null) {
             $scope.loadingDel = true;
             $http({
@@ -453,7 +496,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
                     $scope.resultMessageDel = data.message;
                     $scope.resultDel = 'bg-success';
                     $scope.loadingDel = false;
-                    $rootScope.getall();
+                    $rootScope.getallclasses(idDisc);
                     $scope.resultShow = true;
                     $timeout(function () {
                         $scope.resultShow = false;
@@ -479,6 +522,122 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
                 $scope.resultShow = false;
             }, 1500);
         }
+    }
+
+    $scope.getall = function () {
+        var id = location.search.split('?id=')[1];
+        $rootScope.getallclasses(id);
+    }
+
+    $scope.getOneClass = function (pIdClass) {
+        var url = '/classes/manageclass?id=' + pIdClass;
+        $window.location.href = url;
+    }
+
+});
+
+homePortal.controller('AutoCompleteController', function ($scope, $http, $rootScope) {
+
+    $scope.completing = false;
+    $scope.dicas = [];
+
+    $scope.pesquisar = function (search) {
+        // Se a pesquisa for vazia
+        if (search == "") {
+            // Retira o autocomplete
+            $scope.completing = false;
+
+        } else {
+
+            var dataParam = {
+                name: search
+            }
+
+            if (search != null) {
+                $scope.loadingSearch = true;
+                $http({
+                    method: 'POST',
+                    url: '/home/searchteacher',
+                    data: $.param(dataParam),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+                }).success(function (data) {
+                    console.log(data);
+                    $scope.loadingSearch = false;
+                    // Habilita o campo
+                    $scope.completing = true;
+                    // JSON retornado do banco
+
+                    $scope.dicas = data;
+
+                }).error(function (data) {
+                    // Error in Database.
+                    Console.log('Error in Database.');
+                });
+            } 
+        }
+    };
+
+    $scope.pesquisarAlunos = function (search) {
+        // Se a pesquisa for vazia
+        if (search == "") {
+            // Retira o autocomplete
+            $scope.completing = false;
+
+        } else {
+
+            var dataParam = {
+                name: search
+            }
+
+            if (search != null) {
+                $scope.loadingSearch = true;
+                $http({
+                    method: 'POST',
+                    url: '/home/searchstudent',
+                    data: $.param(dataParam),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+                }).success(function (data) {
+                    console.log(data);
+                    $scope.loadingSearch = false;
+                    // Habilita o campo
+                    $scope.completing = true;
+                    // JSON retornado do banco
+
+                    $scope.dicas = data;
+
+                }).error(function (data) {
+                    // Error in Database.
+                    Console.log('Error in Database.');
+                });
+            }
+        }
+    };
+
+    $scope.addStudent = function (idStd) {
+        var pIdClass = location.search.split('?id=')[1];
+
+        var dataParam = {
+            idStudent: idStd,
+            idClass: pIdClass
+        }
+
+        if (idStd != null) {
+            $http({
+                method: 'POST',
+                url: '/classes/insertstudentinclasse/',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                $scope.completing = false;
+                $scope.search = "";
+                $rootScope.getDataOneClass();
+            }).error(function (data) {
+                console.log('Error in Database.')
+            });
+        }
+
+        //alert('id class = ' + pIdClass + 'id student=' + idStd);
+
     }
 
 });
@@ -767,3 +926,154 @@ manageModule.controller('ManageController', function ($scope, $http, $timeout) {
 
 })
 
+followerModule.controller('FollowerController', function ($scope, $http, $timeout) {
+
+    $scope.checkFollow = function (idFollower, idFollowing) {
+
+        var dataParam = {
+            idFollower: idFollower,
+            idFollowing: idFollowing
+        }
+
+        if (idFollower != idFollowing) {
+            $http({
+                method: 'POST',
+                url: '/home/checkfollow',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) {
+                    $scope.class = 'bg-success';
+                    $scope.textFollow = "Seguindo";
+                    $scope.seguindoIcon = true;
+                    $scope.seguirIcon = false;
+                    $scope.itsMe = false;
+
+                } else {
+                    $scope.class = 'bg-danger';
+                    $scope.textFollow = "Seguir";
+                    $scope.seguirIcon = true;
+                    $scope.seguindoIcon = false;
+                    $scope.itsMe = false;
+                }
+            });
+
+        }
+        else {
+            $scope.itsMe = true;
+        }
+
+    }
+
+    $scope.follow = function (idFollower, idFollowing) {
+
+        var dataParam = {
+            idFollower: idFollower,
+            idFollowing: idFollowing
+        }
+
+        if (idFollower != idFollowing) {
+            $http({
+                method: 'POST',
+                url: '/home/checkfollow',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) {
+                    $scope.itsMe = false;
+                    $http({
+                        method: 'POST',
+                        url: '/home/unfollow',
+                        data: $.param(dataParam),
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    }).success(function (data) {
+                        console.log(data);
+                        if (data.success) {
+                            $scope.class = 'bg-success';
+                            $scope.textFollow = "Seguir";
+                            $scope.seguirIcon = true;
+                            $scope.seguindoIcon = false;
+
+                        }
+                    });
+
+                }
+                else
+                {
+                    $scope.itsMe = false;
+                    $http({
+                        method: 'POST',
+                        url: '/home/follow',
+                        data: $.param(dataParam),
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                    }).success(function (data) {
+                        console.log(data);
+                        if (data.success) {
+                            $scope.class = 'bg-success';
+                            $scope.textFollow = "Seguindo";
+                            $scope.seguindoIcon = true;
+                            $scope.seguirIcon = false;
+                        }
+                    });
+
+                }
+            });
+
+        }
+        else {
+            $scope.itsMe = true;
+        }
+
+    }
+
+    $scope.getFollowers = function (idFollower) {
+
+        var dataParam = {
+            id: idFollower
+        }
+
+        if (idFollower != null) {
+            $http({
+                method: 'POST',
+                url: '/home/getfollowers',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+                
+                $scope.followers = data;
+
+            }).error(function (data) {
+                // Error in Database.
+                Console.log('Error in Database.');
+            });
+        }
+    }
+
+    $scope.getFollowersOther = function (idFollower) {
+
+        var dataParam = {
+            id: idFollower
+        }
+
+        if (idFollower != null) {
+            $http({
+                method: 'POST',
+                url: '/home/getfollowersother',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                console.log(data);
+
+                $scope.followersOther = data;
+
+            }).error(function (data) {
+                // Error in Database.
+                Console.log('Error in Database.');
+            });
+        }
+    }
+
+});

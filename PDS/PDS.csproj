@@ -148,6 +148,7 @@
     <Compile Include="Models\Entities\Teachers.cs" />
     <Compile Include="Models\Repository\AccountsRepository.cs" />
     <Compile Include="Models\Repository\ClassesRepository.cs" />
+    <Compile Include="Models\Repository\ClassesStudentsRepository.cs" />
     <Compile Include="Models\Repository\DisciplinesRepository.cs" />
     <Compile Include="Models\Repository\StudentsRepository.cs" />
     <Compile Include="Models\Repository\TeachersRepository.cs" />
@@ -160,11 +161,12 @@
     <Content Include="Content\images\favicon.png" />
     <Content Include="Content\images\loader.gif" />
     <Content Include="Content\images\logo-portal.png" />
+    <Content Include="Content\images\noPhoto.png" />
     <Content Include="Content\images\profile.jpg" />
     <Content Include="Content\images\students.jpg" />
     <Content Include="Content\images\teachers.jpg" />
     <Content Include="Content\Home.css" />
-    <Content Include="Content\images\noPhoto.png" />
+    <Content Include="Content\Perfil.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -208,6 +210,7 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Properties\PublishProfiles\portaldoconhecimento.pubxml" />
+    <Content Include="Scripts\diretives.js" />
     <Content Include="Scripts\errors.json" />
     <Content Include="Scripts\angular-touch.min.js.map" />
     <Content Include="Scripts\angular-sanitize.min.js.map" />
@@ -220,6 +223,7 @@
     <Content Include="Scripts\angular-animate.min.js.map" />
     <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
+    <Content Include="Scripts\factories.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-dj.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-er.js" />
     <Content Include="Scripts\i18n\angular-locale_aa-et.js" />
@@ -1005,9 +1009,16 @@
     <Content Include="Views\account\changePhotoManage.cshtml" />
     <Content Include="Views\Shared\_LayoutNav.cshtml" />
     <Content Include="Views\disciplines\create.cshtml" />
-    <Content Include="Views\disciplines\mydisciplines.cshtml" />
+    <Content Include="Views\disciplines\edit.cshtml" />
     <Content Include="Views\classes\create.cshtml" />
-    <Content Include="Views\classes\myclasses.cshtml" />
+    <Content Include="Views\classes\edit.cshtml" />
+    <Content Include="Views\home\perfil.cshtml" />
+    <Content Include="Views\Shared\_LayoutDisciplines.cshtml" />
+    <Content Include="Views\classes\index.cshtml" />
+    <Content Include="Views\disciplines\index.cshtml" />
+    <Content Include="Views\Shared\_LayoutClasses.cshtml" />
+    <Content Include="Views\Shared\_LayoutManageClass.cshtml" />
+    <Content Include="Views\classes\manageclass.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

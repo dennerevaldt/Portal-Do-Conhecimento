@@ -19,6 +19,11 @@ namespace PDS.Controllers
 
         #endregion
 
+        public ActionResult index()
+        {
+            return View();
+        }
+
         /// <summary>
         /// Cria uma nova disciplina.
         /// </summary>
@@ -66,6 +71,19 @@ namespace PDS.Controllers
                 Response.Write(JsonConvert.SerializeObject(listDisciplines));
 
                       
+        }
+
+        /// <summary>
+        /// Action para Get do nome da disciplina.
+        /// </summary>
+        /// <param name="idDisc">Int idDiscipline.</param>
+        public void getname(int idDisc)
+        {
+            DisciplinesRepository repDisc = new DisciplinesRepository();
+
+            Disciplines discipline = repDisc.GetName(idDisc);
+
+            Response.Write(JsonConvert.SerializeObject(discipline));
         }
 
         /// <summary>

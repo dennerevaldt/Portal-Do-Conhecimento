@@ -13,6 +13,32 @@ body {
 	color: black;	
 }
 
+.thumbnail{
+    border-radius: 50%;
+}
+
+.autocomplete {
+    position: absolute;
+    z-index: 150;
+    border:solid 1px rgb(231, 231, 231);
+    margin:0px;
+    padding:3px;
+    height: auto;
+    width: 300px;
+    background-color: #FFFFFF;
+}
+
+.message-preview {
+  width: 270px;
+  margin-left: 10px;
+  border-bottom: 1px solid rgba(0,0,0,.15);
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0,0,0,.15);
+  vertical-align:middle;
+}
+
+
 .bg-success, .bg-danger {
   padding: 15px;
   margin: 0;
@@ -23,6 +49,39 @@ body {
 .margin-rght {
     margin-right: 5px;
 }
+
+/* notification icon ----------------------------------- */
+
+.notification-container {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    top: 15px;
+    left: 15px;
+}
+
+.notification-counter {
+  position: absolute;
+  top: 12px;
+  left: 25px;
+  background-color: rgba(51, 122, 183, 1);
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 3px;
+  font: 8px Verdana;
+}
+
+li.message-preview {
+  width: 275px;
+  border-bottom: 1px solid rgba(0,0,0,.15);
+}
+
+li.message-preview>a {
+  padding-top: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0,0,0,.15);
+}
+
 
 /* Panel post ------------------------------------------ */
 
@@ -479,7 +538,7 @@ fieldset[disabled] .btn-index.active {
 
 .sidebar-brand img {
 	width: 110px;
-    margin-top: 20px;
+    margin-top: 25px;
     margin-left: 55px;
 }
 

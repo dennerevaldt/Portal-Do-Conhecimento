@@ -1,0 +1,218 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Denner Evaldt Machado.">
+    <title>Portal do Conhecimento - Perfil</title>
+
+    @{
+        Layout = null;
+
+        dynamic data = TempData["dataPerfilUser"];
+
+        string sexo = data.gender.ToString();
+        string typeAccount = data.accountType.ToString();
+        string dateOfBirth = data.dateOfBirth.ToString("dd/MM/yyyy");
+        
+        var idTeacherPerfil = ViewBag.idTeacherPerfil;
+        
+        if (typeAccount == "T")
+        {
+            typeAccount = "Professor";
+        }
+        else
+        {
+            typeAccount = "Estudante";
+        }
+        
+        if (sexo == "M")
+        {
+            sexo = "Masculino";
+        }
+        else
+        {
+            sexo = "Feminino";
+        }
+        
+    }
+
+    @{
+        HttpCookie userInfo = Request.Cookies["userInfo"];
+        string url_image = string.Empty;
+        string first_name = string.Empty;
+        string last_name = string.Empty;
+        string account_type = string.Empty;
+        string id_teacher = string.Empty;
+
+        if (userInfo != null)
+        {
+            var fName = Server.UrlTokenDecode(userInfo["first_name"]);
+            first_name = System.Text.UTF8Encoding.UTF8.GetString(fName);
+
+            var CidT = Server.UrlTokenDecode(userInfo["id_type_account"]);
+            id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidT);
+
+            var lName = Server.UrlTokenDecode(userInfo["last_name"]);
+            last_name = System.Text.UTF8Encoding.UTF8.GetString(lName);
+
+            var accTp = Server.UrlTokenDecode(userInfo["account_type"]);
+            account_type = System.Text.UTF8Encoding.UTF8.GetString(accTp);
+
+            HttpCookie cookie_image = Request.Cookies["userImage"];
+            var decValue = Server.UrlTokenDecode(cookie_image.Value);
+            url_image = System.Text.UTF8Encoding.UTF8.GetString(decValue);
+        }
+        
+    }
+
+
+    <!-- Favicon -->
+    <link href="@Url.Content("~/Content/images/favicon.png")" rel="icon">
+
+    <!-- Css -->
+    @Styles.Render("~/Content/bootstrap.css")
+    @Styles.Render("~/Content/Home.css")
+    @Styles.Render("~/Content/Perfil.css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Angular JS-->
+    @Scripts.Render("~/Scripts/angular.js")
+    @Scripts.Render("~/Scripts/app.js")
+    @Scripts.Render("~/Scripts/controllers.js")
+
+    <!-- jQuery -->
+    <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/4.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body ng-app="followerModule">
+    
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default navbar-fixed-top font-light">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <p class="navbar-text"><a style="color: #fff;" href="/home/index">PORTAL DO CONHECIMENTO</a></p>
+            </div>
+            @if (userInfo != null) { 
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                            <img src="@url_image" alt="Image" class="img-navbar" />  @first_name <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li>@Html.ActionLink("Home", "index", "home")</li>
+                            <li class="divider"></li>
+                            <li class="dropdown-header">Conta</li>
+                            <li><a href="/account/manage">Gerenciar</a></li>
+                            <li><a href="/account/logoff">Sair</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!--/.nav-collapse -->
+            }
+        </div>
+    </nav>
+
+    <div class="container" style="margin-top: 50px;" ng-controller="FollowerController">
+        <div style="border: 1px solid #ddd;">
+            <img alt="Brand"
+                 src="@data.urlImageProfile"
+                 class="img-circle img-profile" />
+
+            <h3 class="name-nav">@data.firstName @data.lastName @if(userInfo != null && account_type == "T" && idTeacherPerfil != null){<a ng-hide="itsMe" ng-click="follow(@id_teacher,@data.idTeacher)" class="btn btn-default" data-ng-init="checkFollow(@id_teacher,@data.idTeacher)">{{textFollow}} <span ng-show="seguirIcon"><span class="glyphicon glyphicon-paperclip"></span></span> <span class="text-success" ng-show="seguindoIcon"><span class="glyphicon glyphicon-ok"></span></span> </a>}</h3>
+            <small class="name-nav-small">@typeAccount</small>
+        </div>
+
+        <nav class="navbar navbar-default">
+            <div class="container-fluid">
+                <!-- Brand and toggle get grouped for better mobile display -->
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="navbar-collapse" style="padding-left: 21%;">
+                    <ul class="nav navbar-nav">
+                        <li class="active"><a href="#">Perfil</a></li>
+                    </ul>
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
+
+        <div class="col-md-8">
+            <div class="panel panel-default" style="height:170px;">
+                <div class="panel-heading">Perfil</div>
+                <div class="panel-body">
+                    <div class="col-md-6">
+                        <p><span class="glyphicon glyphicon-apple"></span> Sexo: @sexo</p>
+                        <p><span class="glyphicon glyphicon-baby-formula"></span> Data de nascimento: @dateOfBirth</p>
+                        <p><span class="glyphicon glyphicon-home"></span> @data.city/@data.country</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><span class="glyphicon glyphicon-envelope"></span> @data.Account.email</p>
+                        <h4><span class="glyphicon glyphicon-education"></span> @typeAccount</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default" style="height:170px;">
+                @if (account_type == "T") { 
+                <div class="panel-heading">Seguidores</div>
+                <div class="panel-body">
+
+                        <div class="row" data-ng-init="getFollowersOther(@data.idTeacher)">
+
+                            <div class="col-md-3" ng-repeat="follower in followersOther">
+                                <a href="/home/perfil?idperfil={{follower.Account.idAccount}}" class="thumbnail">
+                                    <img src="{{follower.urlImageProfile}}" alt="Image" class="img-circle" style="width:50px;">
+                                </a>
+                            </div>
+
+                        </div>
+
+                </div>
+                }
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="panel panel-default" style="background-color: rgb(245, 245, 245);">
+                <div class="panel-body">
+                    <p class="text-center">Espaço em branco para pensar em algo aqui também.</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+</body>
+</html>
+
+

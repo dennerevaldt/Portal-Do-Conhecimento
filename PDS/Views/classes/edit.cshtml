@@ -31,7 +31,7 @@
             <div class="col-md-8 input-group">
                 <input class="form-control" value="class.name" ng-model="Class[$index+1]" ng-init="Class[$index+1]=class.name" ng-disabled="false" />
                 <span class="input-group-btn">
-                    <a class="btn btn-success" ng-click="save($index+1,class.idClass)"><span class="glyphicon glyphicon-floppy-disk"></span></a>
+                    <a class="btn btn-success" ng-click="save($index+1,class.idClass,class.discipline.idDiscipline)"><span class="glyphicon glyphicon-floppy-disk"></span></a>
                     <a class="btn btn-default" ng-click="disableEditor($index+1)"><span class="glyphicon glyphicon-remove"></span></a>
                 </span>
             </div>

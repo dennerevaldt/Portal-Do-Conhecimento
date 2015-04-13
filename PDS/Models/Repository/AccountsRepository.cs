@@ -457,5 +457,88 @@ namespace PDS.Models.Repository
             }
         }
 
+        /// <summary>
+        /// Método para buscar os dados do perfil do usuário.
+        /// </summary>
+        /// <param name="idAccount">Int64 idAccount.</param>
+        /// <returns></returns>
+        public object GetPerfil(Int64 idAccount)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@idAccount", idAccount);
+
+            sql.Append("CALL getDataPerfil(@idAccount)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    if (dr["accountType"].ToString() == "T")
+                    {
+                        objeto = new Teachers
+                        {
+                            idTeacher = Convert.ToInt64(dr["idTeacher"]),
+                            idPerson = Convert.ToInt64(dr["idPerson"]),
+                            firstName = Convert.ToString(dr["firstName"]),
+                            lastName = Convert.ToString(dr["lastName"]),
+                            gender = Convert.ToChar(dr["gender"]),
+                            accountType = Convert.ToChar(dr["accountType"]),
+                            dateOfBirth = Convert.ToDateTime(dr["dateOfBirth"]),
+                            city = Convert.ToString(dr["city"]),
+                            country = Convert.ToString(dr["country"]),
+                            urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
+                            Account = new Accounts
+                            {
+                                idAccount = Convert.ToInt64(dr["idAccount"]),
+                                email = Convert.ToString(dr["email"]),
+                                password = Convert.ToString(dr["password"]),
+                                acessToken = Convert.ToString(dr["acessToken"])
+                            }
+                        };
+                    }
+                    else
+                    {
+                        objeto = new Students
+                        {
+                            idStudent = Convert.ToInt64(dr["idStudent"]),
+                            idPerson = Convert.ToInt64(dr["idPerson"]),
+                            firstName = Convert.ToString(dr["firstName"]),
+                            lastName = Convert.ToString(dr["lastName"]),
+                            gender = Convert.ToChar(dr["gender"]),
+                            accountType = Convert.ToChar(dr["accountType"]),
+                            dateOfBirth = Convert.ToDateTime(dr["dateOfBirth"]),
+                            city = Convert.ToString(dr["city"]),
+                            country = Convert.ToString(dr["country"]),
+                            urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
+                            Account = new Accounts
+                            {
+                                idAccount = Convert.ToInt64(dr["idAccount"]),
+                                email = Convert.ToString(dr["email"]),
+                                password = Convert.ToString(dr["password"]),
+                                acessToken = Convert.ToString(dr["acessToken"])
+                            }
+
+                        };
+                    }
+                }
+
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return objeto;
+        }
+
     }
 }

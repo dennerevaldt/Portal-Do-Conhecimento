@@ -1,0 +1,92 @@
+﻿
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_LayoutClasses.cshtml";
+}
+
+<div class="container-fluid" ng-controller="ClassesController">
+    <div class="col-md-12">
+        <!--row-->
+        <div class="row" style="margin-top: 30px;" data-ng-init="getall()">
+
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-heading"><h4>{{nameClasse.name}} <small ng-hide="listClasses.length"><span class="text-center text-danger">(Nenhuma turma cadastrada)</span></small> </h4></div>
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr class="active">
+                                        <td>#</td>
+                                        <td>Nome Turma</td>
+                                        <td>Ver</td>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr ng-repeat="classe in listClasses | orderBy:'idClass'">
+                                        <td>{{classe.idClass}}</td>
+                                        <td>{{classe.name}}</td>
+                                        <td><a class="btn-sm btn-primary" href="#" ng-click="getOneClass(classe.idClass)"><span class="glyphicon glyphicon-cog"></span></a></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="panel panel-default" style="padding-top: 150px;">
+                    <div class="panel-body">
+                        <img class="img-logo" src="@Url.Content("~/Content/images/logo-portal.png")" alt="Logo" style="width: 80%;">
+                    </div>
+                </div>
+
+                <a data-toggle="modal" data-target=".classes" class="btn btn-block btn-primary"><span class="glyphicon glyphicon-education"></span> Nova turma</a>
+                <a data-toggle="modal" data-target=".classes-edit" class="btn btn-block btn-primary"><span class="glyphicon glyphicon-pencil"></span> Editar turma</a>
+            </div>
+
+        </div>
+        <!--/row-->
+    </div>
+</div>
+
+<!-- Modal Create Classes -->
+<div class="modal fade classes" ng-controller="ClassesController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title-custom">Cadastrar turma</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                    @Html.Partial("~/Views/classes/create.cshtml")
+
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<!-- Modal Edit Classes -->
+<div class="modal fade classes-edit" ng-controller="ClassesController">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title-custom">Editar Turmas</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+
+                    @Html.Partial("~/Views/classes/edit.cshtml")
+
+                </div>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>

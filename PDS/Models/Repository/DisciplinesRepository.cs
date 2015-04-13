@@ -76,7 +76,7 @@ namespace PDS.Models.Repository
                             },
 
                             name = Convert.ToString(dr["name"]),
-                            idDiscipline = Convert.ToInt64(dr["idDiscipline"]),                   
+                            idDiscipline = Convert.ToInt64(dr["idDiscipline"])                   
                         }
                     );
 
@@ -92,6 +92,50 @@ namespace PDS.Models.Repository
             }
 
             return listDisciplines;
+        }
+
+        /// <summary>
+        /// Método para retornar o nome da disciplina.
+        /// </summary>
+        /// <param name="idDiscipline">Int64 idDiscipline.</param>
+        /// <returns>Discipline discipline.</returns>
+        public Disciplines GetName(Int64 idDiscipline)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Disciplines discipline = new Disciplines();
+
+            cmm.Parameters.AddWithValue("@idDiscipline", idDiscipline);
+
+            sql.Append("CALL getNameDiscipline(@idDiscipline)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    discipline = 
+                        new Disciplines
+                        {
+                            name = Convert.ToString(dr["name"])
+                        };
+
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return discipline;
         }
 
         /// <summary>

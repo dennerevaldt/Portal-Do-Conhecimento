@@ -48,16 +48,16 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idTeacher">Int64 idTeacher.</param>
         /// <returns>List Classes.</returns>
-        public List<Classes> GetAll(Int64 idTeacher)
+        public List<Classes> GetAll(Int64 idDisc)
         {
             MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Classes> listClasses = new List<Classes>();
 
-            cmm.Parameters.AddWithValue("@idTeacher", idTeacher);
+            cmm.Parameters.AddWithValue("@idDisc", idDisc);
 
-            sql.Append("CALL getAllClasses(@idTeacher)");
+            sql.Append("CALL getAllClasses(@idDisc)");
 
             cmm.CommandText = sql.ToString();
 
@@ -73,6 +73,7 @@ namespace PDS.Models.Repository
                             idClass = Convert.ToInt64(dr["idClasse"]),
                             name = Convert.ToString(dr["name"]),
                             discipline = new Disciplines{
+                                idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
                                 name = Convert.ToString(dr["nameDiscipline"])
                             }
                         }
@@ -150,6 +151,84 @@ namespace PDS.Models.Repository
                 database.RollBack();
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Método para retornar as informações de um turma específica.
+        /// </summary>
+        /// <param name="idClass">Int64 idClass.</param>
+        /// <returns>List Classes.</returns>
+        public List<Classes> GetOne(Int64 idClass)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            List<ClassesStudents> cStudents = new List<ClassesStudents>();
+            List<Classes> listClasses = new List<Classes>();
+
+            cmm.Parameters.AddWithValue("@idClass", idClass);
+
+            sql.Append("CALL getOneClass(@idClass)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+                
+                while (dr.Read())
+                {
+                    cStudents.Add(
+                    new ClassesStudents
+                    {
+                        student = new Students
+                        {
+                            idPerson = (Int64)dr["idPerson"],
+                            //accountType = (string)dr["accountType"],
+                            firstName = (string)dr["firstName"],
+                            lastName = (string)dr["lastName"],
+                            //gender = (char)dr["gender"],
+                            dateOfBirth = (DateTime)dr["dateOfBirth"],
+                            city = (string)dr["city"],
+                            country = (string)dr["country"],
+                            urlImageProfile = (string)dr["urlImageProfile"],
+                            idStudent = (Int64)dr["idStudent"]
+                        },
+                        stars = (int)dr["stars"]
+                    });
+                }
+
+                while (dr.HasRows)
+                {
+                    listClasses.Add(
+                        new Classes
+                        {
+                            idClass = Convert.ToInt64(dr["idClasse"]),
+                            name = Convert.ToString(dr["name"]),
+
+                            discipline = new Disciplines
+                            {
+                                idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
+                                name = Convert.ToString(dr["name"])
+                            },
+
+                            classesStudents = cStudents
+                        }
+                    );
+
+                    dr.NextResult();            
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return listClasses;
         }
     }
 }

@@ -17,6 +17,16 @@ namespace PDS.Controllers
             private ReturnJson objectToSerializeSuc;
         #endregion
 
+        public ActionResult index()
+        {
+            return View();
+        }
+
+        public ActionResult manageclass()
+        {
+            return View("manageclass");
+        }
+
         /// <summary>
         /// Adiciona uma nova turma.
         /// </summary>
@@ -46,19 +56,14 @@ namespace PDS.Controllers
         /// <summary>
         /// Faz um get em todas turmas do professor logado.
         /// </summary>
-        [HttpPost]
-        public void getall()
+        [HttpGet]
+        public void getall(Int64 id)
         {
-
-            HttpCookie userInfo = Request.Cookies["userInfo"];
-            var CidTeacher = Server.UrlTokenDecode(userInfo["id_type_account"]);
-            string id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidTeacher);
-
-            Int64 idTeacher = Int64.Parse(id_teacher);
+            Int64 idDisc = id;
 
             ClassesRepository repClass = new ClassesRepository();
 
-            List<Classes> listClasses = repClass.GetAll(idTeacher);
+            List<Classes> listClasses = repClass.GetAll(idDisc);
 
             Response.Write(JsonConvert.SerializeObject(listClasses));
 
@@ -112,6 +117,39 @@ namespace PDS.Controllers
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
 
+        }
+
+        /// <summary>
+        /// Método para retornar uma turma.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        public void getoneclass(FormCollection form)
+        {
+            Int64 idClass = Int64.Parse(form["idClass"]);
+
+            ClassesRepository repClass = new ClassesRepository();
+
+            List<Classes> listClasses = repClass.GetOne(idClass);
+
+            Response.Write(JsonConvert.SerializeObject(listClasses));
+        }
+
+        public void insertstudentinclasse(FormCollection form)
+        {
+            try
+            {
+                Int64 idStudent = Int64.Parse(form["idStudent"]);
+                Int64 idClass = Int64.Parse(form["idClass"]);
+
+                StudentsRepository repStd = new StudentsRepository();
+                repStd.InsertStudentInClasse(idStudent,idClass);
+
+            }
+            catch (Exception)
+            {
+                objectToSerializeErr = new ReturnJson { success = false, message = "Ops, estamos com problemas. Lembre-se de cadastrar uma disciplina antes de cadastrar uma Turma. Tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+            }
         }
     }
 }
