@@ -200,8 +200,8 @@ li.message-preview>a {
 	border-radius: 0;
 	background-color: #f5f5f5;
 	border-top: 1px solid #e2e9e6;
-	border-bottom-right-radius: -1;
-	border-bottom-left-radius: -1;
+	border-bottom-right-radius: 0;
+	border-bottom-left-radius: 0;
 }
 
 .btn-xs {
@@ -484,6 +484,14 @@ fieldset[disabled] .btn-index.active {
 	background-color: #f5f5f5;
 }
 
+.painel-body-height-student {
+	height: 600px;
+	overflow: hidden;
+	overflow-y: scroll;
+	-webkit-overflow-scrolling: touch;
+	background-color: #f5f5f5;
+}
+
 
 #wrapper.toggled #page-content-wrapper {
     position: fixed;
@@ -568,6 +576,12 @@ fieldset[disabled] .btn-index.active {
 	margin-left: 10px;
 	background-color: #296EA9;
 	color:#fff;
+}
+
+.badge-danger {
+    margin-left: 10px;
+    background-color: #FE2400;
+    color: #FFF;
 }
 
 /* siderbar right */

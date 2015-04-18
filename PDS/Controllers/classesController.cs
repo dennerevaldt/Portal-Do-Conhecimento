@@ -4,6 +4,7 @@ using PDS.Models.Repository;
 using PDS.Models.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -125,15 +126,43 @@ namespace PDS.Controllers
         /// <param name="form">FormCollection form.</param>
         public void getoneclass(FormCollection form)
         {
-            Int64 idClass = Int64.Parse(form["idClass"]);
+            try
+            {
+                Int64 idClass = Int64.Parse(form["idClass"]);
 
-            ClassesRepository repClass = new ClassesRepository();
+                ClassesRepository repClass = new ClassesRepository();
+                TeachersRepository repTeacher = new TeachersRepository();
+                ClassesPublicationsTeachersRepository repClPub = new ClassesPublicationsTeachersRepository();
 
-            List<Classes> listClasses = repClass.GetOne(idClass);
+                Classes classeReturn = repClass.GetOne(idClass);
 
-            Response.Write(JsonConvert.SerializeObject(listClasses));
+                classeReturn.classesPublicationTeachers =
+                    new List<ClassesPublicationsTeachers>
+                    (
+                        repClPub.GetPublications(idClass)
+                    );
+
+
+                //Get Teacher
+                classeReturn.discipline.teacher = new Teachers();
+
+                classeReturn.discipline.teacher =
+                    (
+                        repTeacher.GetOne(classeReturn.discipline.idDiscipline)
+                    );
+
+                Response.Write(JsonConvert.SerializeObject(classeReturn));
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
+        /// <summary>
+        /// Método para inserir estudante em uma turma.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
         public void insertstudentinclasse(FormCollection form)
         {
             try
@@ -148,6 +177,134 @@ namespace PDS.Controllers
             catch (Exception)
             {
                 objectToSerializeErr = new ReturnJson { success = false, message = "Ops, estamos com problemas. Lembre-se de cadastrar uma disciplina antes de cadastrar uma Turma. Tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+            }
+        }
+
+        /// <summary>
+        /// Action para fazer o upload de um post.
+        /// </summary>
+        /// <param name="file">HttpPostedFileBase file.</param>
+        /// <param name="form">FormCollection form.</param>
+        [HttpPost]
+        public void uploadPost(HttpPostedFileBase file, FormCollection form)
+        {
+            try
+            {
+                #region Get Type File
+                
+                string type;
+
+                if (file != null)
+                {
+                    type = Path.GetExtension(file.FileName);
+                }
+                else
+                {
+                    type = "notFile";
+                }
+
+                #endregion
+
+                if (type == ".jpg" || type == ".JPG" || type == ".png" || type == ".PNG" || type == ".jpeg" || type == ".JPEG" ||
+                    type == ".doc" || type == ".docx" || type == ".txt" || type == ".pdf" || type == ".PDF" || type == ".ppt" ||
+                    type == ".zip" || type == ".rar")
+                {
+
+                    //request cookie data user
+                    HttpCookie userInfo = Request.Cookies["userInfo"];
+                    var CidT = Server.UrlTokenDecode(userInfo["id_type_account"]);
+                    string idTeacher = System.Text.UTF8Encoding.UTF8.GetString(CidT);
+
+                    //insert publications teachers
+                    PublicationsTeachersRepository repPubTeachers = new PublicationsTeachersRepository();
+                    Int64 idPublication = repPubTeachers.Create(form["message"], Int64.Parse(idTeacher));
+
+                    //insert classes publications teacher
+                    ClassesPublicationsTeachersRepository repClassesPubTec = new ClassesPublicationsTeachersRepository();
+                    repClassesPubTec.Create(idPublication, Int64.Parse(form["idClasse"]));
+
+                    //prepare url attachment
+                    string path = "/Content/Uploads/Posts/Teachers/" + idPublication + type;
+                    file.SaveAs(Path.Combine(Server.MapPath(path)));
+
+                    //insert attachment
+                    AttachmentsRepository repAtt = new AttachmentsRepository();
+                    repAtt.Create(path, idPublication);
+                    
+                }
+                else
+                {
+                    if (type == "notFile")
+                    {
+                        //request cookie data user
+                        HttpCookie userInfo = Request.Cookies["userInfo"];
+                        var CidT = Server.UrlTokenDecode(userInfo["id_type_account"]);
+                        string idTeacher = System.Text.UTF8Encoding.UTF8.GetString(CidT);
+
+                        //insert publications teachers
+                        PublicationsTeachersRepository repPubTeachers = new PublicationsTeachersRepository();
+                        Int64 idPublication = repPubTeachers.Create(form["message"], Int64.Parse(idTeacher));
+
+                        //insert classes publications teacher
+                        ClassesPublicationsTeachersRepository repClassesPubTec = new ClassesPublicationsTeachersRepository();
+                        repClassesPubTec.Create(idPublication, Int64.Parse(form["idClasse"]));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {            
+                throw ex;
+            }
+
+        }
+
+        /// <summary>
+        /// Action para fazer download de um arquivo.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        /// <returns>File file.</returns>
+        [HttpPost]
+        public FileResult download(FormCollection form)
+        {
+            try
+            {
+                string url = form["url"];
+                string path = Path.Combine(Server.MapPath(url));
+                byte[] fileBytes = System.IO.File.ReadAllBytes(path);
+                string dateNow = DateTime.Now.ToShortDateString();
+                string nameDown = "teste.jpg";
+
+
+                return File(fileBytes, System.Net.Mime.MediaTypeNames.Application.Octet, nameDown);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }      
+        }
+
+        /// <summary>
+        /// Action para enviar uma nova mensagem para turma.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        [HttpPost]
+        public void invitemessage(FormCollection form)
+        {
+            try
+            {
+                Int64 idClasse = Int64.Parse(form["id"]);
+                string message = form["message"];
+
+                ClassesRepository repClasses = new ClassesRepository();
+                repClasses.InviteMessage(idClasse, message);
+
+                objectToSerializeSuc = new ReturnJson { success = true, message = "Mensagem enviada com sucesso.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            catch (Exception)
+            {
+                objectToSerializeErr = new ReturnJson { success = false, message = "Ops, estamos com problemas. Tente novamente.", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
         }

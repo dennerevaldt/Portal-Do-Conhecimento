@@ -56,10 +56,39 @@
             console.log(data);
             if (data != null) {
                 $rootScope.classe = data;
-                $rootScope.nameClass = data[0].name;
+                $rootScope.nameClass = data.name;
+                $rootScope.classesStudents = data.classesStudents;
+                $rootScope.classesPublicationTeachers = data.classesPublicationTeachers;
+                $rootScope.discipline = data.discipline;
             } else {
                 Console.log('erro.');
             }
+        });
+    }
+
+    $rootScope.getMessages = function (idStudent) {
+
+        dataParam = {
+            id: idStudent
+        }
+
+        $http({
+            method: 'POST',
+            url: '/message/getMessagesClasses',
+            data: $.param(dataParam),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            console.log(data);
+            if (data != 0) {
+                $rootScope.listMessages = data;
+            }
+            else {
+
+            }
+
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
         });
     }
 
@@ -376,17 +405,19 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     }
 });
 
-homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window) {
+homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window, fileUpload) {
     $scope.resultShowCreateClass = false;
     $scope.loadingCadClass = false;
     $scope.editorEnabled = [];
     $scope.Class = [];
+    $scope.submitButtonMessage = false;
+
+
+    $scope.nameDownload = "Anexos_PortalDoConhecimento";
 
     $scope.submitCreateClass = function (formCreateClass) {
         $scope.Classe.idDiscipline = location.search.split('id=')[1]
         
-        console.log($scope.Classe);
-
         $scope.submitButtonCadClass = true;
         if (formCreateClass.$valid) {
             $scope.loadingCadClass = true;
@@ -534,6 +565,87 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
         $window.location.href = url;
     }
 
+    $scope.submitPostClasse = function (formPost) {
+        
+        //get id classe
+        var idClasse = location.search.split('?id=')[1];
+        //get message
+        var message = $scope.Post.message;
+        //get file
+        var file = document.getElementById('file').files[0];
+
+        //call service send form
+        var uploadUrl = "/classes/uploadPost";
+        fileUpload.uploadFileToUrl(file, uploadUrl, message, idClasse);
+
+        $scope.Post.message = "";
+        $scope.Post.file = "";
+        
+    }
+
+    $scope.download = function (pUrl)
+    {
+        var dataParam = { url: pUrl };
+
+        $http({
+            method: 'POST',
+            url: '/classes/download',
+            data: $.param(dataParam),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        });
+    }
+
+    $scope.submitMessage = function (form) {
+
+        var idClasse = location.search.split('id=')[1];
+
+        var dataParam = {
+            id: idClasse,
+            message : $scope.Classe.message
+        }
+
+        $scope.submitButtonCadClass = true;
+        if (form.$valid) {
+            $scope.loadingMessage = true;
+            $http({
+                method: 'POST',
+                url: '/classes/invitemessage',
+                data: $.param(dataParam),  //param method from jQuery
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            }).success(function (data) {
+                if (data.success) { //success comes from the return json object
+                    $scope.submitButtonMessage = true;
+                    $scope.resultMessage = data.message;
+                    $scope.resultMessageClass = 'bg-success';
+                    $scope.loadingMessage = false;
+                    $scope.resultShowMessage = true;
+                    $timeout(function () {
+                        $scope.resultShowMessage = false;
+                    }, 1500);
+                } else {
+                    $scope.submitButtonMessage = false;
+                    $scope.resultMessage = data.message;
+                    $scope.resultMessageClass = 'bg-danger';
+                    $scope.loadingMessage = false;
+                    $scope.resultShowMessage = true;
+                    $timeout(function () {
+                        $scope.resultShowMessage = false;
+                    }, 1500);
+                }
+            });
+        } else {
+            $scope.submitButtonMessage = false;
+            $scope.resultMessage = 'Campos obrigatórios. Preencha-os corretamente.';
+            $scope.resultMessageClass = 'bg-danger';
+            $scope.loadingMessage = false;
+            $scope.resultShowMessage = true;
+            $timeout(function () {
+                $scope.resultShowMessage = false;
+            }, 3000);
+        }
+
+    }
+
 });
 
 homePortal.controller('AutoCompleteController', function ($scope, $http, $rootScope) {
@@ -638,6 +750,42 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
 
         //alert('id class = ' + pIdClass + 'id student=' + idStd);
 
+    }
+
+});
+
+homePortal.controller('MessagesController', function ($scope, $http, $rootScope) {
+
+    $scope.getNumMessages = function (idStudent) {
+
+        dataParam = {
+            id : idStudent
+        }
+
+        $http({
+            method: 'POST',
+            url: '/message/getNumMessageStudent',
+            data: $.param(dataParam),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        }).success(function (data) {
+            //console.log(data);
+            $scope.numMessages = data;
+            
+            if (data != 0) {
+                $scope.badgeMessage = "badge badge-danger";
+            }
+            else {
+                $scope.badgeMessage = "badge";
+            }
+
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $scope.getNewMessages = function (idStudent) {
+        $rootScope.getMessages(idStudent);
     }
 
 });

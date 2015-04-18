@@ -12,6 +12,7 @@ namespace PDS.Models.Entities
         public Disciplines discipline { get; set; }
         public List<ClassesStudents> classesStudents { get; set; }
         public List<ClassesPublicationsTeachers> classesPublicationTeachers { get; set; }
+        public List<MessagesClasse> messagesClasse { get; set; }
 
     }
 }

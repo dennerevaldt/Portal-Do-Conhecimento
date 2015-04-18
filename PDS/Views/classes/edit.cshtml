@@ -1,4 +1,4 @@
-﻿<div class="row" style="margin-left:15px; margin-right:25px; margin-top:10px;">
+﻿<div class="row" style="margin-left:15px; margin-right:25px; margin-top:10px;" ng-cloak>
 
     <div class="col-md-4">
         <label>Nome da Disciplina</label>
@@ -10,7 +10,7 @@
 
     <div ng-repeat="class in listClasses" style="margin-top: 8px;">
      
-        <div class="row" ng-hide="editorEnabled[{{$index+1}}]">
+        <div class="row" ng-hide="editorEnabled[$index+1]">
             <div class="col-md-4">
                 <input class="form-control" value="class.name" ng-model="displaynamediscipline" ng-init="displaynamediscipline=class.discipline.name" ng-disabled="true" />
             </div>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="row" ng-show="editorEnabled[{{$index+1}}]">
+        <div class="row" ng-show="editorEnabled[$index+1]">
             <div class="col-md-4">
                 <input class="form-control" value="class.name" ng-model="displaynamediscipline" ng-init="displaynamediscipline=class.discipline.name" ng-disabled="true" />
             </div>
@@ -39,13 +39,13 @@
 
     </div>
 
-    <div ng-class="resultEdit" ng-show="resultShowEdit">{{ resultMessageEdit }}</div>
+    <div ng-class="resultEdit" ng-show="resultShowEdit" ng-bind="resultMessageEdit"></div>
 
     <div class="text-center">
         <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingDel" />
     </div>
 
-    <div ng-class="resultDel" ng-show="resultShow">{{ resultMessageDel }}</div>
+    <div ng-class="resultDel" ng-show="resultShow" ng-bind="resultMessageDel"></div>
 
 
 </div>

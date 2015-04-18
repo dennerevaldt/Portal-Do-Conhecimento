@@ -339,5 +339,55 @@ namespace PDS.Models.Repository
 
             return teachers;
         }
+
+        /// <summary>
+        /// Método para retornar as informações de um professor, conforme disciplina.
+        /// </summary>
+        /// <param name="idDiscipline">Int64 idDiscipline.</param>
+        /// <returns>Teachers teacher.</returns>
+        public Teachers GetOne(Int64 idDiscipline)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Teachers teacher = new Teachers();
+
+            cmm.Parameters.AddWithValue("@idDiscipline", idDiscipline);
+
+            sql.Append("CALL getOneTeacher(@idDiscipline)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    teacher =
+                    (new Teachers
+                        {
+                            idTeacher = (Int64)dr["idTeacher"],
+                            firstName = (string)dr["firstName"],
+                            lastName = (string)dr["lastName"],
+                            urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
+                            Account = new Accounts
+                            {
+                                idAccount = Convert.ToInt64(dr["idAccount"]),
+                            }
+                        }
+                    );
+                }
+
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return teacher;
+        }
     }
 }

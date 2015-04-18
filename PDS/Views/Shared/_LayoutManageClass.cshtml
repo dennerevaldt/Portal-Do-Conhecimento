@@ -22,6 +22,7 @@
     @Scripts.Render("~/Scripts/controllers.js")
     @Scripts.Render("~/Scripts/factories.js")
     @Scripts.Render("~/Scripts/diretives.js")
+    @Scripts.Render("~/Scripts/services.js")
 
 
 
@@ -191,7 +192,7 @@
                             <div class="col-md-12 border-b">
                                 <h4>Adicionar Alunos</h4>
 
-                                <div role="search" ng-controller="AutoCompleteController">
+                                <div role="search" ng-controller="AutoCompleteController" ng-cloak>
                                     <div class="form-group">
                                         <input type="text" class="form-control" ng-model="search" ng-keyup="pesquisarAlunos(search)" autocomplete="off" placeholder="Pesquisar alunos" />
                                         <div ng-show="completing">
@@ -201,7 +202,7 @@
                                                         <div class="media">
                                                             <div class="media-left">
                                                                 <span class="pull-left">
-                                                                    <img class="media-object img-circle" src="{{dica.urlImageProfile}}" alt="Image" style="width: 50px; height: 50px;">
+                                                                    <img class="media-object img-circle" ng-src="{{dica.urlImageProfile}}" alt="Image" style="width: 50px; height: 50px;">
                                                                 </span>
                                                             </div>
                                                             <div class="media-body">
@@ -218,6 +219,25 @@
                                 </div>
 
                             </div>
+
+                            <div class="col-md-12 border-b" style="margin-top: 15px;">
+                                <h4>Alunos <a href="#" class="btn-sm btn-default pull-right" data-toggle="modal" data-target=".students-view">Ver todos</a></h4>
+
+                                <div class="col-md-3" ng-repeat="item in classesStudents | limitTo:6" style="margin-top:15px;">
+                                    <div class="text-center">
+                                        <img ng-src="{{item.student.urlImageProfile}}" alt="Image" class="img-circle" style="width:35px;">
+                                    </div>
+                                    <p ng-bind="item.student.firstName"></p>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-12 border-b" style="margin-top: 15px;">
+                                <h4>Recado para turma</h4>
+
+                                <a class="btn btn-default btn-block" data-toggle="modal" data-target=".invite-message" href="#">Enviar</a>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -225,34 +245,63 @@
         </div>
         <!-- /Page-content-wrapper-right -->
 
-        <!-- Modal Invite-Friends -->
-        <div class="modal fade invite-friends" ng-controller="InviteFriendsController">
+        <!-- Modal Invite-Message -->
+        <div class="modal fade invite-message" ng-controller="ClassesController">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <form method="post" id="inviteForm" name="inviteForm" ng-submit="submit(inviteForm)">
+                    <form method="post" id="messageForm" name="messageForm" ng-submit="submitMessage(messageForm)">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title-custom">Convidar amigo</h4>
+                            <h4 class="modal-title-custom">Enviar recado</h4>
                         </div>
                         <div class="modal-body">
 
-                            <div class="form-group" ng-class="{ 'has-error has-feedback': inviteForm.inputEmail.$dirty && inviteForm.inputEmail.$error.email }">
-                                <label for="inputEmail">Email</label>
-                                <input type="email" class="form-control" id="inputEmail" name="inputEmail" ng-model="Account.email" placeholder="Email" required />
-                                <p class="bg-danger" ng-show="inviteForm.inputEmail.$error.email">
-                                    Email inválido.
-                                </p>
+                            <div class="form-group" ng-class="{ 'has-error has-feedback': messageForm.inputMessage.$dirty && messageForm.inputMessage.$error.required }">
+                                <label for="inputMessage">Mensagem</label>
+                                <textarea type="text" class="form-control" id="inputMessage" name="inputMessage" ng-model="Classe.message" rows="3" placeholder="Mensagem" required></textarea>
+                                <div class="bg-danger" ng-show="messageForm.inputMessage.$dirty && messageForm.inputMessage.$error.required">
+                                    Campo obrigatório.
+                                </div>
                             </div>
                             <div class="text-center">
-                                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+                                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingMessage" />
                             </div>
 
-                            <div ng-class="result">{{ resultMessage }}</div>
+                            <div ng-class="resultMessageClass" ng-show="resultShowMessage" ng-bind="resultMessage"></div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Enviar convite</button>
+                        <div class="modal-footer" style="margin-top:0;">
+                            <button type="submit" class="btn btn-primary" ng-disabled="submitButtonMessage">Enviar Mensagem</button>
                         </div>
                     </form>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- Modal Students-View -->
+        <div class="modal fade students-view" ng-controller="ClassesController">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Alunos</h4>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <div class="row">
+                            <div class="col-md-3" ng-repeat="item in classesStudents">
+                                <div class="text-center">
+                                    <img ng-src="{{item.student.urlImageProfile}}" alt="Image" class="img-circle" style="width:50px;">
+                                </div>
+                                <p class="text-center" ng-bind="item.student.firstName"></p>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    <div class="modal-footer">
+                    </div>
+
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->

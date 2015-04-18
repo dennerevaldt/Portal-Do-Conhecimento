@@ -158,13 +158,15 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idClass">Int64 idClass.</param>
         /// <returns>List Classes.</returns>
-        public List<Classes> GetOne(Int64 idClass)
+        public Classes GetOne(Int64 idClass)
         {
             MySQL database = MySQL.GetInstancia("root", "123456");
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<ClassesStudents> cStudents = new List<ClassesStudents>();
-            List<Classes> listClasses = new List<Classes>();
+            Classes classe = new Classes();
+            List<ClassesPublicationsTeachers> listClassesPubTeac = new List<ClassesPublicationsTeachers>();
+            List<PublicationsTeachers> listPublicationsTeachers = new List<PublicationsTeachers>();
 
             cmm.Parameters.AddWithValue("@idClass", idClass);
 
@@ -184,10 +186,10 @@ namespace PDS.Models.Repository
                         student = new Students
                         {
                             idPerson = (Int64)dr["idPerson"],
-                            //accountType = (string)dr["accountType"],
+                            accountType = Convert.ToChar(dr["accountType"]),
                             firstName = (string)dr["firstName"],
                             lastName = (string)dr["lastName"],
-                            //gender = (char)dr["gender"],
+                            gender = Convert.ToChar(dr["gender"]),
                             dateOfBirth = (DateTime)dr["dateOfBirth"],
                             city = (string)dr["city"],
                             country = (string)dr["country"],
@@ -196,11 +198,12 @@ namespace PDS.Models.Repository
                         },
                         stars = (int)dr["stars"]
                     });
+
                 }
 
                 while (dr.HasRows)
                 {
-                    listClasses.Add(
+                    classe =
                         new Classes
                         {
                             idClass = Convert.ToInt64(dr["idClasse"]),
@@ -213,8 +216,8 @@ namespace PDS.Models.Repository
                             },
 
                             classesStudents = cStudents
-                        }
-                    );
+                        };
+                    
 
                     dr.NextResult();            
                 }
@@ -228,7 +231,38 @@ namespace PDS.Models.Repository
                 throw ex;
             }
 
-            return listClasses;
+            return classe;
+        }
+
+        /// <summary>
+        /// Método para inserir uma nova mensagem para turma.
+        /// </summary>
+        /// <param name="idClasse">Int64 idClasse.</param>
+        /// <param name="message">String message.</param>
+        public void InviteMessage(Int64 idClasse, string message)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+
+            cmm.Parameters.AddWithValue("@idClasse", idClasse);
+            cmm.Parameters.AddWithValue("@message", message);
+
+            sql.Append("CALL insertMessageClasse(@idClasse,@message)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                database.BeginWork();
+                database.ExecuteNonQuery(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
         }
     }
 }

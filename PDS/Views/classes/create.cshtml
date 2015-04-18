@@ -4,10 +4,10 @@
     string id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidTeacher);
 }
 
-<div class="row" style="margin-left:15px;margin-right:15px;margin-top:10px;">
+<div class="row" style="margin-left:15px;margin-right:15px;margin-top:10px;" ng-cloak>
     <form method="post" name="formCreateClasse" ng-submit="submitCreateClass(formCreateClasse)">
 
-        <input type="hidden" ng-model="Classe.idDiscipline" value="{{idDiscInitial}}" ng-init="Classe.idDiscipline = idDiscInitial" />
+        <input type="hidden" ng-model="Classe.idDiscipline" value="Classe.idDiscipline" ng-init="Classe.idDiscipline = idDiscInitial" />
 
         <div class="form-group col-md-12" ng-class="{ 'has-error has-feedback': formCreateClasse.inputClasseName.$dirty && formCreateClasse.inputClasseName.$error.required }">
             <label>Nome da Turma *</label>
@@ -28,7 +28,7 @@
                 <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingCadClass" />
             </div>
 
-            <div ng-class="resultCadClass" ng-show="resultShowCreateClass">{{ resultMessageCadClass }}</div>
+            <div ng-class="resultCadClass" ng-show="resultShowCreateClass" ng-bind="resultMessageCadClass"></div>
         </div>
     </form>
 </div>

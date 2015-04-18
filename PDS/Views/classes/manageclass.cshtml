@@ -4,27 +4,60 @@
     Layout = "~/Views/Shared/_LayoutManageClass.cshtml";
 }
 
-<div class="container-wrapper" ng-controller="ClassesController">
+<div class="container-wrapper" ng-controller="ClassesController" ng-cloak>
     <div class="col-md-12">
         <!--row-->
         <div class="row" data-ng-init="getDataOneClass()">
-
-            <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top:30px; width:750px;">
-                <div class="panel panel-default">
-                    <div class="panel-heading"><h4>{{nameClass}}</h4></div>
-                    <div class="panel-body">
-                        <textarea class="form-control share-text" rows="3" placeholder="Compartilhe material com a turma..."></textarea>
-                    </div>
-                    <div class="panel-footer share-buttons">
-                        <span class="btn btn-default btn-file">
-                            <input type="file" /><i class="glyphicon glyphicon-paperclip"></i>
-                        </span>
-                        <button type="submit" class="btn btn-default btn-xs pull-right" href="#">Publicar</button>
+           
+             <form method="post" id="formPost" name="formPost" ng-upload="bar" ng-submit="submitPostClasse(formPost)">
+                <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top:30px; width:720px;">
+                    <div class="panel panel-default">
+                        <div class="panel-heading"><h4 ng-bind="nameClass"></h4></div>
+                        <div class="panel-body">
+                            <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com a turma..."></textarea>
+                        </div>
+                        <div class="panel-footer share-buttons">
+                            <span class="btn btn-default btn-file">
+                                <input type="file" id="file" name="file" ng-model="Post.file"/><i class="glyphicon glyphicon-paperclip"></i>
+                            </span>
+                            <button type="submit" class="btn btn-default btn-xs pull-right">Publicar</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </form>
 
         </div>
         <!--/row-->
     </div>
+
+    <div class="col-sm-12 col-md-12 col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-body painel-body-height">
+                <div class="content-panel">
+
+                    <!-- itens post -->
+
+                    <div class="panel panel-default" ng-repeat="itemPub in classesPublicationTeachers">
+                        <div class="panel-body">
+                            <div class="header-post">
+                                <img src="{{discipline.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{discipline.teacher.firstName}} {{discipline.teacher.lastName}},<small> publicou:</small> <span class="pull-right btn-sm btn-default"><span class="glyphicon glyphicon-remove"></span></span>
+                            </div>
+                            <div class="content-post">
+                                <p class="message" ng-bind="itemPub.publicationsTeachers.textPublication"></p>
+                                <p>
+                                    Anexos: <br>
+                                    <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
+                                </p>
+                                <hr class="hr-custom">
+                                <span class="pull-right"><small>Postado: </small><small ng-bind="itemPub.publicationsTeachers.datePublication"></small></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- /itens post -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>

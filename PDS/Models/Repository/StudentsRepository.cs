@@ -204,5 +204,130 @@ namespace PDS.Models.Repository
             }
         }
 
+        public Int64 GetNumMessages(Int64 idStudent)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Int64 numMessages = 0;
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+
+            sql.Append("CALL getNumMessagesStudent(@idStudent)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                database.BeginWork();
+                numMessages = database.ExecuteScalar(cmm);
+                database.CommitWork();
+            }
+            catch (Exception ex)
+            {
+                database.RollBack();
+                throw ex;
+            }
+
+            return numMessages;
+        }
+
+        public List<Classes> getClasseMessage(Int64 idStudent)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            List<Classes> classes = new List<Classes>();
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+
+            sql.Append("CALL getMessagesClasses(@idStudent)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+
+                    classes.Add(
+                        new Classes
+                        {
+                            idClass = (Int64)dr["idClasse"],
+                            name = (string)dr["nameClasse"],
+
+                            discipline = new Disciplines
+                            {
+                                idDiscipline = (Int64)dr["idDiscipline"],
+                                name = (string)dr["nameDiscipline"],
+
+                                teacher = new Teachers
+                                {
+                                    idTeacher = (Int64)dr["idTeacher"],
+                                    firstName = (string)dr["firstName"],
+                                    urlImageProfile = (string)dr["urlImageProfile"]
+                                }
+                            }
+                        }
+
+                    );
+
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return classes;
+        }
+
+        public List<MessagesClasse> getMessagesClasse(Int64 idStudent)
+        {
+            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            List<MessagesClasse> newList = new List<MessagesClasse>();
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+
+            sql.Append("CALL getMessagesClasses(@idStudent)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    newList.Add(
+                        new MessagesClasse
+                        {
+                            idMessage = (Int64)dr["idMessage"],
+                            message = (string)dr["message"],
+                            idClasse = (Int64)dr["idClasse"]
+                        });
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return newList;
+        }
+
+
     }
 }

@@ -11,7 +11,7 @@
 
             <div class="col-md-8">
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h4>{{nameClasse.name}} <small ng-hide="listClasses.length"><span class="text-center text-danger">(Nenhuma turma cadastrada)</span></small> </h4></div>
+                    <div class="panel-heading"><h4 ng-bind="nameClasse.name"> <small ng-hide="listClasses.length"><span class="text-center text-danger">(Nenhuma turma cadastrada)</span></small> </h4></div>
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table class="table table-striped">
@@ -25,8 +25,8 @@
 
                                 <tbody>
                                     <tr ng-repeat="classe in listClasses | orderBy:'idClass'">
-                                        <td>{{classe.idClass}}</td>
-                                        <td>{{classe.name}}</td>
+                                        <td ng-bind="classe.idClass"></td>
+                                        <td ng-bind="classe.name"></td>
                                         <td><a class="btn-sm btn-primary" href="#" ng-click="getOneClass(classe.idClass)"><span class="glyphicon glyphicon-cog"></span></a></td>
                                     </tr>
                                 </tbody>

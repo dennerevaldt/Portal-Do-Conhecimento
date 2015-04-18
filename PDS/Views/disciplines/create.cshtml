@@ -4,7 +4,7 @@
     string id_teacher = System.Text.UTF8Encoding.UTF8.GetString(CidTeacher);
 }
 
-<div class="row" style="margin-left:15px;margin-right:15px;margin-top:10px;">
+<div class="row" style="margin-left:15px;margin-right:15px;margin-top:10px;" ng-cloak>
     <form method="post" name="formCreateDiscipline" ng-submit="submitCreateDiscipline(formCreateDiscipline)">
         <div class="form-group" ng-class="{ 'has-error has-feedback': formCreateDiscipline.inputDisciplineName.$dirty && formCreateDiscipline.inputDisciplineName.$error.required }">
 
@@ -27,6 +27,6 @@
             <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingCad" />
         </div>
 
-        <div ng-class="resultCad" ng-show="resultShowCreate">{{ resultMessageCad }}</div>
+        <div ng-class="resultCad" ng-show="resultShowCreate" ng-bind="resultMessageCad"></div>
     </form>
 </div>

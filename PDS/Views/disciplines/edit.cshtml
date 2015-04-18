@@ -1,10 +1,10 @@
-﻿<div class="row" style="margin-left:15px; margin-right:15px; margin-top:10px;">
+﻿<div class="row" style="margin-left:15px; margin-right:15px; margin-top:10px;" ng-cloak>
 
     <div><label>Nome da disciplina</label></div>
  
     <div ng-repeat="disciplina in disciplinas" style="margin-top: 8px;">
         
-        <div class="input-group col-md-12" ng-hide="editorEnabled[{{$index+1}}]">
+        <div class="input-group col-md-12" ng-hide="editorEnabled[$index+1]">
             <input class="form-control" value="disciplina.name" ng-model="displayname" ng-init="displayname=disciplina.name" ng-disabled="true">
             <span class="input-group-btn">
                 <a class="btn btn-default" ng-click="enableEditor($index+1)"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -12,7 +12,7 @@
             </span>
         </div>
         
-        <div class="input-group col-md-12" ng-show="editorEnabled[{{$index+1}}]">
+        <div class="input-group col-md-12" ng-show="editorEnabled[$index+1]">
             <input class="form-control" value="disciplina.name" ng-model="Disciplina[$index+1]" ng-init="Disciplina[$index+1]=disciplina.name" ng-disabled="false" />
             <span class="input-group-btn">
                 <a class="btn btn-success" ng-click="save($index+1,disciplina.idDiscipline)"><span class="glyphicon glyphicon-floppy-disk"></span></a>
@@ -22,13 +22,13 @@
 
     </div>
 
-    <div ng-class="resultEdit" ng-show="resultShowEdit">{{ resultMessageEdit }}</div>
+    <div ng-class="resultEdit" ng-show="resultShowEdit" ng-bind="resultMessageEdit"></div>
 
     <div class="text-center">
         <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingDel" />
     </div>
 
-    <div ng-class="resultDel" ng-show="resultShow">{{ resultMessageDel }}</div>
+    <div ng-class="resultDel" ng-show="resultShow" ng-bind="resultMessageDel"></div>
 
 
 </div>
