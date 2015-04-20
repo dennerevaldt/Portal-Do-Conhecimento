@@ -289,7 +289,6 @@
     <Folder Include="Content\Uploads\ImagesProfile\Students\" />
     <Folder Include="Content\Uploads\ImagesProfile\Teachers\" />
     <Folder Include="Content\Uploads\Posts\Teachers\" />
-    <Folder Include="Views\message\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -20,7 +20,7 @@ namespace PDS.Models.Repository
         /// <param name="idClasse">Int64 idClasse.</param>
         public void Create(Int64 idPublication, Int64 idClasse)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -51,11 +51,9 @@ namespace PDS.Models.Repository
         /// <returns>List ClassesPublicationsTeachers.</returns>
         public List<ClassesPublicationsTeachers> GetPublications(Int64 idClass)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
-            List<ClassesStudents> cStudents = new List<ClassesStudents>();
-            List<Classes> listClasses = new List<Classes>();
             List<ClassesPublicationsTeachers> listClassesPubTeac = new List<ClassesPublicationsTeachers>();
 
             cmm.Parameters.AddWithValue("@idClass", idClass);
@@ -100,5 +98,69 @@ namespace PDS.Models.Repository
 
             return listClassesPubTeac;
         }
+        
+        /// <summary>
+        /// Método para retornar as publicações de um aluno.
+        /// </summary>
+        /// <param name="idStudent">Int64 idStudent.</param>
+        /// <returns>List ClassesPublicationsTeachers.</returns>
+        public List<ClassesPublicationsTeachers> GetPostsTeachers(Int64 idStudent)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            List<ClassesPublicationsTeachers> listClassesPubTeac = new List<ClassesPublicationsTeachers>();
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+
+            sql.Append("CALL getPostsTeachers(@idStudent)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    listClassesPubTeac.Add(
+                    new ClassesPublicationsTeachers
+                    {
+                        publicationsTeachers = new PublicationsTeachers
+                        {
+                            idPublication = (Int64)dr["idPublication"],
+                            datePublication = (DateTime)dr["datePublication"],
+                            textPublication = (string)dr["textPublication"],
+
+                            attachment = new Attachments
+                            {
+                                idAttachment = (Int64)dr["idAttachment"],
+                                urlAttachment = (string)dr["urlAttachment"]
+                            },
+
+                            teacher = new Teachers
+                            {
+                                idTeacher = (Int64)dr["idTeacher"],
+                                firstName = (string)dr["firstName"],
+                                lastName = (string)dr["lastName"],
+                                urlImageProfile = (string)dr["urlImageProfile"]
+                            }
+                        }
+
+                    });
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return listClassesPubTeac;
+        }
+
     }
 }

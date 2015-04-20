@@ -70,7 +70,7 @@ namespace PDS.Models.Repository
         /// <returns>Student student.</returns>
         public Students GetOne(Int64 idStudent)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Students student = new Students();
@@ -122,7 +122,7 @@ namespace PDS.Models.Repository
         /// <returns>List Students.</returns>
         public List<Students> SearchStudent(string name)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Students> students = new List<Students>();
@@ -179,7 +179,7 @@ namespace PDS.Models.Repository
         /// <param name="idClass">Int64 idClass.</param>
         public void InsertStudentInClasse(Int64 idStudent, Int64 idClass)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -204,9 +204,14 @@ namespace PDS.Models.Repository
             }
         }
 
+        /// <summary>
+        /// Método para retornar o número de novas mensagens do aluno.
+        /// </summary>
+        /// <param name="idStudent">Int64 idStudent.</param>
+        /// <returns>Int64 numMessages.</returns>
         public Int64 GetNumMessages(Int64 idStudent)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Int64 numMessages = 0;
@@ -232,9 +237,14 @@ namespace PDS.Models.Repository
             return numMessages;
         }
 
+        /// <summary>
+        /// Método para retornar as turmas do aluno para concatenar com as mensagens.
+        /// </summary>
+        /// <param name="idStudent">Int64 idStudent.</param>
+        /// <returns>List Classes.</returns>
         public List<Classes> getClasseMessage(Int64 idStudent)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Classes> classes = new List<Classes>();
@@ -288,9 +298,14 @@ namespace PDS.Models.Repository
             return classes;
         }
 
+        /// <summary>
+        /// Método para retornar as mensagens das turmas de um aluno para concatenar com as turmas.
+        /// </summary>
+        /// <param name="idStudent">Int64 idStudent.</param>
+        /// <returns>List MessagesClasses.</returns>
         public List<MessagesClasse> getMessagesClasse(Int64 idStudent)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<MessagesClasse> newList = new List<MessagesClasse>();
@@ -326,6 +341,49 @@ namespace PDS.Models.Repository
             }
 
             return newList;
+        }
+
+        /// <summary>
+        /// Método para verificar a existência de um aluno na turma.
+        /// </summary>
+        /// <param name="idStudent">Int64 idStudent.</param>
+        /// <returns>bool true or false.</returns>
+        public bool CheckStudentInClasse(Int64 idStudent, Int64 idClass)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            bool state;
+            Int64 numReturn = 0;
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+            cmm.Parameters.AddWithValue("@idClass", idClass);
+
+
+            sql.Append("CALL checkStudentInClasse(@idStudent,@idClass)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                numReturn = database.ExecuteScalar(cmm);
+                
+                if (numReturn == 1)
+                {
+                    state = true;
+                }
+                else
+                {
+                    state = false;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return state;
         }
 
 

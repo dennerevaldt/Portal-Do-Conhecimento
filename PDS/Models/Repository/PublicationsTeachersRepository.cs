@@ -18,7 +18,7 @@ namespace PDS.Models.Repository
         /// <returns>Int64 idPublication.</returns>
         public Int64 Create(string textPublication, Int64 idTeacher)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Int64 idReturn;

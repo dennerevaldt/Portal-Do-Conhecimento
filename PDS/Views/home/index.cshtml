@@ -6,160 +6,42 @@
 
 @{
     HttpCookie userInfo = Request.Cookies["userInfo"];
+    
+    
 
     var accTp = Server.UrlTokenDecode(userInfo["account_type"]);
     string account_type = System.Text.UTF8Encoding.UTF8.GetString(accTp);
 
+    var idAccTp = Server.UrlTokenDecode(userInfo["id_type_account"]);
+    string id_type_account = System.Text.UTF8Encoding.UTF8.GetString(idAccTp);
+
 }
 
 <!-- Page Content -->
-<div id="page-content-wrapper">
+<div id="page-content-wrapper" ng-app="homePortal">
     <div class="container-wrapper">
         <div class="row">
 
-            @if (account_type == "T") { 
+            @if (account_type == "T")
+            {
             <!-- Container -->
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <textarea class="form-control share-text" rows="3" placeholder="Compartilhe aqui com seus professores seguidores..."></textarea>
-                    </div>
-                    <div class="panel-footer share-buttons">
-                        <span class="btn btn-default btn-file">
-                            <input type="file" /><i class="glyphicon glyphicon-paperclip"></i>
-                        </span>
-                        <button type="submit" class="btn btn-default btn-xs pull-right" href="#">Publicar</button>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-sm-12 col-md-12 col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-body painel-body-height" >
-                        <div class="content-panel">
-
-                            <!-- itens post -->
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div class="header-post">
-                                        <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                    </div>
-                                    <div class="content-post">
-                                        <p class="message">
-                                            Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                        </p>
-                                        <p>
-                                            Anexos: <br>
-                                            <span style="color: #337AB7;"> - link 1; </span>
-                                        </p>
-                                        <hr class="hr-custom">
-                                        <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div class="header-post">
-                                        <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                    </div>
-                                    <div class="content-post">
-                                        <p class="message">
-                                            Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                        </p>
-                                        <p>
-                                            Anexos: <br>
-                                            <span style="color: #337AB7;"> - link 1; </span>
-                                        </p>
-                                        <hr class="hr-custom">
-                                        <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div class="header-post">
-                                        <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                    </div>
-                                    <div class="content-post">
-                                        <p class="message">
-                                            Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                        </p>
-                                        <p>
-                                            Anexos: <br>
-                                            <span style="color: #337AB7;"> - link 1; </span>
-                                        </p>
-                                        <hr class="hr-custom">
-                                        <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div class="header-post">
-                                        <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                    </div>
-                                    <div class="content-post">
-                                        <p class="message">
-                                            Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                        </p>
-                                        <p>
-                                            Anexos: <br>
-                                            <span style="color: #337AB7;"> - link 1; </span>
-                                        </p>
-                                        <hr class="hr-custom">
-                                        <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div class="header-post">
-                                        <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                    </div>
-                                    <div class="content-post">
-                                        <p class="message">
-                                            Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                            consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                        </p>
-                                        <p>
-                                            Anexos: <br>
-                                            <span style="color: #337AB7;"> - link 1; </span>
-                                        </p>
-                                        <hr class="hr-custom">
-                                        <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- /itens post -->
-
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <textarea class="form-control share-text" rows="3" placeholder="Compartilhe aqui com seus professores seguidores..."></textarea>
+                        </div>
+                        <div class="panel-footer share-buttons">
+                            <span class="btn btn-default btn-file">
+                                <input type="file" /><i class="glyphicon glyphicon-paperclip"></i>
+                            </span>
+                            <button type="submit" class="btn btn-default btn-xs pull-right" href="#">Publicar</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            }
-            else
-            {
+
                 <div class="col-sm-12 col-md-12 col-lg-12">
                     <div class="panel panel-default">
-                        <div class="panel-body painel-body-height-student">
+                        <div class="panel-body painel-body-height">
                             <div class="content-panel">
 
                                 <!-- itens post -->
@@ -250,15 +132,68 @@
                                         </div>
                                     </div>
                                 </div>
-                            
-                            
+
+                                <div class="panel panel-default">
+                                    <div class="panel-body">
+                                        <div class="header-post">
+                                            <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
+                                        </div>
+                                        <div class="content-post">
+                                            <p class="message">
+                                                Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                                                consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
+                                            </p>
+                                            <p>
+                                                Anexos: <br>
+                                                <span style="color: #337AB7;"> - link 1; </span>
+                                            </p>
+                                            <hr class="hr-custom">
+                                            <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- /itens post -->
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="col-sm-12 col-md-12 col-lg-12" ng-init="initPage(@id_type_account);" ng-cloak>
+                    <div class="panel panel-default">
+                        <div class="panel-body painel-body-height-student">
+                            <div class="content-panel">
+
+                                <!-- itens post -->
+                                <div class="panel panel-default" ng-repeat="itemPub in publicationsTeachers">
+                                    <div class="panel-body">
+                                        <div class="header-post">
+                                            <img src="{{itemPub.publicationsTeachers.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{itemPub.publicationsTeachers.teacher.firstName}} {{itemPub.publicationsTeachers.teacher.lastName}},<small> publicou:</small>
+                                        </div>
+                                        <div class="content-post">
+                                            <p class="message" ng-bind="itemPub.publicationsTeachers.textPublication"></p>
+                                            <p>
+                                                Anexos: <br>
+                                                <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
+                                            </p>
+                                            <hr class="hr-custom">
+                                            <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPub.publicationsTeachers.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <!-- /itens post -->
                             </div>
                         </div>
                     </div>
                 </div>
             }
-            
+
         </div>
     </div>
 </div>

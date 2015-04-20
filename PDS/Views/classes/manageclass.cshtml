@@ -14,7 +14,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading"><h4 ng-bind="nameClass"></h4></div>
                         <div class="panel-body">
-                            <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com a turma..."></textarea>
+                            <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com a turma..." required></textarea>
                         </div>
                         <div class="panel-footer share-buttons">
                             <span class="btn btn-default btn-file">
@@ -26,6 +26,8 @@
                 </div>
             </form>
 
+            <div ng-class="resultMessageClassPost" ng-show="resultShowMessagePost" ng-bind="resultMessagePost"></div>
+
         </div>
         <!--/row-->
     </div>
@@ -36,11 +38,14 @@
                 <div class="content-panel">
 
                     <!-- itens post -->
+                    <div class="panel panel-default" ng-hide="classesPublicationTeachers.length">
+                        <div class="panel-body"><h4 class="text-center text-info">Nenhuma postagem para esta turma.</h4></div>
+                    </div>
 
                     <div class="panel panel-default" ng-repeat="itemPub in classesPublicationTeachers">
                         <div class="panel-body">
                             <div class="header-post">
-                                <img src="{{discipline.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{discipline.teacher.firstName}} {{discipline.teacher.lastName}},<small> publicou:</small> <span class="pull-right btn-sm btn-default"><span class="glyphicon glyphicon-remove"></span></span>
+                                <img src="{{discipline.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{discipline.teacher.firstName}} {{discipline.teacher.lastName}},<small> publicou:</small> <a href="#" class="pull-right btn-sm btn-default"><span class="glyphicon glyphicon-remove text-danger"></span></a>
                             </div>
                             <div class="content-post">
                                 <p class="message" ng-bind="itemPub.publicationsTeachers.textPublication"></p>
@@ -49,7 +54,7 @@
                                     <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
                                 </p>
                                 <hr class="hr-custom">
-                                <span class="pull-right"><small>Postado: </small><small ng-bind="itemPub.publicationsTeachers.datePublication"></small></span>
+                                <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPub.publicationsTeachers.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
                             </div>
                         </div>
                     </div>

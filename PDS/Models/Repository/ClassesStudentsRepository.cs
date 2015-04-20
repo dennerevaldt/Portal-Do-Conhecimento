@@ -13,9 +13,14 @@ namespace PDS.Models.Repository
     {
         MySqlDataReader dr;
 
+        /// <summary>
+        /// Método para retornar os alunos de uma turma.
+        /// </summary>
+        /// <param name="idClass">Int64 idClass.</param>
+        /// <returns>List ClassesStudents.</returns>
         public List<ClassesStudents> GetAll(Int64 idClass)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<ClassesStudents> listClassesStudents = new List<ClassesStudents>();

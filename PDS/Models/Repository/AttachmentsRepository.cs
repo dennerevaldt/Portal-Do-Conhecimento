@@ -18,7 +18,7 @@ namespace PDS.Models.Repository
         /// <param name="idPublication">Int64 idPublication.</param>
         public void Create(string urlAttachment, Int64 idPublication)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Int64 idReturn;

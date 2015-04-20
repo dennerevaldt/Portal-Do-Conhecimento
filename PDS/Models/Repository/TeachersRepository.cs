@@ -87,7 +87,7 @@ namespace PDS.Models.Repository
         /// <param name="idFollowing">Int64 idFollowing.</param>
         public void Follow(Int64 idFollower, Int64 idFollowing)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -121,7 +121,7 @@ namespace PDS.Models.Repository
         /// <param name="idFollowing">Int64 idFollowing.</param>
         public void UnFollow(Int64 idFollower, Int64 idFollowing)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -156,7 +156,7 @@ namespace PDS.Models.Repository
         /// <returns></returns>
         public bool CheckFollow(Int64 idFollower, Int64 idFollowing)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Int64 idReturn;
@@ -200,7 +200,7 @@ namespace PDS.Models.Repository
         /// <returns>List Teachers.</returns>
         public List<Teachers> SearchTeacher(string name)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Teachers> teachers = new List<Teachers>();
@@ -257,7 +257,7 @@ namespace PDS.Models.Repository
         /// <returns>List Teachers.</returns>
         public List<Teachers> GetFollowers(Int64 idFollower)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Teachers> teachers = new List<Teachers>();
@@ -302,7 +302,7 @@ namespace PDS.Models.Repository
         /// <returns>List Teachers.</returns>
         public List<Teachers> GetFollowersOther(Int64 idFollower)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Teachers> teachers = new List<Teachers>();
@@ -347,7 +347,7 @@ namespace PDS.Models.Repository
         /// <returns>Teachers teacher.</returns>
         public Teachers GetOne(Int64 idDiscipline)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Teachers teacher = new Teachers();
@@ -376,6 +376,56 @@ namespace PDS.Models.Repository
                                 idAccount = Convert.ToInt64(dr["idAccount"]),
                             }
                         }
+                    );
+                }
+
+                dr.Close();
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return teacher;
+        }
+
+        /// <summary>
+        /// Método para retornar os dados de um professor.
+        /// </summary>
+        /// <param name="idTeacher">Int64 idTeacher.</param>
+        /// <returns>Teachers teacher.</returns>
+        public Teachers GetOneIdTeacher(Int64 idTeacher)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Teachers teacher = new Teachers();
+
+            cmm.Parameters.AddWithValue("@idTeacher", idTeacher);
+
+            sql.Append("CALL getOneTeacherIdTeacher(@idTeacher)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    teacher =
+                    (new Teachers
+                    {
+                        idTeacher = (Int64)dr["idTeacher"],
+                        firstName = (string)dr["firstName"],
+                        lastName = (string)dr["lastName"],
+                        urlImageProfile = Convert.ToString(dr["urlImageProfile"]),
+                        Account = new Accounts
+                        {
+                            idAccount = Convert.ToInt64(dr["idAccount"]),
+                        }
+                    }
                     );
                 }
 

@@ -1,19 +1,5 @@
 ﻿homePortal.run(function ($rootScope, $http) {
    
-    $rootScope.getall = function () {
-        $http({
-            method: 'POST',
-            url: '/disciplines/getall',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
-        }).success(function (data) {
-            if (data != null) { 
-                $rootScope.disciplinas = data;
-            } else {
-                Console.log('erro.');
-            }
-        });
-    }
-
     $rootScope.getallclasses = function (id) {
         $http({
             method: 'GET',
@@ -53,7 +39,6 @@
             data: $.param(dataParam),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function (data) {
-            console.log(data);
             if (data != null) {
                 $rootScope.classe = data;
                 $rootScope.nameClass = data.name;
@@ -91,8 +76,6 @@
             Console.log('Error in Database.');
         });
     }
-
-    $rootScope.getall();
 
 });
 
@@ -264,6 +247,19 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     $scope.Disciplina = [];
     $scope.resultShowEdit = false;
 
+    $scope.getall = function () {
+        $http({
+            method: 'POST',
+            url: '/disciplines/getall',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            if (data != null) {
+                $scope.disciplinas = data;
+            } else {
+                Console.log('erro.');
+            }
+        });
+    }
 
     $scope.enableEditor = function (id) {
         $scope.editorEnabled[id] = true;
@@ -405,7 +401,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     }
 });
 
-homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window, fileUpload) {
+homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window) {
     $scope.resultShowCreateClass = false;
     $scope.loadingCadClass = false;
     $scope.editorEnabled = [];
@@ -576,10 +572,38 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
 
         //call service send form
         var uploadUrl = "/classes/uploadPost";
-        fileUpload.uploadFileToUrl(file, uploadUrl, message, idClasse);
 
-        $scope.Post.message = "";
-        $scope.Post.file = "";
+        if (file != null && formPost.$valid) {
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append('message', message);
+            fd.append('idClasse', idClasse);
+            $http.post(uploadUrl, fd, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': undefined }
+            })
+            .success(function () {
+                $rootScope.getDataOneClass();
+                $scope.Post.message = "";
+                $scope.Post.file = "";
+                $scope.resultMessagePost = 'Postagem enviada com sucesso.';
+                $scope.resultMessageClassPost = 'bg-success';
+                $scope.resultShowMessagePost = true;
+                $timeout(function () {
+                    $scope.resultShowMessagePost = false;
+                }, 2000);
+            })
+            .error(function () {
+            });
+        }
+        else {
+            $scope.resultMessagePost = 'Nenhum anexo encontrado. Se você deseja enviar uma mensagem apenas, utilize a opção Recado para turma.';
+            $scope.resultMessageClassPost = 'bg-danger';
+            $scope.resultShowMessagePost = true;
+            $timeout(function () {
+                $scope.resultShowMessagePost = false;
+            }, 10000);
+        }
         
     }
 
@@ -648,7 +672,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
 
 });
 
-homePortal.controller('AutoCompleteController', function ($scope, $http, $rootScope) {
+homePortal.controller('AutoCompleteController', function ($scope, $http, $rootScope, $timeout) {
 
     $scope.completing = false;
     $scope.dicas = [];
@@ -701,7 +725,7 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
                 name: search
             }
 
-            if (search != null) {
+            if (search != null && search.length >= 3) {
                 $scope.loadingSearch = true;
                 $http({
                     method: 'POST',
@@ -709,7 +733,6 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
                     data: $.param(dataParam),
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
                 }).success(function (data) {
-                    console.log(data);
                     $scope.loadingSearch = false;
                     // Habilita o campo
                     $scope.completing = true;
@@ -738,28 +761,64 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
                 method: 'POST',
                 url: '/classes/insertstudentinclasse/',
                 data: $.param(dataParam),
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
             }).success(function (data) {
-                $scope.completing = false;
-                $scope.search = "";
-                $rootScope.getDataOneClass();
+                if (data.success) {
+                    $scope.completing = false;
+                    $scope.search = "";
+                    $rootScope.getDataOneClass();
+                    $scope.resultMessageAddStudent = data.message;
+                    $scope.resultClassAddStudent = 'bg-success';
+                    $scope.resultShowAddStudent = true;
+                    $timeout(function () {
+                        $scope.resultShowAddStudent = false;
+                    }, 1500);
+                }
+                else {
+                    $scope.resultMessageAddStudent = data.message;
+                    $scope.resultClassAddStudent = 'bg-danger';
+                    $scope.resultShowAddStudent = true;
+                    $timeout(function () {
+                        $scope.resultShowAddStudent = false;
+                    }, 1500);
+                }
+
             }).error(function (data) {
                 console.log('Error in Database.')
             });
         }
 
-        //alert('id class = ' + pIdClass + 'id student=' + idStd);
-
     }
 
 });
 
-homePortal.controller('MessagesController', function ($scope, $http, $rootScope) {
+homePortal.controller('IndexController', function ($scope, $http, $rootScope) {
+
+    $scope.getNewPosts = function (idStudent) {
+
+        dataParam = {
+            id: idStudent
+        }
+
+        $http({
+            method: 'POST',
+            url: '/classes/getpoststeachers',
+            data: $.param(dataParam),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        }).success(function (data) {
+            //console.log(data);
+            $scope.publicationsTeachers = data;
+            $scope.getNumMessages(idStudent);
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
 
     $scope.getNumMessages = function (idStudent) {
 
         dataParam = {
-            id : idStudent
+            id: idStudent
         }
 
         $http({
@@ -770,7 +829,7 @@ homePortal.controller('MessagesController', function ($scope, $http, $rootScope)
         }).success(function (data) {
             //console.log(data);
             $scope.numMessages = data;
-            
+
             if (data != 0) {
                 $scope.badgeMessage = "badge badge-danger";
             }
@@ -786,6 +845,10 @@ homePortal.controller('MessagesController', function ($scope, $http, $rootScope)
 
     $scope.getNewMessages = function (idStudent) {
         $rootScope.getMessages(idStudent);
+    }
+
+    $scope.initPage = function (id) {
+        $scope.getNewPosts(id);
     }
 
 });

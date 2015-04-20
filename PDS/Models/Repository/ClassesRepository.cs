@@ -19,7 +19,7 @@ namespace PDS.Models.Repository
         /// <param name="newClass">Classes newClass.</param>
         public void Create(Classes newClass)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -50,7 +50,7 @@ namespace PDS.Models.Repository
         /// <returns>List Classes.</returns>
         public List<Classes> GetAll(Int64 idDisc)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Classes> listClasses = new List<Classes>();
@@ -99,7 +99,7 @@ namespace PDS.Models.Repository
         /// <param name="idClass">Int64 idClass.</param>
         public void Delete(Int64 idClass)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -129,7 +129,7 @@ namespace PDS.Models.Repository
         /// <param name="name">String name.</param>
         public void Update(Int64 idClass, string name)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -160,7 +160,7 @@ namespace PDS.Models.Repository
         /// <returns>List Classes.</returns>
         public Classes GetOne(Int64 idClass)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<ClassesStudents> cStudents = new List<ClassesStudents>();
@@ -177,52 +177,79 @@ namespace PDS.Models.Repository
             try
             {
                 dr = database.ExecuteReader(cmm);
-                
-                while (dr.Read())
+
+                if (dr.FieldCount > 6)
                 {
-                    cStudents.Add(
-                    new ClassesStudents
+                    while (dr.Read())
                     {
-                        student = new Students
+                        cStudents.Add(
+                        new ClassesStudents
                         {
-                            idPerson = (Int64)dr["idPerson"],
-                            accountType = Convert.ToChar(dr["accountType"]),
-                            firstName = (string)dr["firstName"],
-                            lastName = (string)dr["lastName"],
-                            gender = Convert.ToChar(dr["gender"]),
-                            dateOfBirth = (DateTime)dr["dateOfBirth"],
-                            city = (string)dr["city"],
-                            country = (string)dr["country"],
-                            urlImageProfile = (string)dr["urlImageProfile"],
-                            idStudent = (Int64)dr["idStudent"]
-                        },
-                        stars = (int)dr["stars"]
-                    });
-
-                }
-
-                while (dr.HasRows)
-                {
-                    classe =
-                        new Classes
-                        {
-                            idClass = Convert.ToInt64(dr["idClasse"]),
-                            name = Convert.ToString(dr["name"]),
-
-                            discipline = new Disciplines
+                            student = new Students
                             {
-                                idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
-                                name = Convert.ToString(dr["name"])
+                                idPerson = (Int64)dr["idPerson"],
+                                accountType = Convert.ToChar(dr["accountType"]),
+                                firstName = (string)dr["firstName"],
+                                lastName = (string)dr["lastName"],
+                                gender = Convert.ToChar(dr["gender"]),
+                                dateOfBirth = (DateTime)dr["dateOfBirth"],
+                                city = (string)dr["city"],
+                                country = (string)dr["country"],
+                                urlImageProfile = (string)dr["urlImageProfile"],
+                                idStudent = (Int64)dr["idStudent"]
                             },
+                            stars = (int)dr["stars"]
+                        });
 
-                            classesStudents = cStudents
-                        };
-                    
+                    }
 
-                    dr.NextResult();            
+                    while (dr.HasRows)
+                    {
+                        classe =
+                            new Classes
+                            {
+                                idClass = Convert.ToInt64(dr["idClasse"]),
+                                name = Convert.ToString(dr["name"]),
+
+                                discipline = new Disciplines
+                                {
+                                    idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
+                                    name = Convert.ToString(dr["name"])
+                                },
+
+                                classesStudents = cStudents
+                            };
+
+
+                        dr.NextResult();
+                    }
+
+                    dr.Close();
+                }
+                else
+                {
+                    while (dr.Read())
+                    {
+                        classe =
+                            new Classes
+                            {
+                                idClass = Convert.ToInt64(dr["idClasse"]),
+                                name = Convert.ToString(dr["name"]),
+
+                                discipline = new Disciplines
+                                {
+                                    idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
+                                    name = Convert.ToString(dr["name"])
+                                },
+
+                                classesStudents = new List<ClassesStudents>()
+                            };
+                    }
+
+                    dr.Close();
                 }
 
-                dr.Close();
+                
 
             }
             catch (Exception ex)
@@ -241,7 +268,7 @@ namespace PDS.Models.Repository
         /// <param name="message">String message.</param>
         public void InviteMessage(Int64 idClasse, string message)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 

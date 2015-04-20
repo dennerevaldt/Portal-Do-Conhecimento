@@ -169,9 +169,20 @@ namespace PDS.Controllers
             {
                 Int64 idStudent = Int64.Parse(form["idStudent"]);
                 Int64 idClass = Int64.Parse(form["idClass"]);
-
                 StudentsRepository repStd = new StudentsRepository();
-                repStd.InsertStudentInClasse(idStudent,idClass);
+
+                if(!repStd.CheckStudentInClasse(idStudent,idClass))
+                {
+                      repStd.InsertStudentInClasse(idStudent,idClass);
+
+                      objectToSerializeSuc = new ReturnJson { success = true, message = "Aluno adicionado com sucesso.", returnUrl = "", location = "" };
+                      Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+                }
+                else
+                {
+                    objectToSerializeErr = new ReturnJson { success = false, message = "O aluno já está adicionado a turma.", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+                }
 
             }
             catch (Exception)
@@ -233,24 +244,7 @@ namespace PDS.Controllers
                     repAtt.Create(path, idPublication);
                     
                 }
-                else
-                {
-                    if (type == "notFile")
-                    {
-                        //request cookie data user
-                        HttpCookie userInfo = Request.Cookies["userInfo"];
-                        var CidT = Server.UrlTokenDecode(userInfo["id_type_account"]);
-                        string idTeacher = System.Text.UTF8Encoding.UTF8.GetString(CidT);
 
-                        //insert publications teachers
-                        PublicationsTeachersRepository repPubTeachers = new PublicationsTeachersRepository();
-                        Int64 idPublication = repPubTeachers.Create(form["message"], Int64.Parse(idTeacher));
-
-                        //insert classes publications teacher
-                        ClassesPublicationsTeachersRepository repClassesPubTec = new ClassesPublicationsTeachersRepository();
-                        repClassesPubTec.Create(idPublication, Int64.Parse(form["idClasse"]));
-                    }
-                }
             }
             catch (Exception ex)
             {            
@@ -307,6 +301,29 @@ namespace PDS.Controllers
                 objectToSerializeErr = new ReturnJson { success = false, message = "Ops, estamos com problemas. Tente novamente.", returnUrl = "", location = "" };
                 Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
+        }
+
+        /// <summary>
+        /// Action para retornar as postagens de cada aluno.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
+        [HttpPost]
+        public void getpoststeachers(FormCollection form)
+        {
+            try
+            {
+                Int64 idStudent = Int64.Parse(form["id"]);
+                ClassesPublicationsTeachersRepository repPubTeac = new ClassesPublicationsTeachersRepository();
+                List<ClassesPublicationsTeachers> listPub = repPubTeac.GetPostsTeachers(idStudent);
+
+                Response.Write(JsonConvert.SerializeObject(listPub));
+            }
+            catch (Exception)
+            {
+                
+                throw;
+            }
+
         }
     }
 }

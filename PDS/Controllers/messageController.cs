@@ -17,6 +17,10 @@ namespace PDS.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Action para retornar o número de mensagens novas de um aluno.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
         public void getNumMessageStudent(FormCollection form)
         {
             try
@@ -34,6 +38,10 @@ namespace PDS.Controllers
             }
         }
 
+        /// <summary>
+        /// Action para retornar as mensagens de cada aluno.
+        /// </summary>
+        /// <param name="form">FormCollection form.</param>
         public void getMessagesClasses(FormCollection form)
         {
             try

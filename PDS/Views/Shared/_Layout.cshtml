@@ -59,7 +59,7 @@
       <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="homePortal">
+<body ng-app="homePortal" ng-controller="IndexController">
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top font-light">
         <div class="container">
@@ -151,7 +151,7 @@
                                         </div>
                                     </div>
                                 </a>
-                            </li>                        
+                            </li>
                         </ul>
                     </li>
                     <li class="dropdown" style="border-left: 1px solid #e2e9e6; border-right: 1px solid #e2e9e6;">
@@ -183,7 +183,7 @@
             </div>
             <ul class="sidebar-nav">
                 <li class="sidebar-heading-li">MENU</li>
-                
+
                 @if (account_type != "T")
                 {
                     <li>
@@ -192,24 +192,24 @@
                     <li>
                         <a href="#"><span class="glyphicon glyphicon-duplicate margin-rght"></span> Atividades <span class="badge">0</span></a>
                     </li>
-                    <li ng-controller="MessagesController">
-                        <a href="#" data-toggle="modal" data-target=".modal-messages" ng-init="getNumMessages(@id_student)" ng-click="getNewMessages(@id_student)"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens <span ng-class="badgeMessage" ng-bind="numMessages"></span></a>
+                    <li>
+                        <a href="#" data-toggle="modal" data-target=".modal-messages" ng-click="getNewMessages(@id_student)"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens <span ng-class="badgeMessage" ng-bind="numMessages"></span></a>
                     </li>
                 }
                 <li>
                     <a href="#"><span class="glyphicon glyphicon-star margin-rght"></span> Estrelinhas</a>
                 </li>
-                
+
                 @if (account_type == "T")
                 {
                     <li>
                         <a href="/disciplines/index"><span class="glyphicon glyphicon-folder-open margin-rght"></span> Disciplinas</a>
                     </li>
                     @*<li>
-                        <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
-                    </li>*@
+                            <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
+                        </li>*@
                 }
-                
+
             </ul>
         </div>
         <!-- /#sidebar-wrapper -->
@@ -237,7 +237,6 @@
             </div>
         </div>
         <!-- /Page-content-wrapper-right -->
-
         <!-- Modal Invite-Friends -->
         <div class="modal fade invite-friends" ng-controller="InviteFriendsController">
             <div class="modal-dialog">
@@ -269,60 +268,59 @@
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-
         <!-- Modal Messages -->
         <div class="modal fade modal-messages" ng-cloak>
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            <h4 class="modal-title-custom">Mensagens</h4>
-                        </div>
-                        <div class="modal-body">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Mensagens</h4>
+                    </div>
+                    <div class="modal-body">
 
-                            <div class="row">
+                        <div class="row">
 
-                                <div class="col-sm-12 col-md-12 col-lg-12">
-                                    <div class="panel panel-default">
-                                        <div class="panel-body painel-body-height">
-                                            <div class="content-panel">
-                                                <div class="panel panel-default" ng-repeat="item in listMessages">
-                                                    <div class="panel-heading">Turma - <span ng-bind="item.name"></span> | Disciplina - <span ng-bind="item.discipline.name"></span></div>
-                                                    <div class="panel-body">
-                                                            <img src="{{item.discipline.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{item.discipline.teacher.firstName}},<small> enviou:</small>
-                                                        </div>
-                                                        <div class="content-post">
-                                                            <div class="message" style="margin-left:15px;margin-right:15px;">
-                                                                <div class="panel panel-default" ng-repeat="messages in item.messagesClasse">
-                                                                    <div class="panel-body">
-                                                                        Mensagem:<br/>
-                                                                        {{messages.message}}
-                                                                    </div>
-                                                                </div>
+                            <div class="col-sm-12 col-md-12 col-lg-12">
+                                <div class="panel panel-default">
+                                    <div class="panel-body painel-body-height">
+                                        <div class="content-panel">
+                                            <div class="panel panel-default" ng-repeat="item in listMessages">
+                                                <div class="panel-heading">Turma - <span ng-bind="item.name"></span> | Disciplina - <span ng-bind="item.discipline.name"></span></div>
+                                                <div class="panel-body">
+                                                    <img src="{{item.discipline.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{item.discipline.teacher.firstName}},<small> enviou:</small>
+                                                </div>
+                                                <div class="content-post">
+                                                    <div class="message" style="margin-left:15px;margin-right:15px;">
+                                                        <div class="panel panel-default" ng-repeat="messages in item.messagesClasse">
+                                                            <div class="panel-body">
+                                                                Mensagem:<br />
+                                                                {{messages.message}}
                                                             </div>
-
                                                         </div>
                                                     </div>
-                                                </div>
 
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
-
                             </div>
-
-                            <div class="text-center">
-                                <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
-                            </div>
-
-                        <div class="modal-footer" style="margin-top: 0;">
-                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                         </div>
+
+                    </div>
+
+                    <div class="text-center">
+                        <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loading" />
+                    </div>
+
+                    <div class="modal-footer" style="margin-top: 0;">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
-        
+
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
@@ -336,20 +334,20 @@
 
             $("[data-toggle=popover]").popover();
 
-        if (screen.width < 768){
-          $("#menu-toggle").toggleClass("visibility-visible");
-          $("#wrapper-right").toggleClass("toggled");
-        }
-        else{
-          $("#menu-toggle").toggleClass("visibility-collapse");
-          $("#wrapper").toggleClass("toggled");
-        }
-      })
+            if (screen.width < 768) {
+                $("#menu-toggle").toggleClass("visibility-visible");
+                $("#wrapper-right").toggleClass("toggled");
+            }
+            else {
+                $("#menu-toggle").toggleClass("visibility-collapse");
+                $("#wrapper").toggleClass("toggled");
+            }
+        })
 
-      $("#menu-toggle").click(function(e) {
-          e.preventDefault();
-          $("#wrapper").toggleClass("toggled");
-      });
+        $("#menu-toggle").click(function (e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
     </script>
 
     @Scripts.Render("~/bundles/bootstrap")

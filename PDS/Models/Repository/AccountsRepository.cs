@@ -26,7 +26,7 @@ namespace PDS.Models.Repository
         /// <returns>Int64 idAccount.</returns>
         public Int64 CreateTeacher(Accounts account, Teachers teacher)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -69,7 +69,7 @@ namespace PDS.Models.Repository
         /// <returns>Int64 idAccount.</returns>
         public Int64 CreateStudent(Accounts account, Students student)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -114,7 +114,7 @@ namespace PDS.Models.Repository
         /// <param name="email">String email.</param>
         public void Delete(string email)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -146,7 +146,7 @@ namespace PDS.Models.Repository
         /// <returns>Objeto object.</returns>
         public object GetUserData(string email)
         {
-            MySQL database = MySQL.GetInstancia("root","123456");
+            MySQL database = MySQL.GetInstancia();;
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -229,7 +229,7 @@ namespace PDS.Models.Repository
         /// <returns>Object Accounts.</returns>
         public Accounts GetDataAccount(string email)
         {
-            MySQL database = MySQL.GetInstancia("root","123456");
+            MySQL database = MySQL.GetInstancia();;
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Accounts account = new Accounts();
@@ -275,7 +275,7 @@ namespace PDS.Models.Repository
         /// <returns>True or False.</returns>
         public bool GetEmail(string email)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -314,7 +314,7 @@ namespace PDS.Models.Repository
         /// <param name="password">String password.</param>
         public void UpdateUserPassword(string email, string password)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -345,7 +345,7 @@ namespace PDS.Models.Repository
         /// <param name="account">Accounts account.</param>
         public void UpdateAccount(Accounts account)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -375,7 +375,7 @@ namespace PDS.Models.Repository
         /// <param name="person"Dynamic person.></param>
         public void UpdatePerson(dynamic person)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -433,7 +433,7 @@ namespace PDS.Models.Repository
         /// <param name="idAccount">Int64 idAccount.</param>
         public void UpdateUrlImage(string urlImage, Int64 idAccount)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -464,7 +464,7 @@ namespace PDS.Models.Repository
         /// <returns></returns>
         public object GetPerfil(Int64 idAccount)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 

@@ -19,7 +19,7 @@ namespace PDS.Models.Repository
         /// <param name="discipline">Disciplines discipline.</param>
         public void Create(Disciplines discipline)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -51,7 +51,7 @@ namespace PDS.Models.Repository
         /// <returns>List Disciplines.</returns>
         public List<Disciplines> GetAll(Int64 idTeacher)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             List<Disciplines> listDisciplines = new List<Disciplines>();
@@ -101,7 +101,7 @@ namespace PDS.Models.Repository
         /// <returns>Discipline discipline.</returns>
         public Disciplines GetName(Int64 idDiscipline)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
             Disciplines discipline = new Disciplines();
@@ -144,7 +144,7 @@ namespace PDS.Models.Repository
         /// <param name="idDiscipline">Int64 idDiscipline.</param>
         public void Delete(Int64 idDiscipline)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
@@ -174,7 +174,7 @@ namespace PDS.Models.Repository
         /// <param name="name">String name.</param>
         public void Update(Int64 idDiscipline, string name)
         {
-            MySQL database = MySQL.GetInstancia("root", "123456");
+            MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 

@@ -72,7 +72,7 @@
             <div id="navbar" class="navbar-collapse collapse">
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown" style="border-left: 1px solid #e2e9e6;">
+                    @*<li class="dropdown" style="border-left: 1px solid #e2e9e6;">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <i class="glyphicon glyphicon-blackboard" style="line-height:30px;"></i>
                             <span class="notification-counter">3</span>
@@ -121,7 +121,7 @@
                                 </a>
                             </li>                        
                         </ul>
-                    </li>
+                    </li>*@
                     <li class="dropdown" style="border-left: 1px solid #e2e9e6; border-right: 1px solid #e2e9e6;">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <img src="@url_image" alt="Image" class="img-navbar" /> @first_name <span class="caret"></span>
@@ -172,9 +172,6 @@
                     <li>
                         <a href="/disciplines/index"><span class="glyphicon glyphicon-folder-open margin-rght"></span> Disciplinas</a>
                     </li>
-                    <li>
-                        <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
-                    </li>
                 }
                 
             </ul>
@@ -188,11 +185,14 @@
             <div id="sidebar-wrapper-right">
                 <div id="page-content-wrapper-right">
                     <div class="container-wrapper-right">
-                        <div class="row">
-                            <div class="col-md-12 border-b">
+                        <div class="row" ng-controller="AutoCompleteController">
+                            <div class="col-md-12 border-b" ng-cloak>
+
+                                <div ng-class="resultClassAddStudent" ng-show="resultShowAddStudent">{{resultMessageAddStudent}}</div>
+
                                 <h4>Adicionar Alunos</h4>
 
-                                <div role="search" ng-controller="AutoCompleteController" ng-cloak>
+                                <div role="search">
                                     <div class="form-group">
                                         <input type="text" class="form-control" ng-model="search" ng-keyup="pesquisarAlunos(search)" autocomplete="off" placeholder="Pesquisar alunos" />
                                         <div ng-show="completing">
@@ -223,6 +223,10 @@
                             <div class="col-md-12 border-b" style="margin-top: 15px;">
                                 <h4>Alunos <a href="#" class="btn-sm btn-default pull-right" data-toggle="modal" data-target=".students-view">Ver todos</a></h4>
 
+                                <div class="panel panel-default" ng-hide="classesStudents.length">
+                                    <div class="panel-body"><p class="text-center text-info">Turma sem alunos adicionados.</p></div>
+                                </div>
+
                                 <div class="col-md-3" ng-repeat="item in classesStudents | limitTo:6" style="margin-top:15px;">
                                     <div class="text-center">
                                         <img ng-src="{{item.student.urlImageProfile}}" alt="Image" class="img-circle" style="width:35px;">
@@ -235,7 +239,7 @@
                             <div class="col-md-12 border-b" style="margin-top: 15px;">
                                 <h4>Recado para turma</h4>
 
-                                <a class="btn btn-default btn-block" data-toggle="modal" data-target=".invite-message" href="#">Enviar</a>
+                                <a class="btn btn-default btn-block" data-toggle="modal" data-target=".invite-message" ng-disabled="!classesStudents.length" href="#">Enviar</a>
 
                             </div>
                         </div>
