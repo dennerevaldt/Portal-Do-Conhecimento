@@ -254,6 +254,43 @@ namespace PDS.Controllers
         }
 
         /// <summary>
+        /// Action para deletar do banco uma postagem e os seus anexos.
+        /// </summary>
+        /// <param name="id">Int64 idPublication.</param>
+        [HttpGet]
+        public void deletePost(string id)
+        {
+            try
+            {
+                Int64 idPublication = Int64.Parse(id);
+                PublicationsTeachersRepository repPubTeac = new PublicationsTeachersRepository();
+
+                //Get url post in DB
+                string urlAttachment = repPubTeac.GetUtlAttachment(idPublication);
+
+                //Get full url post
+                string fullPath = Request.MapPath(urlAttachment);
+
+                //Delete attachment post
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+
+                //Delete post in DB
+                repPubTeac.Delete(idPublication);
+
+                objectToSerializeSuc = new ReturnJson { success = true, message = "", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
+            }
+            catch (Exception)
+            {
+                objectToSerializeErr = new ReturnJson { success = false, message = "Ops, estamos com problemas. Tente novamente.", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
+            }
+        }
+
+        /// <summary>
         /// Action para fazer download de um arquivo.
         /// </summary>
         /// <param name="form">FormCollection form.</param>

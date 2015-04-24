@@ -1,11 +1,18 @@
-﻿homePortal.run(function ($rootScope, $http) {
+﻿homePortal.run(function ($rootScope, $http, ngProgress) {
    
     $rootScope.getallclasses = function (id) {
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
         $http({
             method: 'GET',
             url: '/classes/getall?id=' + id,
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function (data) {
+            //set 50% progress
+            ngProgress.set(50);
+
             if (data != null) {
                 $rootScope.listClasses = data;
 
@@ -14,6 +21,7 @@
                     url: '/disciplines/getname?idDisc='+id,
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
                 }).success(function (data) {
+                    ngProgress.complete();
                     if (data != null) {
                         $rootScope.nameClasse = data;
                     } else {
@@ -28,6 +36,10 @@
     }
 
     $rootScope.getDataOneClass = function () {
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
         var pIdClass = location.search.split('?id=')[1];
         var dataParam = {
             idClass: pIdClass
@@ -39,12 +51,36 @@
             data: $.param(dataParam),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function (data) {
+            //end progress
+            ngProgress.complete();
+
             if (data != null) {
                 $rootScope.classe = data;
                 $rootScope.nameClass = data.name;
                 $rootScope.classesStudents = data.classesStudents;
                 $rootScope.classesPublicationTeachers = data.classesPublicationTeachers;
                 $rootScope.discipline = data.discipline;
+            } else {
+                Console.log('erro.');
+            }
+        });
+    }
+
+    $rootScope.getPublicationsTeacherProf = function () {
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
+        $http({
+            method: 'POST',
+            url: '/teachers/GetPublications',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            //end progress bar
+            ngProgress.complete();
+
+            if (data != null) {
+                $rootScope.publicationsTeachersProfile = data;
             } else {
                 Console.log('erro.');
             }
@@ -237,7 +273,7 @@ homePortal.controller('InviteFriendsController', function ($scope, $http) {
 
 });
 
-homePortal.controller('DisciplinesController', function ($scope, $http, $timeout, $rootScope, $window, $location) {
+homePortal.controller('DisciplinesController', function ($scope, $http, $timeout, $rootScope, $window, $location, ngProgress) {
     $scope.submitButton = false;
     $scope.loadingCad = false;
     $scope.submitButtonDel = false;
@@ -248,17 +284,27 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     $scope.resultShowEdit = false;
 
     $scope.getall = function () {
+        
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
+        $scope.loadingDisc = true;
         $http({
             method: 'POST',
             url: '/disciplines/getall',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function (data) {
             if (data != null) {
-                $scope.disciplinas = data;
+                $rootScope.disciplinas = data;
+                $scope.loadingDisc = false;
             } else {
                 Console.log('erro.');
             }
         });
+
+        //end progress
+        ngProgress.complete();
     }
 
     $scope.enableEditor = function (id) {
@@ -286,7 +332,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
             }).success(function (data) {
                 console.log(data);
                 if (data.success) { //success comes from the return json object
-                    $rootScope.getall();
+                    $scope.getall();
                 } else {
                     $scope.resultMessageEdit = data.message;
                     $scope.resultEdit = 'bg-danger';
@@ -323,7 +369,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
                     $scope.resultMessageCad = data.message;
                     $scope.resultCad = 'bg-success';
                     $scope.loadingCad = false;
-                    $rootScope.getall();
+                    $scope.getall();
                     $scope.resultShowCreate = true;
                     $timeout(function () {
                         $scope.resultShowCreate = false;
@@ -367,7 +413,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
                     $scope.resultMessageDel = data.message;
                     $scope.resultDel = 'bg-success';
                     $scope.loadingDel = false;
-                    $rootScope.getall();
+                    $scope.getall();
                     $scope.resultShow = true;
                     $timeout(function () {
                         $scope.resultShow = false;
@@ -396,20 +442,22 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     }
 
     $scope.seeClasse = function (idDisc) {
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
         var url = '/classes/index?id=' + idDisc;
         $window.location.href = url;
     }
 });
 
-homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window) {
+homePortal.controller('ClassesController', function ($scope, $http, $timeout, $rootScope, $location, $window, ngProgress) {
     $scope.resultShowCreateClass = false;
     $scope.loadingCadClass = false;
     $scope.editorEnabled = [];
     $scope.Class = [];
     $scope.submitButtonMessage = false;
 
-
-    $scope.nameDownload = "Anexos_PortalDoConhecimento";
 
     $scope.submitCreateClass = function (formCreateClass) {
         $scope.Classe.idDiscipline = location.search.split('id=')[1]
@@ -484,7 +532,6 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
             }).success(function (data) {
                 console.log(data);
                 if (data.success) { //success comes from the return json object
-                    $rootScope.getall();
                     $rootScope.getallclasses(idDisc);
                 } else {
                     $scope.resultMessageEdit = data.message;
@@ -553,7 +600,12 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
 
     $scope.getall = function () {
         var id = location.search.split('?id=')[1];
+        $scope.loadingClass = true;
         $rootScope.getallclasses(id);
+        $scope.loadingClass = false;
+
+        //end progress bar
+        ngProgress.complete();
     }
 
     $scope.getOneClass = function (pIdClass) {
@@ -563,6 +615,10 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
 
     $scope.submitPostClasse = function (formPost) {
         
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
         //get id classe
         var idClasse = location.search.split('?id=')[1];
         //get message
@@ -570,7 +626,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
         //get file
         var file = document.getElementById('file').files[0];
 
-        //call service send form
+        //url send form
         var uploadUrl = "/classes/uploadPost";
 
         if (file != null && formPost.$valid) {
@@ -583,20 +639,24 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
                 headers: { 'Content-Type': undefined }
             })
             .success(function () {
-                $rootScope.getDataOneClass();
-                $scope.Post.message = "";
-                $scope.Post.file = "";
-                $scope.resultMessagePost = 'Postagem enviada com sucesso.';
-                $scope.resultMessageClassPost = 'bg-success';
-                $scope.resultShowMessagePost = true;
                 $timeout(function () {
-                    $scope.resultShowMessagePost = false;
+                    ngProgress.complete();
+                    $rootScope.getDataOneClass();
+                    $scope.Post.message = "";
+                    $scope.Post.file = "";
+                    $scope.resultMessagePost = 'Postagem enviada com sucesso.';
+                    $scope.resultMessageClassPost = 'bg-success';
+                    $scope.resultShowMessagePost = true;
+                    $timeout(function () {
+                        $scope.resultShowMessagePost = false;
+                    }, 2000);
                 }, 2000);
             })
             .error(function () {
             });
         }
         else {
+            ngProgress.complete();
             $scope.resultMessagePost = 'Nenhum anexo encontrado. Se você deseja enviar uma mensagem apenas, utilize a opção Recado para turma.';
             $scope.resultMessageClassPost = 'bg-danger';
             $scope.resultShowMessagePost = true;
@@ -668,6 +728,26 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
             }, 3000);
         }
 
+    }
+
+    $scope.deletePost = function (id) {
+
+        $http({
+            method: 'GET',
+            url: '/classes/deletePost/' + id,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' } 
+        }).success(function (data) {
+
+            if (data.success)
+            {
+                var IdClass = location.search.split('?id=')[1];
+                $rootScope.getDataOneClass();
+                $location.href = "classes/manageclass?id=" + IdClass;
+            }
+
+        }).error(function (data) {
+
+        });
     }
 
 });
@@ -792,7 +872,13 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
 
 });
 
-homePortal.controller('IndexController', function ($scope, $http, $rootScope) {
+homePortal.controller('IndexController', function ($scope, $http, $rootScope, $interval, $timeout, ngProgress) {
+    
+    $interval(function () {
+        $scope.getNumMessages();
+    }, 5000);
+
+    var count = 0;
 
     $scope.getNewPosts = function (idStudent) {
 
@@ -815,23 +901,37 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope) {
         });
     }
 
-    $scope.getNumMessages = function (idStudent) {
-
-        dataParam = {
-            id: idStudent
-        }
+    $scope.getNumMessages = function () {
 
         $http({
             method: 'POST',
             url: '/message/getNumMessageStudent',
-            data: $.param(dataParam),
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  
         }).success(function (data) {
             //console.log(data);
+
             $scope.numMessages = data;
 
-            if (data != 0) {
-                $scope.badgeMessage = "badge badge-danger";
+            if (data != 0 && data != count) {
+                $scope.badgeMessage = "badge";
+                 count = data;
+
+                if (!Notification) {
+                    alert('Notifications are supported in modern versions of Chrome, Firefox and Opera.');
+                    return;
+                }
+
+                if (Notification.permission !== "granted")
+                    Notification.requestPermission();
+
+                var notification = new Notification('Portal do conhecimento', {
+                    icon: '/Content/images/icon_notif.png',
+                    body: "Existem novas mensagens para você!",
+                });
+
+                //notification.onclick = function () {
+                //    window.open("http://stackoverflow.com/a/13328397/1269037");
+                //};
             }
             else {
                 $scope.badgeMessage = "badge";
@@ -848,7 +948,74 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope) {
     }
 
     $scope.initPage = function (id) {
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
         $scope.getNewPosts(id);
+
+        //end progress
+        ngProgress.complete();
+    }
+
+    $scope.initPageTeacher = function () {
+        $rootScope.getPublicationsTeacherProf();
+    }
+
+    $scope.submitPostTeacher = function (formPost) {
+
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
+
+        //get message
+        var message = $scope.Post.message;
+        //get file
+        var file = document.getElementById('file').files[0];
+
+        //url send form
+        var uploadUrl = "/teachers/uploadPost";
+
+        //set progress bar
+        $timeout(function () {
+            ngProgress.set(45);
+        }, 2000);
+
+        if (file != null && formPost.$valid) {
+            var fd = new FormData();
+            fd.append('file', file);
+            fd.append('message', message);
+
+            $http.post(uploadUrl, fd, {
+                transformRequest: angular.identity,
+                headers: { 'Content-Type': undefined }
+            })
+            .success(function () {
+                //$rootScope.getDataOneClass();
+                //set progress bar
+                $timeout(function () {
+                    ngProgress.complete();
+                    $scope.Post.message = "";
+                    $scope.Post.file = "";
+                    $scope.resultMessagePost = 'Postagem enviada com sucesso.';
+                    $scope.resultMessageClassPost = 'bg-success';
+                    $scope.resultShowMessagePost = true;
+                    $timeout(function () {
+                        $scope.resultShowMessagePost = false;
+                    }, 2000);
+                }, 2000); 
+            })
+            .error(function () {
+            });
+        }
+        else {
+            $scope.resultMessagePost = 'Nenhum anexo encontrado. Se você deseja enviar uma mensagem apenas, utilize a opção Recado para turma.';
+            $scope.resultMessageClassPost = 'bg-danger';
+            $scope.resultShowMessagePost = true;
+            $timeout(function () {
+                $scope.resultShowMessagePost = false;
+            }, 10000);
+        }
     }
 
 });
@@ -1137,7 +1304,7 @@ manageModule.controller('ManageController', function ($scope, $http, $timeout) {
 
 })
 
-followerModule.controller('FollowerController', function ($scope, $http, $timeout) {
+followerModule.controller('FollowerController', function ($scope, $http, $timeout, ngProgress) {
 
     $scope.checkFollow = function (idFollower, idFollowing) {
 
@@ -1240,6 +1407,9 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
     }
 
     $scope.getFollowers = function (idFollower) {
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
 
         var dataParam = {
             id: idFollower
@@ -1255,8 +1425,14 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
                 console.log(data);
                 
                 $scope.followers = data;
+                
+                //end progress bar
+                ngProgress.complete();
 
             }).error(function (data) {
+
+                //end progress bar
+                ngProgress.complete();
                 // Error in Database.
                 Console.log('Error in Database.');
             });
@@ -1264,6 +1440,10 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
     }
 
     $scope.getFollowersOther = function (idFollower) {
+
+        //set progress bar
+        ngProgress.color('#337AB7');
+        ngProgress.start();
 
         var dataParam = {
             id: idFollower
@@ -1280,7 +1460,13 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
 
                 $scope.followersOther = data;
 
+                //end progress bar
+                ngProgress.complete();
+
             }).error(function (data) {
+
+                //end progress bar
+                ngProgress.complete();
                 // Error in Database.
                 Console.log('Error in Database.');
             });

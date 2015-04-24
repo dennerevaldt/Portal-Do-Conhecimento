@@ -7,9 +7,17 @@
 <div class="container-fluid" ng-controller="ClassesController">
     <div class="col-md-12">
         <!--row-->
-        <div class="row" style="margin-top: 30px;" data-ng-init="getall()">
+        <div class="row" style="margin-top: 30px;" data-ng-init="getall();" ng-cloak>
 
             <div class="col-md-8">
+                <div class="text-center">
+                    <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingClass" />
+                </div>
+
+                <div class="panel panel-default" ng-hide="listClasses.length">
+                    <div class="panel-body"><h4 class="text-center text-info">Nenhuma turma cadastrada.</h4></div>
+                </div>
+
                 <div class="panel panel-default">
                     <div class="panel-heading"><h4 ng-bind="nameClasse.name"> <small ng-hide="listClasses.length"><span class="text-center text-danger">(Nenhuma turma cadastrada)</span></small> </h4></div>
                     <div class="panel-body">

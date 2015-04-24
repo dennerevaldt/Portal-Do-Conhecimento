@@ -21,11 +21,16 @@ namespace PDS.Controllers
         /// Action para retornar o número de mensagens novas de um aluno.
         /// </summary>
         /// <param name="form">FormCollection form.</param>
-        public void getNumMessageStudent(FormCollection form)
+        public void getNumMessageStudent()
         {
             try
             {
-                Int64 idStudent = Int64.Parse(form["id"]);
+                HttpCookie userInfo = Request.Cookies["userInfo"];
+
+                var idAccTp = Server.UrlTokenDecode(userInfo["id_type_account"]);
+                string id_type_account = System.Text.UTF8Encoding.UTF8.GetString(idAccTp);
+
+                Int64 idStudent = Int64.Parse(id_type_account);
 
                 StudentsRepository repStudent = new StudentsRepository();
                 Int64 numMessages = repStudent.GetNumMessages(idStudent);

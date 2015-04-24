@@ -82,6 +82,8 @@
     @Scripts.Render("~/Scripts/angular.js")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
+    @Scripts.Render("~/Scripts/ngProgress.js")
+
 
     <!-- jQuery -->
     <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
@@ -94,7 +96,7 @@
       <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="followerModule">
+<body ng-app="followerModule" ng-cloak>
     
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top font-light">

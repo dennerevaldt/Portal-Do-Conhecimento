@@ -131,6 +131,7 @@
     <Compile Include="Controllers\homeController.cs" />
     <Compile Include="Controllers\messageController.cs" />
     <Compile Include="Controllers\siteController.cs" />
+    <Compile Include="Controllers\teachersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -164,6 +165,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\images\favicon.png" />
+    <Content Include="Content\images\icon_notif.png" />
     <Content Include="Content\images\loader.gif" />
     <Content Include="Content\images\logo-portal.png" />
     <Content Include="Content\images\noPhoto.png" />
@@ -241,6 +243,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\ngProgress.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\services.js" />
@@ -289,6 +292,7 @@
     <Folder Include="Content\Uploads\ImagesProfile\Students\" />
     <Folder Include="Content\Uploads\ImagesProfile\Teachers\" />
     <Folder Include="Content\Uploads\Posts\Teachers\" />
+    <Folder Include="Views\teachers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

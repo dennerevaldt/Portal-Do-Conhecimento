@@ -22,6 +22,7 @@
     @Scripts.Render("~/Scripts/controllers.js")
     @Scripts.Render("~/Scripts/factories.js")
     @Scripts.Render("~/Scripts/diretives.js")
+    @Scripts.Render("~/Scripts/ngProgress.js")
 
 
 
@@ -104,7 +105,7 @@
             <div id="navbar" class="navbar-collapse collapse">
 
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="dropdown" style="border-left: 1px solid #e2e9e6;">
+                    @*<li class="dropdown" style="border-left: 1px solid #e2e9e6;">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <i class="glyphicon glyphicon-blackboard" style="line-height:30px;"></i>
                             <span class="notification-counter">3</span>
@@ -153,7 +154,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li>*@
                     <li class="dropdown" style="border-left: 1px solid #e2e9e6; border-right: 1px solid #e2e9e6;">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
                             <img src="@url_image" alt="Image" class="img-navbar" /> @first_name <span class="caret"></span>
@@ -205,9 +206,6 @@
                     <li>
                         <a href="/disciplines/index"><span class="glyphicon glyphicon-folder-open margin-rght"></span> Disciplinas</a>
                     </li>
-                    @*<li>
-                            <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens </a>
-                        </li>*@
                 }
 
             </ul>

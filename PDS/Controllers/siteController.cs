@@ -19,7 +19,7 @@ namespace PDS.Controllers
 {
     public class siteController : Controller
     {
-        //private string host = "http://portaldoconhecimento.azurewebsites.net";
+        //private string host = "http://professor.bitfacil.com";
         private string host = "http://localhost:51918";
 
         /// <summary>

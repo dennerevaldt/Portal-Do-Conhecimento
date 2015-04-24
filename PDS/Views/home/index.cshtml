@@ -18,139 +18,55 @@
 }
 
 <!-- Page Content -->
-<div id="page-content-wrapper" ng-app="homePortal">
+<div id="page-content-wrapper">
     <div class="container-wrapper">
         <div class="row">
 
             @if (account_type == "T")
             {
-            <!-- Container -->
-                <div class="col-sm-12 col-md-12 col-lg-12">
-                    <div class="panel panel-default">
-                        <div class="panel-body">
-                            <textarea class="form-control share-text" rows="3" placeholder="Compartilhe aqui com seus professores seguidores..."></textarea>
-                        </div>
-                        <div class="panel-footer share-buttons">
-                            <span class="btn btn-default btn-file">
-                                <input type="file" /><i class="glyphicon glyphicon-paperclip"></i>
-                            </span>
-                            <button type="submit" class="btn btn-default btn-xs pull-right" href="#">Publicar</button>
+                <!-- Container -->
+                <form method="post" id="formPost" name="formPost" ng-upload="bar" ng-submit="submitPostTeacher(formPost)">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="panel panel-default">
+                            <div class="panel-body">
+                                <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com a turma..." required></textarea>
+                            </div>
+                            <div class="panel-footer share-buttons">
+                                <span class="btn btn-default btn-file">
+                                    <input type="file" id="file" name="file" ng-model="Post.file" /><i class="glyphicon glyphicon-paperclip"></i>
+                                </span>
+                                <button type="submit" class="btn btn-default btn-xs pull-right">Publicar</button>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </form>
 
-                <div class="col-sm-12 col-md-12 col-lg-12">
+                <div class="col-md-12" style="margin-top: -18px; margin-bottom:10px;" ng-class="resultMessageClassPost" ng-show="resultShowMessagePost" ng-bind="resultMessagePost"></div>
+
+
+                <div class="col-sm-12 col-md-12 col-lg-12" ng-init="initPageTeacher();" ng-cloak>
                     <div class="panel panel-default">
                         <div class="panel-body painel-body-height">
                             <div class="content-panel">
 
                                 <!-- itens post -->
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="header-post">
-                                            <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                        </div>
-                                        <div class="content-post">
-                                            <p class="message">
-                                                Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                                consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                            </p>
-                                            <p>
-                                                Anexos: <br>
-                                                <span style="color: #337AB7;"> - link 1; </span>
-                                            </p>
-                                            <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                        </div>
-                                    </div>
+                                <div class="panel panel-default" ng-hide="publicationsTeachersProfile.length">
+                                    <div class="panel-body"><h4 class="text-center text-info">Nenhuma postagem de outros professores que você esteja seguindo.</h4></div>
                                 </div>
 
-                                <div class="panel panel-default">
+                                <div class="panel panel-default" ng-repeat="itemPro in publicationsTeachersProfile">
                                     <div class="panel-body">
                                         <div class="header-post">
-                                            <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
+                                            <img src="{{itemPro.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{itemPro.teacher.firstName}} {{itemPro.teacher.lastName}},<small> publicou:</small>
                                         </div>
                                         <div class="content-post">
-                                            <p class="message">
-                                                Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                                consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                            </p>
+                                            <p class="message" ng-bind="itemPro.textPublication"></p>
                                             <p>
                                                 Anexos: <br>
-                                                <span style="color: #337AB7;"> - link 1; </span>
+                                                <a style="color: #337AB7;" href="{{itemPro.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
                                             </p>
                                             <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="header-post">
-                                            <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                        </div>
-                                        <div class="content-post">
-                                            <p class="message">
-                                                Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                                consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                            </p>
-                                            <p>
-                                                Anexos: <br>
-                                                <span style="color: #337AB7;"> - link 1; </span>
-                                            </p>
-                                            <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="header-post">
-                                            <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                        </div>
-                                        <div class="content-post">
-                                            <p class="message">
-                                                Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                                consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                            </p>
-                                            <p>
-                                                Anexos: <br>
-                                                <span style="color: #337AB7;"> - link 1; </span>
-                                            </p>
-                                            <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="panel panel-default">
-                                    <div class="panel-body">
-                                        <div class="header-post">
-                                            <img src="~/Content/images/noPhoto.png" alt="Image" class="img-navbar" /> Denner Evaldt Machado,<small> publicou:</small>
-                                        </div>
-                                        <div class="content-post">
-                                            <p class="message">
-                                                Maria Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                                                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                                                consequat. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quo, quisquam. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Hic, praesentium!
-                                            </p>
-                                            <p>
-                                                Anexos: <br>
-                                                <span style="color: #337AB7;"> - link 1; </span>
-                                            </p>
-                                            <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: 25/02/15 ás 19:30hs.</small></span>
+                                            <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPro.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
                                         </div>
                                     </div>
                                 </div>
@@ -163,10 +79,15 @@
             }
             else
             {
+                if (account_type == "S") { 
                 <div class="col-sm-12 col-md-12 col-lg-12" ng-init="initPage(@id_type_account);" ng-cloak>
                     <div class="panel panel-default">
                         <div class="panel-body painel-body-height-student">
                             <div class="content-panel">
+
+                                <div class="panel panel-default" ng-hide="publicationsTeachers.length">
+                                    <div class="panel-body"><h4 class="text-center text-info">Você ainda não possui publicações de professores.</h4></div>
+                                </div>
 
                                 <!-- itens post -->
                                 <div class="panel panel-default" ng-repeat="itemPub in publicationsTeachers">
@@ -192,6 +113,7 @@
                         </div>
                     </div>
                 </div>
+                }
             }
 
         </div>

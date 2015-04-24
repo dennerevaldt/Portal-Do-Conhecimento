@@ -6,6 +6,6 @@ var changeKeyModule = angular.module('changeKeyModule', []);
 
 var manageModule = angular.module('manageModule', []);
 
-var homePortal = angular.module('homePortal', []);
+var homePortal = angular.module('homePortal', ['ngProgress']);
 
-var followerModule = angular.module('followerModule', []);
+var followerModule = angular.module('followerModule', ['ngProgress']);

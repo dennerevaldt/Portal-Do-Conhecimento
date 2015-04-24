@@ -10,6 +10,15 @@
         <div class="row" style="margin-top: 30px;" ng-cloak>
 
             <div class="col-md-8">
+
+                <div class="text-center">
+                    <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingDisc" />
+                </div>
+
+                <div class="panel panel-default" ng-hide="disciplinas.length">
+                    <div class="panel-body"><h4 class="text-center text-info">Nenhuma disciplina cadastrada.</h4></div>
+                </div>
+
                 <div class="panel panel-default">
                     <div class="panel-heading"><h4>Disciplinas</h4></div>
 
