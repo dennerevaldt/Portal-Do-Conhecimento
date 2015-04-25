@@ -35,14 +35,14 @@
                                 <span class="btn btn-default btn-file">
                                     <input type="file" id="file" name="file" ng-model="Post.file" /><i class="glyphicon glyphicon-paperclip"></i>
                                 </span>
-                                <button type="submit" class="btn btn-default btn-xs pull-right">Publicar</button>
+                                <button type="submit" class="btn btn-primary btn-xs pull-right">Publicar</button>
                             </div>
+
+                            <div class="col-md-12" style="margin-top: 8px; margin-bottom:10px; color:#fff;" ng-class="resultMessageClassPost" ng-show="resultShowMessagePost" ng-bind="resultMessagePost"></div>
+
                         </div>
                     </div>
                 </form>
-
-                <div class="col-md-12" style="margin-top: -18px; margin-bottom:10px;" ng-class="resultMessageClassPost" ng-show="resultShowMessagePost" ng-bind="resultMessagePost"></div>
-
 
                 <div class="col-sm-12 col-md-12 col-lg-12" ng-init="initPageTeacher();" ng-cloak>
                     <div class="panel panel-default">
@@ -61,7 +61,7 @@
                                         </div>
                                         <div class="content-post">
                                             <p class="message" ng-bind="itemPro.textPublication"></p>
-                                            <p>
+                                            <p ng-show="itemPro.attachment.idAttachment != 0">
                                                 Anexos: <br>
                                                 <a style="color: #337AB7;" href="{{itemPro.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
                                             </p>

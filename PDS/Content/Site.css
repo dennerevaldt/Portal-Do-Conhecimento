@@ -1,4 +1,4 @@
-﻿@import url(http://fonts.googleapis.com/css?family=Lato:300,400);
+﻿@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);
 
 html {
   position: relative;
@@ -7,8 +7,7 @@ html {
 
 body {
 	background: none;
-	font-family: 'Lato', sans-serif;
-	font-weight: 400;  
+    font-family: 'Roboto', sans-serif;	
 	color: black;	
 }
 
@@ -376,7 +375,7 @@ fieldset[disabled] .btn-index.active {
 }
 
 .content-students  h1,h2,h3,h4,h5 {
-	font-family: 'Lato', sans-serif;
+    font-family: 'Roboto', sans-serif;	
 	font-weight: 300;
 	color: #ffffff;
 }

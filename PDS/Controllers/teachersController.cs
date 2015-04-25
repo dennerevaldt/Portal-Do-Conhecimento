@@ -18,7 +18,7 @@ namespace PDS.Controllers
         /// <param name="file">HttpPostedFileBase file.</param>
         /// <param name="form">FormCollection form.</param>
         [HttpPost]
-        public void uploadPost(HttpPostedFileBase file, FormCollection form)
+        public void UploadPost(HttpPostedFileBase file, FormCollection form)
         {
             try
             {
@@ -59,6 +59,17 @@ namespace PDS.Controllers
                     AttachmentsRepository repAtt = new AttachmentsRepository();
                     repAtt.Create(path, idPublication);
 
+                }
+                else
+                {
+                    //request cookie data user
+                    HttpCookie userInfo = Request.Cookies["userInfo"];
+                    var CidT = Server.UrlTokenDecode(userInfo["id_type_account"]);
+                    string idTeacher = System.Text.UTF8Encoding.UTF8.GetString(CidT);
+
+                    //insert publications teachers
+                    PublicationsTeachersRepository repPubTeachers = new PublicationsTeachersRepository();
+                    Int64 idPublication = repPubTeachers.Create(form["message"], Int64.Parse(idTeacher));
                 }
 
             }

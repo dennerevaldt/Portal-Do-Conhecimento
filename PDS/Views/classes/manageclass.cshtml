@@ -20,13 +20,15 @@
                             <span class="btn btn-default btn-file">
                                 <input type="file" id="file" name="file" ng-model="Post.file"/><i class="glyphicon glyphicon-paperclip"></i>
                             </span>
-                            <button type="submit" class="btn btn-default btn-xs pull-right">Publicar</button>
+                            <button type="submit" class="btn btn-primary btn-xs pull-right">Publicar</button>
                         </div>
+
+                        <div class="col-md-12" style="margin-top: 8px; margin-bottom:10px; color:#fff;" ng-class="resultMessageClassPost" ng-show="resultShowMessagePost" ng-bind="resultMessagePost"></div>
+
                     </div>
                 </div>
             </form>
 
-            <div class="col-md-12" style="margin-top: -18px; margin-bottom:10px;" ng-class="resultMessageClassPost" ng-show="resultShowMessagePost" ng-bind="resultMessagePost"></div>
 
         </div>
         <!--/row-->

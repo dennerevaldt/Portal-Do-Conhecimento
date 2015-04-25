@@ -2,7 +2,7 @@
    
     $rootScope.getallclasses = function (id) {
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         $http({
@@ -37,7 +37,7 @@
 
     $rootScope.getDataOneClass = function () {
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         var pIdClass = location.search.split('?id=')[1];
@@ -68,7 +68,7 @@
 
     $rootScope.getPublicationsTeacherProf = function () {
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         $http({
@@ -286,7 +286,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
     $scope.getall = function () {
         
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         $scope.loadingDisc = true;
@@ -443,7 +443,7 @@ homePortal.controller('DisciplinesController', function ($scope, $http, $timeout
 
     $scope.seeClasse = function (idDisc) {
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         var url = '/classes/index?id=' + idDisc;
@@ -616,7 +616,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
     $scope.submitPostClasse = function (formPost) {
         
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         //get id classe
@@ -769,7 +769,7 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
                 name: search
             }
 
-            if (search != null) {
+            if (search != null && search.length >= 3) {
                 $scope.loadingSearch = true;
                 $http({
                     method: 'POST',
@@ -949,7 +949,7 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
 
     $scope.initPage = function (id) {
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         $scope.getNewPosts(id);
@@ -965,7 +965,7 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
     $scope.submitPostTeacher = function (formPost) {
 
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         //get message
@@ -976,40 +976,67 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
         //url send form
         var uploadUrl = "/teachers/uploadPost";
 
-        //set progress bar
-        $timeout(function () {
-            ngProgress.set(45);
-        }, 2000);
+        if (formPost.$valid) {
+            //Post com anexos
+            if (file != null) {
 
-        if (file != null && formPost.$valid) {
-            var fd = new FormData();
-            fd.append('file', file);
-            fd.append('message', message);
+                var fd = new FormData();
+                fd.append('file', file);
+                fd.append('message', message);
 
-            $http.post(uploadUrl, fd, {
-                transformRequest: angular.identity,
-                headers: { 'Content-Type': undefined }
-            })
-            .success(function () {
-                //$rootScope.getDataOneClass();
-                //set progress bar
-                $timeout(function () {
-                    ngProgress.complete();
-                    $scope.Post.message = "";
-                    $scope.Post.file = "";
-                    $scope.resultMessagePost = 'Postagem enviada com sucesso.';
-                    $scope.resultMessageClassPost = 'bg-success';
-                    $scope.resultShowMessagePost = true;
+                $http.post(uploadUrl, fd, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                })
+                .success(function () {
+                    //$rootScope.getDataOneClass();
+                    //set progress bar
                     $timeout(function () {
-                        $scope.resultShowMessagePost = false;
+                        ngProgress.complete();
+                        $scope.Post.message = "";
+                        $scope.Post.file = "";
+                        $scope.resultMessagePost = 'Postagem enviada com sucesso.';
+                        $scope.resultMessageClassPost = 'bg-success';
+                        $scope.resultShowMessagePost = true;
+                        $timeout(function () {
+                            $scope.resultShowMessagePost = false;
+                        }, 2000);
                     }, 2000);
-                }, 2000); 
-            })
-            .error(function () {
-            });
+                })
+                .error(function () {
+                });
+            //Post sem anexo
+            } else {
+
+                var fd = new FormData();
+                fd.append('message', message);
+
+                $http.post(uploadUrl, fd, {
+                    transformRequest: angular.identity,
+                    headers: { 'Content-Type': undefined }
+                })
+                .success(function () {
+                    //$rootScope.getDataOneClass();
+                    //set progress bar
+                    $timeout(function () {
+                        ngProgress.complete();
+                        $scope.Post.message = "";
+                        $scope.Post.file = "";
+                        $scope.resultMessagePost = 'Postagem enviada com sucesso sem anexos.';
+                        $scope.resultMessageClassPost = 'bg-success';
+                        $scope.resultShowMessagePost = true;
+                        $timeout(function () {
+                            $scope.resultShowMessagePost = false;
+                        }, 2000);
+                    }, 2000);
+                })
+                .error(function () {
+                });
+
+            }
         }
         else {
-            $scope.resultMessagePost = 'Nenhum anexo encontrado. Se você deseja enviar uma mensagem apenas, utilize a opção Recado para turma.';
+            $scope.resultMessagePost = 'Ops, estamos com problemas. Tente novamente.';
             $scope.resultMessageClassPost = 'bg-danger';
             $scope.resultShowMessagePost = true;
             $timeout(function () {
@@ -1408,7 +1435,7 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
 
     $scope.getFollowers = function (idFollower) {
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         var dataParam = {
@@ -1442,7 +1469,7 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
     $scope.getFollowersOther = function (idFollower) {
 
         //set progress bar
-        ngProgress.color('#337AB7');
+        ngProgress.color('#4285f4');
         ngProgress.start();
 
         var dataParam = {

@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Lato:300,400);
+@import url(http://fonts.googleapis.com/css?family=Roboto:300,400);
 
 html {
   position: relative;
@@ -8,9 +8,12 @@ html {
 body {
 	background: none;
 	padding-top: 51px;
-	font-family: 'Lato', sans-serif;
-	font-weight: 400;  
-	color: black;	
+    font-family: 'Roboto', sans-serif;	
+    color: black;	
+}
+
+h1,h2,h3,h4,h5 {
+    font-weight:300;
 }
 
 .thumbnail{
@@ -283,7 +286,7 @@ li.message-preview>a {
 .navbar-default .navbar-nav > .open > a:hover, 
 .navbar-default .navbar-nav > .open > a:focus {
 color: #fff;
-background-color: #337ab7;
+background-color: #4285F4;
 }
 
 @media (min-width: 1px) {
@@ -458,7 +461,7 @@ fieldset[disabled] .btn-index.active {
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
-    background: #337AB7;
+    background: #4285f4;
     border-right: 1px solid #e7e7e7;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
@@ -508,7 +511,7 @@ fieldset[disabled] .btn-index.active {
     padding: 0;
     list-style: none;
     padding-bottom: 12px;
-    border-bottom: 1px solid #296EA9;
+    border-bottom: 1px solid rgba(41, 110, 169, 0.37);
 }
 
 .sidebar-nav li {
@@ -541,7 +544,7 @@ fieldset[disabled] .btn-index.active {
 }
 
 .sidebar-brand{
-	border-bottom: 1px solid #296EA9;
+	border-bottom: 1px solid rgba(41, 110, 169, 0.37);
 }
 
 .sidebar-brand img {
@@ -606,7 +609,7 @@ fieldset[disabled] .btn-index.active {
     width: 0;
     height: 100%;
     overflow-y: auto;
-    background: #fff;
+    background: #F5F5F5;
     border-left: 1px solid #e7e7e7;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;

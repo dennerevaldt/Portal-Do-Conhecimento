@@ -2,11 +2,14 @@
 	background-color: #fff;
 }
 
+h1,h2,h3,h4,h5 {
+    font-weight:300;
+}
+
 .navbar {
 	border-radius: 0;
-	border: 1px solid #204d74;
-	background-color: #337AB7;
-	border-color: #006AC0;
+	background-color: #4285f4;
+	border-color: #4285f4;
 }
 
 .img-profile{
@@ -15,7 +18,7 @@
 	top: 42px;
 	z-index: 1;
 	width: 200px;
-	border: 6px solid #296EA9;
+	border: 4px solid #4285f4;
 }
 
 .name-nav {

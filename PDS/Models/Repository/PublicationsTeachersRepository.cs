@@ -158,8 +158,8 @@ namespace PDS.Models.Repository
 
                         attachment = new Attachments
                         {
-                            idAttachment = (Int64)dr["idAttachment"],
-                            urlAttachment = (string)dr["urlAttachment"]
+                            idAttachment = dr.IsDBNull(dr.GetOrdinal("idAttachment")) ? 0 : dr.GetInt64(dr.GetOrdinal("idAttachment")),     
+                            urlAttachment = dr.IsDBNull(dr.GetOrdinal("urlAttachment")) ? "" : dr.GetString(dr.GetOrdinal("urlAttachment"))
                         }
 
                     });
