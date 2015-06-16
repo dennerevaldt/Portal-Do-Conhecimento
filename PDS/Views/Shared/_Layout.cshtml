@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿ <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
     <meta charset="utf-8">
@@ -15,15 +15,17 @@
     @Styles.Render("~/Content/bootstrap.css")
     @Styles.Render("~/Content/home.css")
     @Scripts.Render("~/bundles/modernizr")
-
+    
     <!-- Angular JS-->
+    <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
+
     @Scripts.Render("~/Scripts/angular.js")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
     @Scripts.Render("~/Scripts/factories.js")
     @Scripts.Render("~/Scripts/diretives.js")
     @Scripts.Render("~/Scripts/ngProgress.js")
-
+    @Scripts.Render("~/Scripts/ng-infinite-scroll.js")
 
 
     @{
@@ -60,9 +62,9 @@
       <script src="https://oss.maxcdn.com/respond/1..2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body ng-app="homePortal" ng-controller="IndexController">
+<body ng-app="homePortal" ng-controller="IndexController" style="padding-top:0;">
     <!-- Fixed navbar -->
-    <nav class="navbar navbar-default navbar-fixed-top font-light">
+    <nav class="navbar navbar-default font-light" style="margin-bottom: 0;">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -183,23 +185,21 @@
                 <h4 class="sidebar-heading">@first_name @last_name</h4>
             </div>
             <ul class="sidebar-nav">
-                
+                <li class="sidebar-heading-li">MENU</li>
 
                 @if (account_type != "T")
                 {
                     <li>
-                        <a href="#"><span class="glyphicon glyphicon-user margin-rght"></span> Professores</a>
+                        <a href="#" data-toggle="modal" data-target=".modal-disc-profile" ng-click="getDisciplinesProfileStud(@id_student)"><span class="glyphicon glyphicon-user margin-rght"></span> Professores</a>
                     </li>
                     <li>
-                        <a href="#"><span class="glyphicon glyphicon-duplicate margin-rght"></span> Atividades <span class="badge">0</span></a>
+                        <a href="#" data-toggle="modal" data-target=".modal-messages" ng-click="getNewMessages(@id_student)"><span class="glyphicon glyphicon-envelope margin-rght"></span> Recados <span ng-class="badgeMessage" ng-bind="numMessages"></span></a>
                     </li>
                     <li>
-                        <a href="#" data-toggle="modal" data-target=".modal-messages" ng-click="getNewMessages(@id_student)"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens <span ng-class="badgeMessage" ng-bind="numMessages"></span></a>
+                        <a href="#" data-toggle="modal" data-target=".modal-stars-student" ng-click="getStarsStd(@id_student)"><span class="glyphicon glyphicon-star margin-rght"></span> Estrelinhas</a>
                     </li>
                 }
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-star margin-rght"></span> Estrelinhas</a>
-                </li>
+                
 
                 @if (account_type == "T")
                 {
@@ -221,13 +221,14 @@
                     <div class="container-wrapper-right">
                         <div class="row">
                             <div class="col-md-12 border-b">
-                                <h4>Notas</h4>
+                                <h4>Bem vindo ao Portal</h4>
                                 <div class="panel panel-default">
                                     <div class="panel-body">
-                                        <textarea class="form-control share-text" name="anottation" id="anottation" rows="4" placeholder="Digite aqui..."></textarea>
+                                        <div class="col-md-12 text-center">
+                                            <h4 ng-bind="dataAtual"></h4>
+                                        </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-block btn-default">Salvar</button>
                             </div>
                         </div>
                     </div>
@@ -259,29 +260,35 @@
 
                             <div ng-class="result">{{ resultMessage }}</div>
                         </div>
-                        <div class="modal-footer">
+                        <div class="modal-footer" style="margin-top:0;">
                             <button type="submit" class="btn btn-primary">Enviar convite</button>
                         </div>
                     </form>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
         </div><!-- /.modal -->
+
         <!-- Modal Messages -->
         <div class="modal fade modal-messages" ng-cloak>
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title-custom">Mensagens</h4>
+                        <h4 class="modal-title-custom">Recados</h4>
                     </div>
                     <div class="modal-body">
 
-                        <div class="row">
+                        <div class="row" style="margin-right: 10px; margin-left: 10px;">
 
-                            <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="panel panel-default" ng-hide="listMessages.length">
+                                <div class="panel-body"><h4 class="text-center text-info">Você ainda não possui recados.</h4></div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-12 col-lg-12" ng-show="listMessages.length">
                                 <div class="panel panel-default">
                                     <div class="panel-body painel-body-height">
                                         <div class="content-panel">
+
                                             <div class="panel panel-default" ng-repeat="item in listMessages">
                                                 <div class="panel-heading">Turma - <span ng-bind="item.name"></span> | Disciplina - <span ng-bind="item.discipline.name"></span></div>
                                                 <div class="panel-body">
@@ -291,7 +298,7 @@
                                                     <div class="message" style="margin-left:15px;margin-right:15px;">
                                                         <div class="panel panel-default" ng-repeat="messages in item.messagesClasse">
                                                             <div class="panel-body">
-                                                                Mensagem:<br />
+                                                                Recado:<br />
                                                                 {{messages.message}}
                                                             </div>
                                                         </div>
@@ -313,7 +320,84 @@
                     </div>
 
                     <div class="modal-footer" style="margin-top: 0;">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+                    </div>
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- Modal Teachers Profile Students -->
+        <div class="modal fade modal-disc-profile" ng-controller="IndexController" ng-cloak>
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Meus Professores</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row" style="margin-right: 10px; margin-left: 10px;">
+                            <div class="panel panel-default" ng-hide="listDisciplinesProfile.length">
+                                <div class="panel-body"><h4 class="text-center text-info">Você ainda não possui professores.</h4></div>
+                            </div>
+                            <div class="col-sm-6 col-md-4 text-center" ng-repeat="itemDisc in listDisciplinesProfile">
+                                <div class="thumbnail" style="border-radius: 0;">
+                                    <img src="{{itemDisc.objClass.discipline.teacher.urlImageProfile}}" alt="Foto">
+                                    <div class="caption">
+                                        <h4>{{itemDisc.objClass.discipline.teacher.firstName}} {{itemDisc.objClass.discipline.teacher.lastName}}</h4>
+                                        <p><b>Turma</b> - {{itemDisc.objClass.name}} </p>
+                                        <p><b>Disciplina</b> - {{itemDisc.objClass.discipline.name}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer" style="margin-top:0;">
+                    </div>
+                  
+                </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+        </div><!-- /.modal -->
+
+        <!-- Modal Stars-Student -->
+        <div class="modal fade modal-stars-student" ng-controller="IndexController">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title-custom">Estrelinhas</h4>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row" style="margin-right: 10px; margin-left: 10px;">
+                            <div class="panel panel-default" ng-hide="listRankingStd.length">
+                                <div class="panel-body"><h4 class="text-center text-info">Você ainda não participa de nenhuma turma, portanto ainda não possui estrelinhas.</h4></div>
+                            </div>
+                            <div class="col-md-4" ng-repeat="item in listRankingStd">
+                                <h4>{{item.objClass.name}} - <small>{{item.objClass.discipline.name}}</small></h4>
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-md-2">Posição</th>
+                                            <th class="col-md-6">Nome</th>
+                                            <th class="col-md-4">Nº Estrelas</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr ng-repeat="itemStdCl in item.objClass.classesStudents | orderBy:'-stars'">
+                                            <td class="col-md-2" ng-class="{'bg-info': itemStdCl.student.idStudent == @id_student}">{{$index+1}}</td>
+                                            <td class="col-md-6" ng-class="{'bg-info': itemStdCl.student.idStudent == @id_student}">{{itemStdCl.student.firstName}} {{itemStdCl.student.lastName}}</td>
+                                            <td class="col-md-4" ng-class="{'bg-info': itemStdCl.student.idStudent == @id_student}">{{itemStdCl.stars}} <span style="color:#ffd800;" class="glyphicon glyphicon-star"></span></td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                            
+                    </div>
+                    <div class="modal-footer" style="margin-top:0;">
                     </div>
                 </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -322,7 +406,6 @@
     </div>
     <!-- /#wrapper -->
     <!-- jQuery -->
-    <script src="@Scripts.Url("~/Scripts/jquery.js")"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 

@@ -6,9 +6,7 @@
 
 @{
     HttpCookie userInfo = Request.Cookies["userInfo"];
-    
-    
-
+      
     var accTp = Server.UrlTokenDecode(userInfo["account_type"]);
     string account_type = System.Text.UTF8Encoding.UTF8.GetString(accTp);
 
@@ -16,6 +14,7 @@
     string id_type_account = System.Text.UTF8Encoding.UTF8.GetString(idAccTp);
 
 }
+
 
 <!-- Page Content -->
 <div id="page-content-wrapper">
@@ -29,11 +28,11 @@
                     <div class="col-sm-12 col-md-12 col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com a turma..." required></textarea>
+                                <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com seus professores seguidores..." required></textarea>
                             </div>
                             <div class="panel-footer share-buttons">
                                 <span class="btn btn-default btn-file">
-                                    <input type="file" id="file" name="file" ng-model="Post.file" /><i class="glyphicon glyphicon-paperclip"></i>
+                                    <input type="file" accept=".doc,.docx,.ppt,.pptx,.zip,.png,.jpg,.txt,.pdf" id="file" name="file" ng-model="Post.file" /><i class="glyphicon glyphicon-paperclip"></i>
                                 </span>
                                 <button type="submit" class="btn btn-primary btn-xs pull-right">Publicar</button>
                             </div>
@@ -44,11 +43,11 @@
                     </div>
                 </form>
 
-                <div class="col-sm-12 col-md-12 col-lg-12" ng-init="initPageTeacher();" ng-cloak>
+                <div class="col-sm-12 col-md-12 col-lg-12" ng-cloak>
                     <div class="panel panel-default">
-                        <div class="panel-body painel-body-height">
-                            <div class="content-panel">
-
+                        <div class="panel-body painel-body-height" when-scrolled="loadMoreFollowersTeachers()" ng-init="loadMoreFollowersTeachers()">
+                            <div class=" content-panel">
+                             
                                 <!-- itens post -->
                                 <div class="panel panel-default" ng-hide="publicationsTeachersProfile.length">
                                     <div class="panel-body"><h4 class="text-center text-info">Nenhuma postagem de outros professores que você esteja seguindo.</h4></div>
@@ -57,20 +56,41 @@
                                 <div class="panel panel-default" ng-repeat="itemPro in publicationsTeachersProfile">
                                     <div class="panel-body">
                                         <div class="header-post">
-                                            <img src="{{itemPro.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{itemPro.teacher.firstName}} {{itemPro.teacher.lastName}},<small> publicou:</small>
+                                            <img src="{{itemPro.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{itemPro.teacher.firstName}} {{itemPro.teacher.lastName}},<small> publicou:</small> <a href="#" data-toggle="modal" data-target="#confirm-delete-post-{{itemPro.idPublication}}" class="pull-right btn-sm btn-default" ng-if="itemPro.teacher.idTeacher == @id_type_account"><span class="glyphicon glyphicon-remove text-danger"></span></a>
                                         </div>
                                         <div class="content-post">
                                             <p class="message" ng-bind="itemPro.textPublication"></p>
                                             <p ng-show="itemPro.attachment.idAttachment != 0">
                                                 Anexos: <br>
-                                                <a style="color: #337AB7;" href="{{itemPro.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
+                                                <a style="color: #337AB7;" href="{{itemPro.attachment.urlAttachment}}" download="{{itemPro.teacher.firstName+'_'+itemPro.datePublication}}"> - Download </a>
                                             </p>
                                             <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPro.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
+                                            <span class="pull-right"><small>Postado: </small><small ng-bind="itemPro.datePublication | date:'dd/MM/yyyy HH:mm'"></small></span>
                                         </div>
                                     </div>
+
+                                    <!--Modal Delete Post-->
+                                    <div class="modal fade" id="confirm-delete-post-{{itemPro.idPublication}}" ng-if="itemPro.teacher.idTeacher == @id_type_account">
+                                        <div class="modal-dialog modal-sm">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                                    <h4 class="modal-title">Confirmar Exclusão</h4>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p>Deseja realmente excluir a postagem?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger" ng-click="deletePostTeacher(itemPro.idPublication)">Excluir</button>
+                                                </div>
+                                            </div><!-- /.modal-content -->
+                                        </div><!-- /.modal-dialog -->
+                                    </div><!-- /.modal -->
+
                                 </div>
-                                <!-- /itens post -->
+                                <!--/itens post -->
+
+                                
 
                             </div>
                         </div>
@@ -79,40 +99,46 @@
             }
             else
             {
-                if (account_type == "S") { 
-                <div class="col-sm-12 col-md-12 col-lg-12" ng-init="initPage(@id_type_account);" ng-cloak>
-                    <div class="panel panel-default">
-                        <div class="panel-body painel-body-height-student">
-                            <div class="content-panel">
+                if (account_type == "S")
+                {
+                    <div class="col-sm-12 col-md-12 col-lg-12" ng-cloak>
+                        <div class="panel panel-default">
+                            <div when-scrolled="loadMore()" class="panel-body painel-body-height-student" ng-init="loadMore()">
+                                <div class="content-panel">
 
-                                <div class="panel panel-default" ng-hide="publicationsTeachers.length">
-                                    <div class="panel-body"><h4 class="text-center text-info">Você ainda não possui publicações de professores.</h4></div>
-                                </div>
+                                    <div class="panel panel-default" ng-hide="publicationsTeachers.length">
+                                        <div class="panel-body"><h4 class="text-center text-info">Você ainda não possui publicações de professores.</h4></div>
+                                    </div>
 
-                                <!-- itens post -->
-                                <div class="panel panel-default" ng-repeat="itemPub in publicationsTeachers">
-                                    <div class="panel-body">
-                                        <div class="header-post">
-                                            <img src="{{itemPub.publicationsTeachers.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{itemPub.publicationsTeachers.teacher.firstName}} {{itemPub.publicationsTeachers.teacher.lastName}},<small> publicou:</small>
-                                        </div>
-                                        <div class="content-post">
-                                            <p class="message" ng-bind="itemPub.publicationsTeachers.textPublication"></p>
-                                            <p>
-                                                Anexos: <br>
-                                                <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download="{{nameDownload}}"> - Download </a>
-                                            </p>
-                                            <hr class="hr-custom">
-                                            <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPub.publicationsTeachers.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
+                                    <!-- itens post -->
+                                    <div class="panel panel-default" ng-repeat="itemPub in publicationsTeachers">
+                                        <div class="panel-body">
+                                            <div class="header-post">
+                                                <img src="{{itemPub.publicationsTeachers.teacher.urlImageProfile}}" alt="Image" class="img-navbar" /> {{itemPub.publicationsTeachers.teacher.firstName}} {{itemPub.publicationsTeachers.teacher.lastName}},<small> publicou:</small>
+                                            </div>
+                                            <div class="content-post">
+                                                <p class="message" ng-bind="itemPub.publicationsTeachers.textPublication"></p>
+                                                <p>
+                                                    Anexos: <br>
+                                                    <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download="{{itemPub.publicationsTeachers.teacher.firstName+'_'+itemPub.publicationsTeachers.datePublication | date:'dd/MM/yyyy HH:mm'}}"> - Download </a>
+                                                </p>
+                                                <hr class="hr-custom">
+                                                <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPub.publicationsTeachers.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
+                                            </div>
                                         </div>
                                     </div>
+
+                                    <div ng-show="loading" class="text-center">
+                                        <h4>Carregando mais postagens 
+                                            <img src="~/Content/images/loader.gif" style="width:35px;" alt="Carregando" />
+                                        </h4>
+                                    </div>
+
+                                    <!-- /itens post -->
                                 </div>
-
-
-                                <!-- /itens post -->
                             </div>
                         </div>
                     </div>
-                </div>
                 }
             }
 

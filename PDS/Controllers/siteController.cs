@@ -19,8 +19,10 @@ namespace PDS.Controllers
 {
     public class siteController : Controller
     {
-        //private string host = "http://professor.bitfacil.com";
+        //private string host = "http://portaldoconhecimento.azurewebsites.net";
         private string host = "http://localhost:51918";
+        //private string host = "http://professor.bitfacil.com";
+
 
         /// <summary>
         /// Action para retornar home do site.
@@ -171,9 +173,10 @@ namespace PDS.Controllers
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return View("Error");
+                throw ex;
+                //return View("Error");
             }
             
         }

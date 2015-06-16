@@ -90,10 +90,10 @@ namespace PDS.Models.Repository
                     student = new Students
                     {
                         idPerson = (Int64)dr["idPerson"],
-                        accountType = (char)dr["accountType"],
+                        accountType = Convert.ToChar(dr["accountType"]),
                         firstName = (string)dr["firstName"],
                         lastName = (string)dr["lastName"],
-                        gender = (char)dr["gender"],
+                        gender = Convert.ToChar(dr["gender"]),
                         dateOfBirth = (DateTime)dr["dateOfBirth"],
                         city = (string)dr["city"],
                         country = (string)dr["country"],
@@ -384,6 +384,69 @@ namespace PDS.Models.Repository
             }
 
             return state;
+        }
+
+        /// <summary>
+        /// Método para buscar todas disciplinas e estrelas de um aluno.
+        /// </summary>
+        /// <param name="idStudent"></param>
+        /// <returns></returns>
+        public List<StudentsClasses> GetDisciplinesProfileStudents(Int64 idStudent)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            List<StudentsClasses> list = new List<StudentsClasses>();
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+
+            sql.Append("CALL getDisciplinesProfileStudent(@idStudent)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    list.Add(
+                        new StudentsClasses
+                        {
+                            objClass = new Classes
+                            {
+                                name = (string)dr["nameClasse"],
+
+                                discipline = new Disciplines
+                                {
+                                    name = (string)dr["nameDiscipline"],
+
+                                    teacher = new Teachers
+                                    {
+                                        firstName = (string)dr["firstName"],
+                                        lastName = (string)dr["lastName"],
+                                        urlImageProfile = (string)dr["urlImageProfile"]
+                                    }
+                                }
+
+                            },
+
+                            stars = (int)dr["stars"]
+                        }
+      
+                        );
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return list;
         }
 
 

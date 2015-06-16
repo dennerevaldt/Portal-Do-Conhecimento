@@ -44,7 +44,7 @@
             <div class="col-md-8">
                 <div class="form-group" ng-class="{ 'has-error has-feedback': formTeacher.inputBirthdayT.$invalid && formTeacher.inputBirthdayT.$dirty }">
                     <label for="inputBirthdayT">Data Nasc.</label>
-                    <input type="text" class="form-control" id="inputBirthdayT" name="inputBirthdayT" ng-model="inputBirthdayT" ng-pattern="/(?!3[2-9]|00|02-3[01]|04-31|06-31|09-31|11-31)[0-3][0-9]/(?!1[3-9]|00)[01][0-9]/(?!10|28|29)[12][089][0-9][0-9]/" ng-minlength="10" ng-maxlength="10" placeholder="dd/MM/aaaa" required />
+                    <input type="text" class="form-control" id="inputBirthdayT" name="inputBirthdayT" ng-model="inputBirthdayT" ng-pattern="/(?!3[2-9]|00|02-3[01]|04-31|06-31|09-31|11-31)[0-3][0-9]/(?!1[3-9]|00)[01][0-9]/(?!10|28|29)[12][089][0-9][0-9]/" ng-minlength="10" ng-maxlength="10" placeholder="dd/MM/aaaa" ui-date required />
                     <span class="text-danger" ng-show="formTeacher.inputBirthdayT.$error.pattern">Formato incorreto, deve seguir dd/MM/yyyy</span>
                 </div>
             </div>

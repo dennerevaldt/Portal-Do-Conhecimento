@@ -135,5 +135,30 @@ namespace PDS.Controllers
             
         }
 
+        /// <summary>
+        /// Action para retornar todas disciplinas e suas estrelas de um aluno.
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpGet]
+        public void GetDisciplinesProfileStudent(int id)
+        {
+            try
+            {
+                List<StudentsClasses> list = new List<StudentsClasses>();
+                StudentsRepository repStud = new StudentsRepository();
+                list = repStud.GetDisciplinesProfileStudents(id);
+
+                Response.Write(JsonConvert.SerializeObject(list));
+
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+       
+
     }
 }

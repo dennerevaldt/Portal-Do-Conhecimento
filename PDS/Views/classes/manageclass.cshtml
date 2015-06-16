@@ -8,17 +8,21 @@
     <div class="col-md-12">
         <!--row-->
         <div class="row" data-ng-init="getDataOneClass()">
-           
+             <div class="col-sm-12 col-md-12 col-lg-12">
+                 <div class="panel panel-default" style="margin-top: 22px; padding-left: 15px;">
+                     <h4>{{nameClass}} - <small>{{discipline.name}}</small></h4>
+                 </div>
+             </div>
              <form method="post" id="formPost" name="formPost" ng-upload="bar" ng-submit="submitPostClasse(formPost)">
-                <div class="col-sm-12 col-md-12 col-lg-12" style="margin-top:30px; width:720px;">
+                <div class="col-sm-12 col-md-12 col-lg-12" style="width:720px;">
                     <div class="panel panel-default">
-                        <div class="panel-heading"><h4 ng-bind="nameClass"></h4></div>
+
                         <div class="panel-body">
                             <textarea class="form-control share-text" rows="3" name="message" id="message" ng-model="Post.message" placeholder="Compartilhe material com a turma..." required></textarea>
                         </div>
                         <div class="panel-footer share-buttons">
                             <span class="btn btn-default btn-file">
-                                <input type="file" id="file" name="file" ng-model="Post.file"/><i class="glyphicon glyphicon-paperclip"></i>
+                                <input type="file" accept=".doc,.docx,.ppt,.pptx,.zip,.png,.jpg,.txt,.pdf" id="file" name="file" ng-model="Post.file" /><i class="glyphicon glyphicon-paperclip"></i>
                             </span>
                             <button type="submit" class="btn btn-primary btn-xs pull-right">Publicar</button>
                         </div>
@@ -53,7 +57,7 @@
                                 <p class="message" ng-bind="itemPub.publicationsTeachers.textPublication"></p>
                                 <p>
                                     Anexos: <br>
-                                    <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download> - Download </a>
+                                    <a style="color: #337AB7;" href="{{itemPub.publicationsTeachers.attachment.urlAttachment}}" download="{{discipline.teacher.firstName+'_'+itemPub.publicationsTeachers.datePublication}}"> - Download </a>
                                 </p>
                                 <hr class="hr-custom">
                                 <span class="pull-right"><small>Postado: </small><small ng-bind=" itemPub.publicationsTeachers.datePublication | date:'dd/MM/yyyy HH:mm' "></small></span>
@@ -69,7 +73,7 @@
                                         <h4 class="modal-title">Confirmar Exclusão</h4>
                                     </div>
                                     <div class="modal-body">
-                                        <p>Deseja realmente exclui a postagem?</p>
+                                        <p>Deseja realmente excluir a postagem?</p>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-danger" ng-click="deletePost(itemPub.publicationsTeachers.idPublication)">Excluir</button>

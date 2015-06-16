@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "index";
+    Layout = "~/Views/Shared/_LayoutNav.cshtml";
+}
+
+<div ng-app="starModule" ng-controller="StarController" ng-init="getAllStudents();" ng-cloak>
+    <div class="margin-top-40">
+
+        <div class="panel panel-default">
+            <h4 style="color:#000000; margin-left:10px;">{{dataClasse.name}} - <small>{{dataClasse.discipline.name}}</small></h4>
+        </div>
+
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Ranking da turma</h3>
+                </div>
+                <div class="panel-body">
+                    <table class="table table-responsive">
+                        <thead>
+                            <tr>
+                                <th class="col-md-2">Posição</th>
+                                <th class="col-md-6">Nome</th>
+                                <th class="col-md-4">Nº Estrelas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="item in listStudents | orderBy:'-stars'">
+                                <td class="col-md-2">{{$index+1}}</td>
+                                <td class="col-md-6">{{item.student.firstName}} {{item.student.lastName}}</td>
+                                <td class="col-md-4">{{item.stars}} <span style="color:#ffd800;" class="glyphicon glyphicon-star"></span></td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">Alunos</h4> 
+                    <input style="margin-top: 6px;" type="text" class="form-control" ng-model="search" placeholder="Pesquisar aluno" />
+                </div>
+                <div class="panel-body">
+
+                    <div class="col-md-3" ng-repeat="item in listStudents | filter:search">
+                        <div class="thumbnail" style="border-radius:0;">
+                            <img src="{{item.student.urlImageProfile}}" alt="Foto">
+                            <div class="caption">
+                                <p class="text-center">{{item.student.firstName}} {{item.student.lastName}}</p>
+                                <a href="#" class="btn btn-sm btn-block btn-primary" data-toggle="modal" data-target="#{{item.student.idStudent}}" ng-click="getOneStudent(item.student.idStudent)">Gerenciar estrelas</a>
+                            </div>
+                        </div>
+
+                        <!--Modal Manage Stars-->
+                        <div class="modal fade" id="{{item.student.idStudent}}">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" style="color:#000000;">Gerenciar Estrelas</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            @*<div class="col-md-offset-3 col-md-6">
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="stars" name="stars" ng-model="newStars" placeholder="Número de estrelas">
+                                                    <div class="input-group-btn">
+                                                        <button type="button" class="btn btn-primary" ng-click="addStars(newStars,OneStudent.student.idStudent)">Adicionar</button>
+                                                    </div>
+                                                </div>
+                                            </div>*@
+                                            <div class="col-md-12 margin-bottom-40">
+                                                <button class="btn btn-sm btn-default pull-right" ng-click="changeValueVisibility()" ng-show="visibilityManageStar">Remover Estrelas</button>
+                                                <button class="btn btn-sm btn-default pull-right" ng-click="changeValueVisibility()" ng-hide="visibilityManageStar">Adicionar Estrelas</button>
+                                            </div>
+
+                                            <div class="col-md-offset-3 col-md-6" ng-show="visibilityManageStar">
+                                                <div class="text-center" ng-repeat="rating in ratings">
+                                                    <span star-rating rating-value="rating.current" max="rating.max" on-rating-selected="getSelectedRating(rating)"></span>
+                                                </div>
+                                                <button class="btn btn-block btn-primary" ng-click="addStars(numStars,OneStudent.student.idStudent)">Adicionar</button>
+                                            </div>
+
+                                            <div class="col-md-offset-3 col-md-6" ng-hide="visibilityManageStar">
+                                                <div class="text-center" ng-repeat="rating in ratings">
+                                                    <span star-rating rating-value="rating.current" max="rating.max" on-rating-selected="getSelectedRating(rating)"></span>
+                                                </div>
+                                                <button class="btn btn-block btn-primary" ng-click="removeStars(numStars,OneStudent.student.idStudent)">Remover</button>
+                                            </div>
+
+                                            <div class="col-md-12 text-center">
+                                                <div style="color:#fff;" ng-class="resultStar" ng-show="resultShowStar" ng-bind="resultMessageStar"></div>
+                                            </div>
+
+                                            <div class="col-md-12 margin-top-40">
+                                                <h4 class="text-info text-center">{{OneStudent.student.firstName}} {{OneStudent.student.lastName}} atualmente possui {{OneStudent.stars}} <span style="color:#ffd800;" class="glyphicon glyphicon-star"></span></h4>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="modal-footer" style="margin-top: 0;">
+                                        
+                                    </div>
+                                </div><!-- /.modal-content -->
+                            </div><!-- /.modal-dialog -->
+                        </div><!-- /.modal -->
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

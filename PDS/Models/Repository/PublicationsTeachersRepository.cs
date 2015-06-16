@@ -83,7 +83,7 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idPublication">Int64 idPublication.</param>
         /// <returns>String url.</returns>
-        public string GetUtlAttachment(Int64 idPublication)
+        public string GetUrlAttachment(Int64 idPublication)
         {
             MySQL database = MySQL.GetInstancia(); ;
             MySqlCommand cmm = new MySqlCommand();
@@ -123,7 +123,7 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idFollower"></param>
         /// <returns></returns>
-        public List<PublicationsTeachers> GetPublications(Int64 idFollower)
+        public List<PublicationsTeachers> GetPublications(Int64 idFollower, Int64 numPosts)
         {
             MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
@@ -131,8 +131,9 @@ namespace PDS.Models.Repository
             List<PublicationsTeachers> listPubTeac = new List<PublicationsTeachers>();
 
             cmm.Parameters.AddWithValue("@idFollower", idFollower);
+            cmm.Parameters.AddWithValue("@numPosts", numPosts);
 
-            sql.Append("CALL getPublicationsTeacherProfile(@idFollower)");
+            sql.Append("CALL getPublicationsTeacherProfile(@idFollower,@numPosts)");
 
             cmm.CommandText = sql.ToString();
 
@@ -151,6 +152,7 @@ namespace PDS.Models.Repository
 
                         teacher = new Teachers 
                         {
+                            idTeacher = (Int64)dr["idTeacher"],
                             firstName = (string)dr["firstName"],
                             lastName = (string)dr["lastName"],
                             urlImageProfile = (string)dr["urlImageProfile"]
@@ -175,6 +177,41 @@ namespace PDS.Models.Repository
             }
 
             return listPubTeac;
+        }
+
+        /// <summary>
+        /// Método para retornar o número total de postagens dos professores que outro professor segue.
+        /// </summary>
+        /// <param name="idFollower"></param>
+        /// <returns></returns>
+        public Int64 CountPostsFollowersTeachers(Int64 idFollower)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Int64 numTotal = 0;
+
+            cmm.Parameters.AddWithValue("@idFollower", idFollower);
+
+            sql.Append("CALL countPostsFollowersTeachers(@idFollower)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                database.BeginWork();
+
+                numTotal = database.ExecuteScalar(cmm);
+
+                database.CommitWork();
+
+            }
+            catch (Exception)
+            {
+                database.RollBack();
+            }
+
+            return numTotal;
         }
 
     }

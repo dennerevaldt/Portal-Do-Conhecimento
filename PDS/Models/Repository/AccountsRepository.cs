@@ -34,6 +34,10 @@ namespace PDS.Models.Repository
             cmm.Parameters.AddWithValue("@password", account.password);
             cmm.Parameters.AddWithValue("@acessToken", account.acessToken);
 
+            //cmm.Parameters.Add("@email", MySqlDbType.Text).Value = account.email;
+            //cmm.Parameters.Add("@password", MySqlDbType.Text).Value =  account.password;
+            //cmm.Parameters.Add("@acessToken", MySqlDbType.Text).Value = account.acessToken;
+
             sql.Append("CALL insertAccount(@email, @password, @acessToken)");
 
             cmm.CommandText = sql.ToString();
@@ -53,7 +57,7 @@ namespace PDS.Models.Repository
 
                 database.CommitWork();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 database.RollBack();
                 throw;
@@ -276,20 +280,24 @@ namespace PDS.Models.Repository
         public bool GetEmail(string email)
         {
             MySQL database = MySQL.GetInstancia();
-            MySqlCommand cmm = new MySqlCommand();
+            //MySqlCommand cmm = new MySqlCommand();
             StringBuilder sql = new StringBuilder();
 
-            cmm.Parameters.AddWithValue("@email", email);
+            //cmm.Parameters.AddWithValue("@email", email);
 
-            sql.Append("CALL getEmail(@email)");
+            //sql.Append("CALL getEmail(@email)");
 
-            cmm.CommandText = sql.ToString();
+            //cmm.CommandText = sql.ToString();
+
+            MySqlCommand cmd = new MySqlCommand("CALL getEmail(@email)");
+            cmd.Parameters.AddWithValue("@email", email);
+
 
             Int64 result = 0;
 
             try
             {
-                 result = database.ExecuteScalar(cmm);
+                 result = database.ExecuteScalar(cmd);
 
                  if (result == 0)
                  {

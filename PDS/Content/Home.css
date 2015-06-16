@@ -454,7 +454,6 @@ fieldset[disabled] .btn-index.active {
 }
 
 #sidebar-wrapper {
-    z-index: 1000;
     position: fixed;
     left: 250px;
     width: 0;
@@ -480,7 +479,7 @@ fieldset[disabled] .btn-index.active {
 }
 
 .painel-body-height {
-	height: 475px;
+	height: 430px;
 	overflow: hidden;
 	overflow-y: scroll;
 	-webkit-overflow-scrolling: touch;
@@ -603,7 +602,7 @@ fieldset[disabled] .btn-index.active {
 }
 
 #sidebar-wrapper-right {
-    z-index: 1000;
+    z-index: -1;
     position: fixed;
     right: 0;
     width: 0;
@@ -659,4 +658,25 @@ fieldset[disabled] .btn-index.active {
     left: 0;
     right: 0;
     z-index: 99999;
+}
+
+/* Stars */
+.rating {
+    color: #a9a9a9;
+    margin: 0;
+    padding: 0;
+}
+ul.rating {
+    display: inline-block;
+}
+.rating li {
+    list-style-type: none;
+    display: inline-block;
+    padding: 1px;
+    text-align: center;
+    font-weight: bold;
+    cursor: pointer;
+}
+.rating .filled {
+    color: gold;
 }

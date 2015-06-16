@@ -242,13 +242,22 @@ namespace PDS.Controllers
                     //insert attachment
                     AttachmentsRepository repAtt = new AttachmentsRepository();
                     repAtt.Create(path, idPublication);
+
+                    objectToSerializeSuc = new ReturnJson { success = true, message = "", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeSuc));
                     
+                }
+                else
+                {
+                    objectToSerializeErr = new ReturnJson { success = false, message = "", returnUrl = "", location = "" };
+                    Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
                 }
 
             }
-            catch (Exception ex)
-            {            
-                throw ex;
+            catch (Exception)
+            {
+                objectToSerializeErr = new ReturnJson { success = false, message = "", returnUrl = "", location = "" };
+                Response.Write(JsonConvert.SerializeObject(objectToSerializeErr));
             }
 
         }
@@ -266,7 +275,7 @@ namespace PDS.Controllers
                 PublicationsTeachersRepository repPubTeac = new PublicationsTeachersRepository();
 
                 //Get url post in DB
-                string urlAttachment = repPubTeac.GetUtlAttachment(idPublication);
+                string urlAttachment = repPubTeac.GetUrlAttachment(idPublication);
 
                 //Get full url post
                 string fullPath = Request.MapPath(urlAttachment);
@@ -345,22 +354,73 @@ namespace PDS.Controllers
         /// </summary>
         /// <param name="form">FormCollection form.</param>
         [HttpPost]
-        public void getpoststeachers(FormCollection form)
+        public void getpoststeachers(string pStartList)
         {
             try
             {
-                Int64 idStudent = Int64.Parse(form["id"]);
+                HttpCookie userInfo = Request.Cookies["userInfo"];
+                var idAccTp = Server.UrlTokenDecode(userInfo["id_type_account"]);
+                string pIdStudent = System.Text.UTF8Encoding.UTF8.GetString(idAccTp);
+
+                Int64 idStudent = Int64.Parse(pIdStudent);
+                Int64 numPosts = Int64.Parse(pStartList);
+
                 ClassesPublicationsTeachersRepository repPubTeac = new ClassesPublicationsTeachersRepository();
-                List<ClassesPublicationsTeachers> listPub = repPubTeac.GetPostsTeachers(idStudent);
+                List<ClassesPublicationsTeachers> listPub = repPubTeac.GetPostsTeachers(idStudent, numPosts);
 
                 Response.Write(JsonConvert.SerializeObject(listPub));
             }
             catch (Exception)
-            {
-                
+            {               
                 throw;
             }
 
+        }
+
+        /// <summary>
+        /// Action para retornar quantas postagens o aluno tem no total.
+        /// </summary>
+        [HttpPost]
+        public void countpoststeachers()
+        {
+            try
+            {
+                HttpCookie userInfo = Request.Cookies["userInfo"];
+                var idAccTp = Server.UrlTokenDecode(userInfo["id_type_account"]);
+                string pIdStudent = System.Text.UTF8Encoding.UTF8.GetString(idAccTp);
+
+                Int64 idStudent = Int64.Parse(pIdStudent);
+
+                ClassesPublicationsTeachersRepository repPubTeac = new ClassesPublicationsTeachersRepository();
+                Int64 numTotal = repPubTeac.CountPostsTeachers(idStudent);
+
+                Response.Write(JsonConvert.SerializeObject(numTotal));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+        }
+
+        /// <summary>
+        /// Action para retornar nome da turma e disciplina.
+        /// </summary>
+        /// <param name="id"></param>
+        [HttpGet]
+        public void getNameClasseAndDiscipline(int id)
+        {
+            try
+            {
+                ClassesRepository repClasse = new ClassesRepository();
+                Classes classe = repClasse.GetNameClasseAndDiscipline(id);
+
+                Response.Write(JsonConvert.SerializeObject(classe));
+            }
+            catch (Exception ex)
+            {                
+                throw ex;
+            }
         }
     }
 }

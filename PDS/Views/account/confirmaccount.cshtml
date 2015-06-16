@@ -159,8 +159,8 @@
 
                     <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.dateOfBirth.$invalid || confirmAccount.dateOfBirth.$error.required }">
                         <label for="dateOfBirth">Data Nasc.</label>
-                        <input type="text" class="form-control" id="dateOfBirth" name="dateOfBirth" value="@birthday" ng-model="Account.dateOfBirth" ng-init="Account.dateOfBirth='@birthday'" ng-pattern="/(?!3[2-9]|00|02-3[01]|04-31|06-31|09-31|11-31)[0-3][0-9]/(?!1[3-9]|00)[01][0-9]/(?!10|28|29)[12][089][0-9][0-9]/" ng-minlength="10" ng-maxlength="10" placeholder="dd/MM/aaaa" required />
-                        <span ng-show="confirmAccount.dateOfBirth.$error.pattern">Formato incorreto, deve seguir dd/MM/yyyy</span>
+                        <input type="text" class="form-control" id="dateOfBirth" name="dateOfBirth" value="@birthday" ng-model="Account.dateOfBirth" ng-init="Account.dateOfBirth='@birthday'" ng-pattern="/(?!3[2-9]|00|02-3[01]|04-31|06-31|09-31|11-31)[0-3][0-9]/(?!1[3-9]|00)[01][0-9]/(?!10|28|29)[12][089][0-9][0-9]/" ng-minlength="10" ng-maxlength="10" ui-date placeholder="dd/MM/aaaa" required />
+                        <span class="text-danger" ng-show="confirmAccount.dateOfBirth.$error.pattern">Formato incorreto, deve seguir dd/MM/yyyy</span>
                     </div>
 
                     <div class="form-group" ng-class="{ 'has-error has-feedback': confirmAccount.email.$error.required || confirmAccount.email.$error.email }">
@@ -202,5 +202,6 @@
     @Scripts.Render("~/Scripts/angular.js")
     @Scripts.Render("~/Scripts/app.js")
     @Scripts.Render("~/Scripts/controllers.js")
+    @Scripts.Render("~/Scripts/diretives.js")
 </body>
 </html>

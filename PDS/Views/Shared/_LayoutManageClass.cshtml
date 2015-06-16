@@ -164,9 +164,7 @@
                         <a href="#"><span class="glyphicon glyphicon-envelope margin-rght"></span> Mensagens <span class="badge">0</span></a>
                     </li>
                 }
-                <li>
-                    <a href="#"><span class="glyphicon glyphicon-star margin-rght"></span> Estrelinhas</a>
-                </li>
+
                 
                 @if (account_type == "T")
                 {
@@ -189,7 +187,7 @@
                         <div class="row" ng-controller="AutoCompleteController">
                             <div class="col-md-12 border-b" ng-cloak>
 
-                                <div ng-class="resultClassAddStudent" ng-show="resultShowAddStudent">{{resultMessageAddStudent}}</div>
+                                <div ng-class="resultClassAddStudent" style="color: #fff;" ng-show="resultShowAddStudent">{{resultMessageAddStudent}}</div>
 
                                 <h4>Adicionar Alunos</h4>
 
@@ -243,6 +241,13 @@
                                 <a class="btn btn-default btn-block" data-toggle="modal" data-target=".invite-message" ng-disabled="!classesStudents.length" href="#">Enviar</a>
 
                             </div>
+
+                            <div class="col-md-12 border-b" style="margin-top: 15px;">
+                                <h4>Estrelinhas</h4>
+
+                                <a class="btn btn-default btn-block" ng-disabled="!classesStudents.length" href="#" ng-click="starsPage()">Ver</a>
+
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -263,7 +268,7 @@
 
                             <div class="form-group" ng-class="{ 'has-error has-feedback': messageForm.inputMessage.$dirty && messageForm.inputMessage.$error.required }">
                                 <label for="inputMessage">Mensagem</label>
-                                <textarea type="text" class="form-control" id="inputMessage" name="inputMessage" ng-model="Classe.message" rows="3" placeholder="Mensagem" required></textarea>
+                                <textarea type="text" class="form-control" id="inputMessage" name="inputMessage" ng-model="Classe.message" rows="3" placeholder="Mensagem" maxlength="300" required></textarea>
                                 <div class="bg-danger" ng-show="messageForm.inputMessage.$dirty && messageForm.inputMessage.$error.required">
                                     Campo obrigatório.
                                 </div>
@@ -301,10 +306,13 @@
                                 <p class="text-center" ng-bind="item.student.firstName"></p>
                             </div>
                         </div>
+                        <div class="panel panel-default" ng-hide="classesStudents.length">
+                            <div class="panel-body"><h4 class="text-center text-info">Nenhum aluno adicionado a turma.</h4></div>
+                        </div>
                         
                     </div>
 
-                    <div class="modal-footer">
+                    <div class="modal-footer" style="margin-top: 0;">
                     </div>
 
                 </div><!-- /.modal-content -->

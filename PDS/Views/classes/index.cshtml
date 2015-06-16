@@ -14,12 +14,8 @@
                     <img class="img-loading" src="@Url.Content("~/Content/images/loader.gif")" alt="Loading" ng-show="loadingClass" />
                 </div>
 
-                <div class="panel panel-default" ng-hide="listClasses.length">
-                    <div class="panel-body"><h4 class="text-center text-info">Nenhuma turma cadastrada.</h4></div>
-                </div>
-
                 <div class="panel panel-default">
-                    <div class="panel-heading"><h4 ng-bind="nameClasse.name"> <small ng-hide="listClasses.length"><span class="text-center text-danger">(Nenhuma turma cadastrada)</span></small> </h4></div>
+                    <div class="panel-heading"><h4>Disciplina - <small>{{nameDiscipline.name}}</small> | Turmas:</div>
                     <div class="panel-body">
                         <div class="table-responsive">
                             <table class="table table-striped">
@@ -39,6 +35,10 @@
                                     </tr>
                                 </tbody>
                             </table>
+                        </div>
+
+                        <div class="panel panel-default" ng-hide="listClasses.length">
+                            <div class="panel-body"><h4 class="text-center text-info">Nenhuma turma cadastrada.</h4></div>
                         </div>
 
                     </div>

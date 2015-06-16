@@ -209,12 +209,12 @@ namespace PDS.Models.Repository
                             new Classes
                             {
                                 idClass = Convert.ToInt64(dr["idClasse"]),
-                                name = Convert.ToString(dr["name"]),
+                                name = Convert.ToString(dr["nameClasse"]),
 
                                 discipline = new Disciplines
                                 {
                                     idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
-                                    name = Convert.ToString(dr["name"])
+                                    name = Convert.ToString(dr["nameDiscipline"])
                                 },
 
                                 classesStudents = cStudents
@@ -234,12 +234,12 @@ namespace PDS.Models.Repository
                             new Classes
                             {
                                 idClass = Convert.ToInt64(dr["idClasse"]),
-                                name = Convert.ToString(dr["name"]),
+                                name = Convert.ToString(dr["nameClasse"]),
 
                                 discipline = new Disciplines
                                 {
                                     idDiscipline = Convert.ToInt64(dr["idDiscipline"]),
-                                    name = Convert.ToString(dr["name"])
+                                    name = Convert.ToString(dr["nameDiscipline"])
                                 },
 
                                 classesStudents = new List<ClassesStudents>()
@@ -290,6 +290,56 @@ namespace PDS.Models.Repository
                 database.RollBack();
                 throw ex;
             }
+        }
+
+        /// <summary>
+        /// Método para retornar as informações de nome de Disciplina e Turma.
+        /// </summary>
+        /// <param name="idClasse"></param>
+        /// <returns></returns>
+        public Classes GetNameClasseAndDiscipline(Int64 idClasse)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Classes classe = new Classes();
+
+            cmm.Parameters.AddWithValue("@idClasse", idClasse);
+
+            sql.Append("CALL getNameClasseAndDiscipline(@idClasse)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                dr = database.ExecuteReader(cmm);
+
+                while (dr.Read())
+                {
+                    classe =
+                        new Classes
+                        {
+                            name = (string)dr["nameClasse"],
+
+                            discipline = new Disciplines
+                            {
+                                name = (string)dr["nameDiscipline"]
+                            }
+
+                        };
+                }
+
+                dr.Close();
+
+            }
+            catch (Exception ex)
+            {
+                dr.Close();
+                throw ex;
+            }
+
+            return classe;
+
         }
     }
 }

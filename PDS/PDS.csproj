@@ -51,7 +51,7 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="MySql.Data, Version=6.9.5.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector Net 6.9.5\Assemblies\v4.5\MySql.Data.dll</HintPath>
+      <HintPath>..\packages\MySql.Data.6.9.5\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -127,10 +127,13 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\accountController.cs" />
     <Compile Include="Controllers\classesController.cs" />
+    <Compile Include="Controllers\classesStudentsController.cs" />
     <Compile Include="Controllers\disciplinesController.cs" />
     <Compile Include="Controllers\homeController.cs" />
     <Compile Include="Controllers\messageController.cs" />
     <Compile Include="Controllers\siteController.cs" />
+    <Compile Include="Controllers\starsController.cs" />
+    <Compile Include="Controllers\studentsClassesController.cs" />
     <Compile Include="Controllers\teachersController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -156,6 +159,7 @@
     <Compile Include="Models\Repository\ClassesStudentsRepository.cs" />
     <Compile Include="Models\Repository\DisciplinesRepository.cs" />
     <Compile Include="Models\Repository\PublicationsTeachersRepository.cs" />
+    <Compile Include="Models\Repository\StudentsClassesRepository.cs" />
     <Compile Include="Models\Repository\StudentsRepository.cs" />
     <Compile Include="Models\Repository\TeachersRepository.cs" />
     <Compile Include="Models\Utilities\ReturnJson.cs" />
@@ -174,7 +178,6 @@
     <Content Include="Content\images\teachers.jpg" />
     <Content Include="Content\Home.css" />
     <Content Include="Content\Perfil.css" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -217,6 +220,9 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Properties\PublishProfiles\PortaFTP.pubxml" />
+    <None Include="Properties\PublishProfiles\portaldoconhecimento %282%29.pubxml" />
+    <None Include="Properties\PublishProfiles\portaldoconhecimento %283%29.pubxml" />
+    <None Include="Properties\PublishProfiles\portaldoconhecimento %284%29.pubxml" />
     <None Include="Properties\PublishProfiles\portaldoconhecimento.pubxml" />
     <Content Include="Scripts\diretives.js" />
     <Content Include="Scripts\errors.json" />
@@ -243,10 +249,12 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\ng-infinite-scroll.js" />
     <Content Include="Scripts\ngProgress.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\services.js" />
+    <Content Include="Scripts\uiDate.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -286,13 +294,13 @@
     <Content Include="Views\Shared\_LayoutClasses.cshtml" />
     <Content Include="Views\Shared\_LayoutManageClass.cshtml" />
     <Content Include="Views\classes\manageclass.cshtml" />
+    <Content Include="Views\stars\index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\Uploads\ImagesProfile\Students\" />
     <Folder Include="Content\Uploads\ImagesProfile\Teachers\" />
     <Folder Include="Content\Uploads\Posts\Teachers\" />
-    <Folder Include="Views\teachers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

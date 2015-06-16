@@ -432,7 +432,7 @@ namespace PDS.Controllers
 
                             Image imgNew = new System.Drawing.Bitmap(image, new System.Drawing.Size(200, 200));
 
-                            imgNew.Save(Path.Combine(Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg"));
+                            imgNew.Save(Path.Combine( Server.MapPath("~/Content/Uploads/ImagesProfile/Students"), idAccount.ToString() + ".jpg"));
 
                             student.urlImageProfile = "/Content/Uploads/ImagesProfile/Students/" + idAccount.ToString() + ".jpg";
 

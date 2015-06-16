@@ -104,7 +104,7 @@ namespace PDS.Models.Repository
         /// </summary>
         /// <param name="idStudent">Int64 idStudent.</param>
         /// <returns>List ClassesPublicationsTeachers.</returns>
-        public List<ClassesPublicationsTeachers> GetPostsTeachers(Int64 idStudent)
+        public List<ClassesPublicationsTeachers> GetPostsTeachers(Int64 idStudent, Int64 numPosts)
         {
             MySQL database = MySQL.GetInstancia();
             MySqlCommand cmm = new MySqlCommand();
@@ -112,8 +112,9 @@ namespace PDS.Models.Repository
             List<ClassesPublicationsTeachers> listClassesPubTeac = new List<ClassesPublicationsTeachers>();
 
             cmm.Parameters.AddWithValue("@idStudent", idStudent);
+            cmm.Parameters.AddWithValue("@numPosts", numPosts);
 
-            sql.Append("CALL getPostsTeachers(@idStudent)");
+            sql.Append("CALL getPostsTeachers(@idStudent,@numPosts)");
 
             cmm.CommandText = sql.ToString();
 
@@ -160,6 +161,41 @@ namespace PDS.Models.Repository
             }
 
             return listClassesPubTeac;
+        }
+
+        /// <summary>
+        /// Método para retornar o número total de postagens de um aluno.
+        /// </summary>
+        /// <param name="idStudent"></param>
+        /// <returns></returns>
+        public Int64 CountPostsTeachers(Int64 idStudent)
+        {
+            MySQL database = MySQL.GetInstancia();
+            MySqlCommand cmm = new MySqlCommand();
+            StringBuilder sql = new StringBuilder();
+            Int64 numTotal = 0;
+
+            cmm.Parameters.AddWithValue("@idStudent", idStudent);
+
+            sql.Append("CALL countPostsTeachers(@idStudent)");
+
+            cmm.CommandText = sql.ToString();
+
+            try
+            {
+                database.BeginWork();
+
+                numTotal = database.ExecuteScalar(cmm);
+
+                database.CommitWork();
+
+            }
+            catch (Exception)
+            {
+                database.RollBack();
+            }
+
+            return numTotal;
         }
 
     }

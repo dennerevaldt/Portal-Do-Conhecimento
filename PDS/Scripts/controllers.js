@@ -23,7 +23,7 @@
                 }).success(function (data) {
                     ngProgress.complete();
                     if (data != null) {
-                        $rootScope.nameClasse = data;
+                        $rootScope.nameDiscipline = data;
                     } else {
                         Console.log('erro.');
                     }
@@ -53,34 +53,13 @@
         }).success(function (data) {
             //end progress
             ngProgress.complete();
-
+            console.log(data);
             if (data != null) {
                 $rootScope.classe = data;
                 $rootScope.nameClass = data.name;
                 $rootScope.classesStudents = data.classesStudents;
                 $rootScope.classesPublicationTeachers = data.classesPublicationTeachers;
                 $rootScope.discipline = data.discipline;
-            } else {
-                Console.log('erro.');
-            }
-        });
-    }
-
-    $rootScope.getPublicationsTeacherProf = function () {
-        //set progress bar
-        ngProgress.color('#4285f4');
-        ngProgress.start();
-
-        $http({
-            method: 'POST',
-            url: '/teachers/GetPublications',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }).success(function (data) {
-            //end progress bar
-            ngProgress.complete();
-
-            if (data != null) {
-                $rootScope.publicationsTeachersProfile = data;
             } else {
                 Console.log('erro.');
             }
@@ -99,7 +78,7 @@
             data: $.param(dataParam),
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).success(function (data) {
-            console.log(data);
+            //console.log(data);
             if (data != 0) {
                 $rootScope.listMessages = data;
             }
@@ -107,6 +86,34 @@
 
             }
 
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $rootScope.getDisciplinesProfileStudents = function (id) {
+        $http({
+            method: 'GET',
+            url: '/disciplines/GetDisciplinesProfileStudent?id=' + id,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        }).success(function (data) {
+            //console.log(data);
+            $rootScope.listDisciplinesProfile = data;
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $rootScope.getStarsStudents = function (id) {
+        $http({
+            method: 'GET',
+            url: '/classesStudents/GetStarsStudents?idStudent=' + id,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
+        }).success(function (data) {
+            //console.log(data);
+            $rootScope.listRankingStd = data;
         }).error(function (data) {
             // Error in Database.
             Console.log('Error in Database.');
@@ -638,19 +645,33 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
                 transformRequest: angular.identity,
                 headers: { 'Content-Type': undefined }
             })
-            .success(function () {
-                $timeout(function () {
+            .success(function (data) {
+                console.log(data);
+                if (data.success) {
+                    $timeout(function () {
+                        ngProgress.complete();
+                        $rootScope.getDataOneClass();
+                        $scope.Post.message = "";
+                        $scope.Post.file = "";
+                        $scope.resultMessagePost = 'Postagem enviada com sucesso.';
+                        $scope.resultMessageClassPost = 'bg-success';
+                        $scope.resultShowMessagePost = true;
+                        $timeout(function () {
+                            $scope.resultShowMessagePost = false;
+                        }, 2000);
+                    }, 2000);
+                }
+                else {
                     ngProgress.complete();
                     $rootScope.getDataOneClass();
-                    $scope.Post.message = "";
                     $scope.Post.file = "";
-                    $scope.resultMessagePost = 'Postagem enviada com sucesso.';
-                    $scope.resultMessageClassPost = 'bg-success';
+                    $scope.resultMessagePost = 'Formato de arquivo anexado não permitido, tente novamente.';
+                    $scope.resultMessageClassPost = 'bg-danger';
                     $scope.resultShowMessagePost = true;
                     $timeout(function () {
                         $scope.resultShowMessagePost = false;
-                    }, 2000);
-                }, 2000);
+                    }, 8000);
+                }
             })
             .error(function () {
             });
@@ -752,7 +773,7 @@ homePortal.controller('ClassesController', function ($scope, $http, $timeout, $r
 
 });
 
-homePortal.controller('AutoCompleteController', function ($scope, $http, $rootScope, $timeout) {
+homePortal.controller('AutoCompleteController', function ($scope, $http, $rootScope, $timeout, $window, ngProgress) {
 
     $scope.completing = false;
     $scope.dicas = [];
@@ -870,36 +891,42 @@ homePortal.controller('AutoCompleteController', function ($scope, $http, $rootSc
 
     }
 
+    $scope.starsPage = function () {
+        var pIdClass = location.search.split('?id=')[1];
+        var url = '/stars/index?id=' + pIdClass;
+
+        ngProgress.color('#4285f4');
+        ngProgress.start();
+
+        $window.location.href = url;
+    }
+
 });
 
-homePortal.controller('IndexController', function ($scope, $http, $rootScope, $interval, $timeout, ngProgress) {
+homePortal.controller('IndexController', function ($scope, $http, $rootScope, $interval, $timeout, $window, ngProgress) {
     
-    $interval(function () {
-        $scope.getNumMessages();
-    }, 5000);
+    //Get data atual
+    var today = new Date();
+    var dd = today.getDate();
+    var mm = today.getMonth() + 1; 
+    var yyyy = today.getFullYear();
 
-    var count = 0;
-
-    $scope.getNewPosts = function (idStudent) {
-
-        dataParam = {
-            id: idStudent
-        }
-
-        $http({
-            method: 'POST',
-            url: '/classes/getpoststeachers',
-            data: $.param(dataParam),
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }  //set the headers so angular passing info as form data (not request payload)
-        }).success(function (data) {
-            //console.log(data);
-            $scope.publicationsTeachers = data;
-            $scope.getNumMessages(idStudent);
-        }).error(function (data) {
-            // Error in Database.
-            Console.log('Error in Database.');
-        });
+    if (dd < 10) {
+        dd = '0' + dd
     }
+
+    if (mm < 10) {
+        mm = '0' + mm
+    }
+
+    today = dd + '/' + mm + '/' + yyyy;
+
+    $scope.dataAtual = today;
+    //$interval(function () {
+    //    $scope.getNumMessages();
+    //}, 5000);
+
+    //var count = 0;
 
     $scope.getNumMessages = function () {
 
@@ -912,22 +939,23 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
 
             $scope.numMessages = data;
 
-            if (data != 0 && data != count) {
+            if (data != 0) {
                 $scope.badgeMessage = "badge";
                  count = data;
+                //&& data != count
 
-                if (!Notification) {
-                    alert('Notifications are supported in modern versions of Chrome, Firefox and Opera.');
-                    return;
-                }
+                //if (!Notification) {
+                //    alert('Notifications are supported in modern versions of Chrome, Firefox and Opera.');
+                //    return;
+                //}
 
-                if (Notification.permission !== "granted")
-                    Notification.requestPermission();
+                //if (Notification.permission !== "granted")
+                //    Notification.requestPermission();
 
-                var notification = new Notification('Portal do conhecimento', {
-                    icon: '/Content/images/icon_notif.png',
-                    body: "Existem novas mensagens para você!",
-                });
+                //var notification = new Notification('Portal do conhecimento', {
+                //    icon: '/Content/images/icon_notif.png',
+                //    body: "Existem novas mensagens para você!",
+                //});
 
                 //notification.onclick = function () {
                 //    window.open("http://stackoverflow.com/a/13328397/1269037");
@@ -947,23 +975,7 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
         $rootScope.getMessages(idStudent);
     }
 
-    $scope.initPage = function (id) {
-        //set progress bar
-        ngProgress.color('#4285f4');
-        ngProgress.start();
-
-        $scope.getNewPosts(id);
-
-        //end progress
-        ngProgress.complete();
-    }
-
-    $scope.initPageTeacher = function () {
-        $rootScope.getPublicationsTeacherProf();
-    }
-
     $scope.submitPostTeacher = function (formPost) {
-
         //set progress bar
         ngProgress.color('#4285f4');
         ngProgress.start();
@@ -988,20 +1000,31 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
                     transformRequest: angular.identity,
                     headers: { 'Content-Type': undefined }
                 })
-                .success(function () {
-                    //$rootScope.getDataOneClass();
-                    //set progress bar
-                    $timeout(function () {
+                .success(function(data) {
+                    if (data.success) {
+                        $timeout(function () {
+                            ngProgress.complete();
+                            $scope.loadMoreFollowersTeachers();
+                            $scope.Post.message = "";
+                            $scope.Post.file = "";
+                            $scope.resultMessagePost = 'Postagem enviada com sucesso.';
+                            $scope.resultMessageClassPost = 'bg-success';
+                            $scope.resultShowMessagePost = true;
+                            $timeout(function () {
+                                $scope.resultShowMessagePost = false;
+                            }, 2000);
+                        }, 2000);
+                    }
+                    else {
                         ngProgress.complete();
-                        $scope.Post.message = "";
                         $scope.Post.file = "";
-                        $scope.resultMessagePost = 'Postagem enviada com sucesso.';
-                        $scope.resultMessageClassPost = 'bg-success';
+                        $scope.resultMessagePost = 'Formato de arquivo anexado não permitido, tente novamente.';
+                        $scope.resultMessageClassPost = 'bg-danger';
                         $scope.resultShowMessagePost = true;
                         $timeout(function () {
                             $scope.resultShowMessagePost = false;
-                        }, 2000);
-                    }, 2000);
+                        }, 8000);
+                    }
                 })
                 .error(function () {
                 });
@@ -1015,20 +1038,21 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
                     transformRequest: angular.identity,
                     headers: { 'Content-Type': undefined }
                 })
-                .success(function () {
-                    //$rootScope.getDataOneClass();
-                    //set progress bar
-                    $timeout(function () {
-                        ngProgress.complete();
-                        $scope.Post.message = "";
-                        $scope.Post.file = "";
-                        $scope.resultMessagePost = 'Postagem enviada com sucesso sem anexos.';
-                        $scope.resultMessageClassPost = 'bg-success';
-                        $scope.resultShowMessagePost = true;
+                .success(function (data) {
+                    if (data.success) {
                         $timeout(function () {
-                            $scope.resultShowMessagePost = false;
+                            ngProgress.complete();
+                            $scope.loadMoreFollowersTeachers();
+                            $scope.Post.message = "";
+                            $scope.Post.file = "";
+                            $scope.resultMessagePost = 'Postagem enviada com sucesso sem anexos.';
+                            $scope.resultMessageClassPost = 'bg-success';
+                            $scope.resultShowMessagePost = true;
+                            $timeout(function () {
+                                $scope.resultShowMessagePost = false;
+                            }, 2000);
                         }, 2000);
-                    }, 2000);
+                    }
                 })
                 .error(function () {
                 });
@@ -1044,6 +1068,105 @@ homePortal.controller('IndexController', function ($scope, $http, $rootScope, $i
             }, 10000);
         }
     }
+
+    $scope.getDisciplinesProfileStud = function (id) {
+
+        $rootScope.getDisciplinesProfileStudents(id);
+    }
+
+    $scope.getStarsStd = function (id) {
+        $rootScope.getStarsStudents(id);
+    }
+
+    //Publication Teachers in Timeline Students
+    $scope.publicationsTeachers = [];
+    $scope.startList = 0;
+    $scope.totalItems = 0;
+    $scope.stopLoadingData = false;
+
+    $scope.loadMore = function () {
+
+        if (!$scope.stopLoadingData) {
+            $scope.loading = true;
+            $http.post("/classes/getpoststeachers", { "pStartList": $scope.startList }).success(function (data) {
+
+                $scope.publicationsTeachers = data;
+
+                $http.post("/classes/countpoststeachers").success(function (data) {
+                    $scope.totalItems = data;
+
+                    $scope.getNumMessages();
+                });
+
+                $scope.startList += 4;
+
+                if ($scope.publicationsTeachers.length == $scope.totalItems) {
+                    $scope.stopLoadingData = true;
+                }
+                else {
+                    $scope.stopLoadingData = false;
+                }
+
+            });
+ 
+        }
+
+        $scope.loading = false;
+
+    };
+
+    //Publications Teachers for Followers Teachers
+    $scope.publicationsFollowersTeachers = [];
+    $scope.startListFollowers = 0;
+    $scope.totalItemsFollowers = 0;
+    $scope.stopLoadingDataFollowers = false;
+
+    $scope.loadMoreFollowersTeachers = function () {
+
+        if (!$scope.stopLoadingDataFollowers) {
+            $scope.loadingFollowers = true;
+            $http.post("/teachers/GetPublications", { "pStartList": $scope.startListFollowers }).success(function (data) {
+
+                $scope.publicationsTeachersProfile = data;
+
+                $http.post("/teachers/CountPostsFollowersTeachers").success(function (data) {
+                    $scope.totalItemsFollowers = data;
+                });
+
+                $scope.startListFollowers += 4;
+
+                if ($scope.publicationsTeachersProfile.length == $scope.totalItemsFollowers) {
+                    $scope.stopLoadingDataFollowers = true;
+                }
+                else {
+                    $scope.stopLoadingDataFollowers = false;
+                }
+
+            });
+
+        }
+
+        $scope.loadingFollowers = false;
+
+    };
+
+    $scope.deletePostTeacher = function (id) {
+        $http({
+            method: 'GET',
+            url: '/teachers/deletePost/' + id,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+
+            if (data.success) {
+                $scope.loadMoreFollowersTeachers();
+                //$window.location.href = "/home/index";
+            }
+
+        }).error(function (data) {
+
+        });
+    }
+
 
 });
 
@@ -1333,44 +1456,6 @@ manageModule.controller('ManageController', function ($scope, $http, $timeout) {
 
 followerModule.controller('FollowerController', function ($scope, $http, $timeout, ngProgress) {
 
-    $scope.checkFollow = function (idFollower, idFollowing) {
-
-        var dataParam = {
-            idFollower: idFollower,
-            idFollowing: idFollowing
-        }
-
-        if (idFollower != idFollowing) {
-            $http({
-                method: 'POST',
-                url: '/home/checkfollow',
-                data: $.param(dataParam),
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            }).success(function (data) {
-                console.log(data);
-                if (data.success) {
-                    $scope.class = 'bg-success';
-                    $scope.textFollow = "Seguindo";
-                    $scope.seguindoIcon = true;
-                    $scope.seguirIcon = false;
-                    $scope.itsMe = false;
-
-                } else {
-                    $scope.class = 'bg-danger';
-                    $scope.textFollow = "Seguir";
-                    $scope.seguirIcon = true;
-                    $scope.seguindoIcon = false;
-                    $scope.itsMe = false;
-                }
-            });
-
-        }
-        else {
-            $scope.itsMe = true;
-        }
-
-    }
-
     $scope.follow = function (idFollower, idFollowing) {
 
         var dataParam = {
@@ -1500,4 +1585,256 @@ followerModule.controller('FollowerController', function ($scope, $http, $timeou
         }
     }
 
+    $scope.checkFollow = function (idFollower, idFollowing) {
+
+        var dataParam = {
+            idFollower: idFollower,
+            idFollowing: idFollowing
+        }
+
+        $scope.getFollowersOther(idFollowing);
+
+        if (idFollower != idFollowing) {
+            $http({
+                method: 'POST',
+                url: '/home/checkfollow',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data) {
+                console.log(data);
+                if (data.success) {
+                    $scope.class = 'bg-success';
+                    $scope.textFollow = "Seguindo";
+                    $scope.seguindoIcon = true;
+                    $scope.seguirIcon = false;
+                    $scope.itsMe = false;
+
+                } else {
+                    $scope.class = 'bg-danger';
+                    $scope.textFollow = "Seguir";
+                    $scope.seguirIcon = true;
+                    $scope.seguindoIcon = false;
+                    $scope.itsMe = false;
+                }
+            });
+
+        }
+        else {
+            $scope.itsMe = true;
+        }
+
+    }
+
+
 });
+
+starModule.controller('StarController', function ($scope, $http, $location, $timeout, ngProgress) {
+
+    $scope.rating = 0;
+    $scope.numStars = 1;
+    $scope.visibilityManageStar = true;
+
+    $scope.ratings = [{
+        current: 1,
+        max: 5
+    }];
+
+    $scope.getSelectedRating = function (rating) {
+        $scope.numStars = rating;
+    }
+
+    $scope.getAllStudents = function () {
+        
+        ngProgress.start();
+        ngProgress.color('#4285f4');
+       
+        var idClass = location.search.split('?id=')[1];
+
+        $http({
+            method: 'GET',
+            url: '/classesStudents/GetAll?idClasse='+idClass,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            console.log(data);
+            if (data != 0) {
+                $scope.listStudents = data;
+                $scope.getNameClasseAndDiscipline(idClass);
+                ngProgress.complete();
+            }
+            else {
+                ngProgress.complete();
+            }
+
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $scope.getNameClasseAndDiscipline = function (idClasse) {
+        $http({
+            method: 'GET',
+            url: '/classes/getNameClasseAndDiscipline?id=' + idClasse,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            console.log(data);
+            if (data != 0) {
+                $scope.dataClasse = data;          
+            }
+
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $scope.getOneStudent = function (idStudent) {
+
+        var idClass = location.search.split('?id=')[1];
+
+        $http({
+            method: 'GET',
+            url: '/classesStudents/GetOne?idStudent=' + idStudent + '&idClasse=' + idClass,
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+            if (data != 0) {
+                //$scope.listStudents = data;
+                $scope.OneStudent = data;
+            }
+            else {
+            }
+
+        }).error(function (data) {
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $scope.addStars = function (stars, id) {
+        var starsParam = stars;
+        var idStudentParam = id;
+        var idClassParam = location.search.split('?id=')[1];
+
+        var dataParam = {
+            idStudent: idStudentParam,
+            idClass: idClassParam,
+            stars: starsParam
+        }
+
+        ngProgress.start();
+        ngProgress.color('#4285f4');
+
+        $http({
+            method: 'POST',
+            url: '/studentsClasses/Update',
+            data: $.param(dataParam),
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).success(function (data) {
+
+            ngProgress.complete();
+            //$location.href = "/stars/index?id=" + idClassParam;
+            //alert('ok');
+            $scope.getAllStudents();
+            //inicializa novamente
+            $scope.ratings = [{
+                current: 1,
+                max: 5
+            }];
+
+        }).error(function (data) {
+
+            //inicializa novamente
+            $scope.ratings = [{
+                current: 1,
+                max: 5
+            }];
+
+            ngProgress.complete();
+            // Error in Database.
+            Console.log('Error in Database.');
+        });
+    }
+
+    $scope.removeStars = function (stars, id) {
+        var starsParam = stars;
+        var idStudentParam = id;
+        var idClassParam = location.search.split('?id=')[1];
+        var numStarsAt = $scope.OneStudent.stars;
+
+        if(numStarsAt>=starsParam){
+
+            var dataParam = {
+                idStudent: idStudentParam,
+                idClass: idClassParam,
+                stars: starsParam
+            }
+
+            ngProgress.start();
+            ngProgress.color('#4285f4');
+
+            $http({
+                method: 'POST',
+                url: '/studentsClasses/Delete',
+                data: $.param(dataParam),
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).success(function (data) {
+
+                ngProgress.complete();
+                //$location.href = "/stars/index?id=" + idClassParam;
+                //alert('ok');
+                $scope.getAllStudents();
+                //inicializa novamente
+                $scope.ratings = [{
+                    current: 1,
+                    max: 5
+                }];
+
+                $scope.visibilityManageStar = true;
+
+            }).error(function (data) {
+
+                //inicializa novamente
+                $scope.ratings = [{
+                    current: 1,
+                    max: 5
+                }];
+
+                $scope.visibilityManageStar = true;
+
+                ngProgress.complete();
+                // Error in Database.
+                Console.log('Error in Database.');
+            });
+        }
+        else {
+            $scope.resultStar = 'bg-danger';
+            $scope.resultMessageStar = 'Você não pode excluir um número de estrelas superior ao que o aluno tenha.';
+            $scope.resultShowStar = true;
+            $timeout(function () {
+                $scope.resultShowStar = false;
+            }, 5000);
+        }
+
+    }
+
+    $scope.changeValueVisibility = function () {
+
+        if ($scope.visibilityManageStar) {
+            $scope.visibilityManageStar = false;
+        }
+        else {
+            $scope.visibilityManageStar = true;
+        }
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
